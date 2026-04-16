@@ -2,13 +2,18 @@ package main
 
 import (
 	"log"
+	"text/template"
 
-	db "lyrics/db"
+	dbpkg "lyrics/db"
+	tplpkg "lyrics/template"
 
 	"github.com/joho/godotenv"
+	"gorm.io/gorm"
 )
 
 var err error
+var tpl *template.Template
+var db *gorm.DB
 
 func main() {
 	if err = godotenv.Load("env/.env"); err == nil {
@@ -17,8 +22,12 @@ func main() {
 		log.Fatalf("Erreur chargement .env: %v", err)
 	}
 
-	if err := db.ConnectDB(); err != nil {
+	if db, err = dbpkg.ConnectDB(); err != nil {
 		log.Fatalf("Erreur de connexion à la DB: %v", err)
 	}
 
+	tpl, err = tplpkg.ParseTemplates()
+	if err != nil {
+		log.Fatal("erreur template", err)
+	}
 }

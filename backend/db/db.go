@@ -1,7 +1,6 @@
 package db
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -9,32 +8,32 @@ import (
 	"gorm.io/gorm"
 )
 
-var db *gorm.DB
+var Db *gorm.DB
 var err error
 
-func ConnectDB() error {
+func ConnectDB() (*gorm.DB, error) {
 	dsn := os.Getenv("DATABASE_URL")
 	if dsn == "" {
-		return fmt.Errorf("DATABASE_URL manquante")
+		return nil, err
 	}
 
-	db, err = gorm.Open(postgres.New(postgres.Config{
+	Db, err = gorm.Open(postgres.New(postgres.Config{
 		DSN:                  dsn,
 		PreferSimpleProtocol: true,
 	}), &gorm.Config{})
 	if err != nil {
-		return fmt.Errorf("erreur ouverture GORM: %w", err)
+		return nil, err
 	}
-	sqlDB, err := db.DB()
+	sqlDB, err := Db.DB()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := sqlDB.Ping(); err != nil {
-		return fmt.Errorf("ping échoué: %w", err)
+		return nil, err
 	}
 
 	log.Println("✅ DB Supabase connectée avec GORM!")
 
-	return nil
+	return Db, nil
 }
