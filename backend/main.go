@@ -17,7 +17,7 @@ var tpl *template.Template
 var db *gorm.DB
 
 func acceuilHandle(w http.ResponseWriter, r *http.Request) {
-	if err := tpl.ExecuteTemplate(w, "acceuil.html", nil); err != nil {
+	if err := tpl.ExecuteTemplate(w, "accueil.html", nil); err != nil {
 		http.Error(w, "Erreur lors du rendu de la page d'accueil", http.StatusInternalServerError)
 		log.Printf("Erreur template: %v", err)
 	}
