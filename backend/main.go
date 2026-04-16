@@ -41,7 +41,7 @@ func main() {
 
 	// css chargement
 
-	fs := http.FileServer(http.Dir("../frontend/src/css/"))
+	fs := http.FileServer(http.Dir("../frontend/src/"))
 	http.Handle("/css/", http.StripPrefix("/", fs))
 
 	// router http
