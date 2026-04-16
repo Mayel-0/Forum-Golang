@@ -55,7 +55,6 @@ func main() {
 
 	http.HandleFunc("/", acceuilHandle)
 	http.HandleFunc("/forum/index", forumIndexHandle)
-	http.HandleFunc("/forum/index.html", forumIndexHandle)
 
 	log.Println("🚀 Serveur démarré sur http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
