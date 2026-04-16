@@ -23,6 +23,13 @@ func acceuilHandle(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func forumIndexHandle(w http.ResponseWriter, r *http.Request) {
+	if err := tpl.ExecuteTemplate(w, "index.html", nil); err != nil {
+		http.Error(w, "Erreur lors du rendu de la page du forum", http.StatusInternalServerError)
+		log.Printf("Erreur template: %v", err)
+	}
+}
+
 func main() {
 	if err = godotenv.Load("env/.env"); err == nil {
 		log.Println("✅ Variables d'environnement chargées depuis env/.env")
@@ -47,6 +54,8 @@ func main() {
 	// router http
 
 	http.HandleFunc("/", acceuilHandle)
+	http.HandleFunc("/forum/index", forumIndexHandle)
+	http.HandleFunc("/forum/index.html", forumIndexHandle)
 
 	log.Println("🚀 Serveur démarré sur http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
