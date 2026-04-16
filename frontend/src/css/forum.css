@@ -1,0 +1,49 @@
+body {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+
+}
+
+/* Le wrapper qui centre tout */
+.mx-auto-container {
+    display: block;        /* S'assure que c'est un bloc */
+    width: 92%;           /* Largeur sur petits écrans (évite de coller aux bords) */
+    max-width: 1200px;     /* La largeur MAX de ton site (genre xl/2xl) */
+    margin-left: auto;     /* Pousse à gauche */
+    margin-right: auto;    /* Pousse à droite -> Résultat : Centré */
+}
+
+/* La grille à l'intérieur */
+#grid-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Gauche 2/3, Droite 1/3 */
+    gap: 30px;                     /* Espace entre les deux */
+    align-items: start;            /* Évite que le petit côté s'étire bizarrement */
+}
+
+#left-side {
+    border-radius: 5px;
+    height: auto;
+}
+
+#subjects {
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.subject {
+    padding: 10px;
+    border-bottom: 1px solid black;
+}
+
+.subject:hover {
+    background-color: lightgray;
+}
+
+.categories span {
+    padding: 5px;
+    background-color: lightblue;
+    border-radius: 5px;
+}
