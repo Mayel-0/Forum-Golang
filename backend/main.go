@@ -58,4 +58,7 @@ func main() {
 
 	log.Println("🚀 Serveur démarré sur http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
+
+	// page qui doit etre securiser (login obligatoire)
+	// http.Handle("/exemple", auth.RequireAuth(http.HandlerFunc(exempleHandler)))
 }
