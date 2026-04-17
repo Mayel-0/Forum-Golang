@@ -5,7 +5,9 @@ import (
 	"net/http"
 	"text/template"
 
+	"lyrics/auth"
 	dbpkg "lyrics/db"
+	handlerspkg "lyrics/handlers"
 	tplpkg "lyrics/template"
 
 	"github.com/joho/godotenv"
@@ -15,20 +17,6 @@ import (
 var err error
 var tpl *template.Template
 var db *gorm.DB
-
-func acceuilHandle(w http.ResponseWriter, r *http.Request) {
-	if err := tpl.ExecuteTemplate(w, "accueil.html", nil); err != nil {
-		http.Error(w, "Erreur lors du rendu de la page d'accueil", http.StatusInternalServerError)
-		log.Printf("Erreur template: %v", err)
-	}
-}
-
-func forumIndexHandle(w http.ResponseWriter, r *http.Request) {
-	if err := tpl.ExecuteTemplate(w, "index.html", nil); err != nil {
-		http.Error(w, "Erreur lors du rendu de la page du forum", http.StatusInternalServerError)
-		log.Printf("Erreur template: %v", err)
-	}
-}
 
 func main() {
 	if err = godotenv.Load("env/.env"); err == nil {
@@ -45,6 +33,7 @@ func main() {
 	if err != nil {
 		log.Fatal("erreur template", err)
 	}
+	handlerspkg.SetTemplates(tpl)
 
 	// css chargement
 
@@ -53,8 +42,9 @@ func main() {
 
 	// router http
 
-	http.HandleFunc("/", acceuilHandle)
-	http.HandleFunc("/forum/index", forumIndexHandle)
+	http.HandleFunc("/", handlerspkg.AcceuilHandle)
+	http.HandleFunc("/forum/index", handlerspkg.ForumIndexHandle)
+	http.Handle("/like", auth.RequireAuth(http.HandlerFunc(handlerspkg.LikeHandler)))
 
 	log.Println("🚀 Serveur démarré sur http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
