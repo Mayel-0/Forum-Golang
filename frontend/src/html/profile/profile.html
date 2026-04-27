@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Profil - Forum</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body>
+    <header>
+        {{ template "navbar" . }}
+    </header>
+
+    <main>
+        <section id="profile-section">
+            <h1>{{ .Username }}</h1>
+            <p><strong>Bio:</strong> {{ .Bio }}</p>
+
+            <div>
+                <h2>Informations</h2>
+                <p><strong>Email:</strong> {{ .Email }}</p>
+                <p><strong>Ville:</strong> {{ .City }}</p>
+                <p><strong>Membre depuis:</strong> {{ .JoinedAt }}</p>
+            </div>
+
+            <div>
+                <h2>Centres d'interet</h2>
+                <ul>
+                    {{ range .Interests }}
+                        <li>{{ . }}</li>
+                    {{ else }}
+                        <li>Aucun centre d'interet pour le moment.</li>
+                    {{ end }}
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        {{ template "footer" . }}
+    </footer>
+</body>
+</html>
