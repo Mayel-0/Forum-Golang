@@ -10,6 +10,7 @@ func ParseTemplates() (*template.Template, error) {
 		"../frontend/src/html/accueil.html",
 		"../frontend/src/html/forum/index.html",
 		"../frontend/src/html/partials/navbar.html",
+		"../frontend/src/html/partials/footer.html",
 	)
 	if err != nil {
 		return nil, err
