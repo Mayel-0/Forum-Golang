@@ -45,6 +45,7 @@ func main() {
 	// router http
 
 	http.HandleFunc("/", handlerspkg.AcceuilHandle)
+	http.Handle("/profile", auth.RequireAuth(http.HandlerFunc(handlerspkg.ProfileHandle)))
 	http.HandleFunc("/forum/index", handlerspkg.ForumIndexHandle)
 	http.Handle("/like", auth.RequireAuth(http.HandlerFunc(handlerspkg.LikeHandler)))
 	http.HandleFunc("/auth/login", handlerspkg.LoginHandle)

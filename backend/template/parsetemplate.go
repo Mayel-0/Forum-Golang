@@ -8,6 +8,7 @@ var err error
 func ParseTemplates() (*template.Template, error) {
 	tpl, err = template.ParseFiles(
 		"../frontend/src/html/accueil.html",
+		"../frontend/src/html/profile/profile.html",
 		"../frontend/src/html/forum/index.html",
 		"../frontend/src/html/partials/navbar.html",
 		"../frontend/src/html/partials/footer.html",
