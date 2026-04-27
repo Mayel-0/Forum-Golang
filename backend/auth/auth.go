@@ -71,7 +71,7 @@ func rejectUnauthorized(w http.ResponseWriter, r *http.Request) {
 
 	accept := r.Header.Get("Accept")
 	if r.Method == http.MethodGet && strings.Contains(accept, "text/html") {
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		http.Redirect(w, r, "/auth/login", http.StatusSeeOther)
 		return
 	}
 

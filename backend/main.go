@@ -45,6 +45,8 @@ func main() {
 	http.HandleFunc("/", handlerspkg.AcceuilHandle)
 	http.HandleFunc("/forum/index", handlerspkg.ForumIndexHandle)
 	http.Handle("/like", auth.RequireAuth(http.HandlerFunc(handlerspkg.LikeHandler)))
+	http.HandleFunc("/auth/login", handlerspkg.LoginHandle)
+	http.HandleFunc("/auth/register", handlerspkg.RegisterHandle)
 
 	log.Println("🚀 Serveur démarré sur http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
