@@ -12,18 +12,18 @@
 <section id="register-section">
     <h1>Créer votre compte</h1>
 
-    <form action="#" method="POST" autocomplete="on">
+    <form action="/auth/register" method="POST" autocomplete="on">
         <label>
-            <input type="text" name="username" placeholder="Nom d'utilisateur">
+            <input type="text" name="username" placeholder="Nom d'utilisateur" required>
         </label>
         <label>
-            <input type="email" name="email" placeholder="Email">
+            <input type="email" name="email" placeholder="Email" required>
         </label>
         <label>
-            <input type="password" name="password" placeholder="Mot de passe">
+            <input type="password" name="password" placeholder="Mot de passe" required>
         </label>
         <label>
-            <input type="password" name="confirm_password" placeholder="Confirmer le mot de passe">
+            <input type="password" name="confirm_password" placeholder="Confirmer le mot de passe" required>
         </label>
 
         <button type="submit">S'inscrire</button>
