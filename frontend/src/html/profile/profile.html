@@ -13,25 +13,13 @@
 
     <main>
         <section id="profile-section">
-            <h1>{{ .Username }}</h1>
-            <p><strong>Bio:</strong> {{ .Bio }}</p>
+            <h1>{{ .User.Username }}</h1>
+            <p><strong>Bio:</strong> {{ .User.Bio }}</p>
 
             <div>
                 <h2>Informations</h2>
-                <p><strong>Email:</strong> {{ .Email }}</p>
-                <p><strong>Ville:</strong> {{ .City }}</p>
-                <p><strong>Membre depuis:</strong> {{ .JoinedAt }}</p>
-            </div>
-
-            <div>
-                <h2>Centres d'interet</h2>
-                <ul>
-                    {{ range .Interests }}
-                        <li>{{ . }}</li>
-                    {{ else }}
-                        <li>Aucun centre d'interet pour le moment.</li>
-                    {{ end }}
-                </ul>
+                <p><strong>Email:</strong> {{ .User.Email }}</p>
+                <p><strong>Membre depuis:</strong> {{ .User.CreatedAt }}</p>
             </div>
         </section>
     </main>
