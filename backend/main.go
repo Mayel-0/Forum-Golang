@@ -48,12 +48,15 @@ func main() {
 	// router http
 
 	http.HandleFunc("/", handlerspkg.AcceuilHandle)
-	http.Handle("/profile", auth.RequireAuth(http.HandlerFunc(handlerspkg.ProfileHandle)))
+
 	http.HandleFunc("/forum/index", handlerspkg.ForumIndexHandle)
-	http.Handle("/like", auth.RequireAuth(http.HandlerFunc(handlerspkg.LikeHandler)))
 	http.HandleFunc("/auth/login", handlerspkg.LoginHandle)
 	http.HandleFunc("/auth/register", handlerspkg.RegisterHandle)
 	http.HandleFunc("/auth/logout", handlerspkg.LogoutHandle)
+
+	http.Handle("/profile", auth.RequireAuth(http.HandlerFunc(handlerspkg.ProfileHandle)))
+	http.Handle("/like/add", auth.RequireAuth(http.HandlerFunc(handlerspkg.LikeHandlerAdd)))
+	http.Handle("/like/rm", auth.RequireAuth(http.HandlerFunc(handlerspkg.LikeHandlerRm)))
 
 	log.Println("🚀 Serveur démarré sur http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
