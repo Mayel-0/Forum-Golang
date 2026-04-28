@@ -21,6 +21,24 @@
                 <p><strong>Email:</strong> {{ .User.Email }}</p>
                 <p><strong>Membre depuis:</strong> {{ .User.CreatedAt }}</p>
             </div>
+
+            <div>
+                <form action="/profile/update" method="POST">
+                    <label for="bio">Bio:</label>
+
+                    <label>
+                        <input type="email" name="email" placeholder="Email" required value="{{ .Email }}">
+                    </label>
+
+                    <label>
+                        <input type="name" name="username" placeholder="Nom d'utilisateur" required>
+                    </label> {{ .Username }} </input>
+
+                    <textarea id="bio" name="bio" rows="4" required>{{ .Bio }}</textarea>
+
+                    <input type="submit" value="Modifier">
+                </form>
+            </div>
         </section>
     </main>
 
