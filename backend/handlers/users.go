@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"log"
+	"lyrics/auth"
+	"lyrics/models"
 	"net/http"
 	"text/template"
 )
@@ -42,7 +44,23 @@ func ProfileHandle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := tpl.ExecuteTemplate(w, "profile.html", nil); err != nil {
+	UserID, ok := auth.GetUserID(r)
+	if !ok {
+		http.Error(w, "Utilisateur non authentifié", http.StatusUnauthorized)
+		return
+	}
+	User, err := auth.GetUserByID(UserID)
+	if err != nil {
+		http.Error(w, "Erreur lors de la récupération de l'utilisateur", http.StatusInternalServerError)
+		log.Printf("Erreur récupération utilisateur: %v", err)
+		return
+	}
+
+	data := models.Data{
+		User: User,
+	}
+
+	if err := tpl.ExecuteTemplate(w, "profile.html", data); err != nil {
 		http.Error(w, "Erreur lors du rendu de la page de profil", http.StatusInternalServerError)
 		log.Printf("Erreur template: %v", err)
 	}

@@ -6,6 +6,12 @@ import (
 	"github.com/google/uuid"
 )
 
+type Data struct {
+	User            User
+	messagesError   string
+	messagesSuccess string
+}
+
 type Session struct {
 	Userid string
 	Expiry time.Time

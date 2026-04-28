@@ -2,16 +2,23 @@ package auth
 
 import (
 	"context"
+	"errors"
 	"log"
+	"lyrics/models"
 	"net/http"
 	"strings"
+
+	dbpkg "lyrics/db"
 
 	"github.com/gorilla/sessions"
 )
 
 type contextKey string
 
-const userIDContextKey contextKey = "auth.user_id"
+const (
+	sessionName                 = "auth-session"
+	userIDContextKey contextKey = "auth.user_id"
+)
 
 var Store *sessions.CookieStore
 
@@ -20,7 +27,11 @@ func SetStore(s *sessions.CookieStore) {
 }
 
 func SetSession(w http.ResponseWriter, r *http.Request, userID string) error {
-	session, err := Store.Get(r, "session-name")
+	if Store == nil {
+		return errors.New("session store not initialized")
+	}
+
+	session, err := Store.Get(r, sessionName)
 	if err != nil {
 		return err
 	}
@@ -34,14 +45,43 @@ func SetSession(w http.ResponseWriter, r *http.Request, userID string) error {
 	return session.Save(r, w)
 }
 
+func ClearSession(w http.ResponseWriter, r *http.Request) error {
+	if Store == nil {
+		return errors.New("session store not initialized")
+	}
+
+	session, err := Store.Get(r, sessionName)
+	if err != nil {
+		return err
+	}
+
+	session.Options.MaxAge = -1
+	return session.Save(r, w)
+}
+
 func GetUserID(r *http.Request) (string, bool) {
 	userID, ok := r.Context().Value(userIDContextKey).(string)
 	return userID, ok
 }
 
+func GetUserByID(userID string) (models.User, error) {
+	var user models.User
+	err := dbpkg.Db.Where("id = ?", userID).First(&user).Error
+	if err != nil {
+		return models.User{}, err
+	}
+	return user, nil
+}
+
 func RequireAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		session, err := Store.Get(r, "session-name")
+		if Store == nil {
+			log.Print("session store not initialized")
+			rejectUnauthorized(w, r)
+			return
+		}
+
+		session, err := Store.Get(r, sessionName)
 		if err != nil {
 			log.Printf("Erreur session: %v", err)
 			rejectUnauthorized(w, r)
