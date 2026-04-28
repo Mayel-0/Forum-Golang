@@ -5,12 +5,10 @@ import (
 	"encoding/base64"
 	"errors"
 	"log"
-	"time"
+	"net/http"
 
 	authpkg "lyrics/auth"
 	"lyrics/models"
-	"net/http"
-
 	repositoriespkg "lyrics/repositories"
 
 	"golang.org/x/crypto/bcrypt"
@@ -53,28 +51,12 @@ func LoginHandle(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		token, err := generateSessionToken()
-		if err != nil {
+		// Utiliser setSession de main.go
+		if err := authpkg.SetSession(w, r, user.ID.String()); err != nil {
 			http.Error(w, "erreur serveur", http.StatusInternalServerError)
-			log.Printf("generate token error: %v", err)
+			log.Printf("set session error: %v", err)
 			return
 		}
-
-		expiresAt := time.Now().Add(24 * time.Hour)
-		authpkg.StoreSession(token, models.Session{
-			Userid: user.ID.String(),
-			Expiry: expiresAt,
-		})
-
-		http.SetCookie(w, &http.Cookie{
-			Name:     "session_token",
-			Value:    token,
-			Path:     "/",
-			Expires:  expiresAt,
-			HttpOnly: true,
-			Secure:   r.TLS != nil,
-			SameSite: http.SameSiteLaxMode,
-		})
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 
