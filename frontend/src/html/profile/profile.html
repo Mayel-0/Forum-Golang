@@ -23,18 +23,18 @@
             </div>
 
             <div>
-                <form action="/profile/update" method="POST">
+                <form action="/profile/modify" method="POST">
                     <label for="bio">Bio:</label>
 
                     <label>
-                        <input type="email" name="email" placeholder="Email" required value="{{ .Email }}">
+                        <input type="email" name="email" placeholder="Email" required value="{{ .User.Email }}">
                     </label>
 
                     <label>
-                        <input type="name" name="username" placeholder="Nom d'utilisateur" required>
-                    </label> {{ .Username }} </input>
+                        <input type="text" name="username" placeholder="Nom d'utilisateur" required value="{{ .User.Username }}">
+                    </label>
 
-                    <textarea id="bio" name="bio" rows="4" required>{{ .Bio }}</textarea>
+                    <textarea type="text" id="bio" name="bio" rows="4" required>{{ .User.Bio }}</textarea>
 
                     <input type="submit" value="Modifier">
                 </form>
