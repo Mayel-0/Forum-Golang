@@ -119,3 +119,8 @@ func RegisterHandle(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "méthode non autorisée", http.StatusMethodNotAllowed)
 	}
 }
+
+func LogoutHandle(w http.ResponseWriter, r *http.Request) {
+	authpkg.DropSession(w, r)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}

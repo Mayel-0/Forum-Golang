@@ -45,6 +45,20 @@ func SetSession(w http.ResponseWriter, r *http.Request, userID string) error {
 	return session.Save(r, w)
 }
 
+func DropSession(w http.ResponseWriter, r *http.Request) error {
+	if Store == nil {
+		return errors.New("session store not initialized")
+	}
+
+	session, err := Store.Get(r, sessionName)
+	if err != nil {
+		return err
+	}
+
+	session.Options.MaxAge = -1
+	return session.Save(r, w)
+}
+
 func ClearSession(w http.ResponseWriter, r *http.Request) error {
 	if Store == nil {
 		return errors.New("session store not initialized")
