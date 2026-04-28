@@ -1,14 +1,20 @@
 {{ define "navbar" }}
 <nav>
-    <div class="navbar">
-            <img src="../../assets/img/logo.png" alt="logo-site" />
+    <div class="temp">
+        <div class="navbar">
+                <img src="../../assets/img/logo.png" alt="logo-site" />
+                <ul>
+                    <li class="links"><a href="/profile">Profil</a></li>
+                    <li class="links"><a href="/auth/login">Connexion</a></li>
+                    <li class="links"><a href="/auth/register">Inscription</a></li>
+                </ul>
+        </div>
+        <div class="navbar">
             <ul>
-                <li class="links"><a href="/profile">Profil</a></li>
-                <li class="links"><a href="/">Accueil</a></li>
-                <li class="links"><a href="/forum/index">Forum</a></li>
-                <li class="links"><a href="/auth/login">Connexion</a></li>
-                <li class="links"><a href="/auth/register">Inscription</a></li>
-            </ul>
+                    <li class="links"><a href="/">Accueil</a></li>
+                    <li class="links"><a href="/forum/index">Forum</a></li>
+                </ul>
+        </div>
     </div>
 </nav>
 {{ end }}
