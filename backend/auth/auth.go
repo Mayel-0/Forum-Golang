@@ -5,31 +5,33 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"sync"
-	"time"
 
-	models "lyrics/models"
+	"github.com/gorilla/sessions"
 )
 
 type contextKey string
 
 const userIDContextKey contextKey = "auth.user_id"
 
-var (
-	sessionsMu sync.RWMutex
-	sessions   = map[string]models.Session{}
-)
+var Store *sessions.CookieStore
 
-func StoreSession(token string, session models.Session) {
-	sessionsMu.Lock()
-	defer sessionsMu.Unlock()
-	sessions[token] = session
+func SetStore(s *sessions.CookieStore) {
+	Store = s
 }
 
-func DeleteSession(token string) {
-	sessionsMu.Lock()
-	defer sessionsMu.Unlock()
-	delete(sessions, token)
+func SetSession(w http.ResponseWriter, r *http.Request, userID string) error {
+	session, err := Store.Get(r, "session-name")
+	if err != nil {
+		return err
+	}
+
+	session.Values["user_id"] = userID
+	session.Options.MaxAge = 86400 * 7 // 7 jours
+	session.Options.HttpOnly = true
+	session.Options.Secure = r.TLS != nil || r.Header.Get("X-Forwarded-Proto") == "https"
+	session.Options.SameSite = http.SameSiteLaxMode
+
+	return session.Save(r, w)
 }
 
 func GetUserID(r *http.Request) (string, bool) {
@@ -39,29 +41,25 @@ func GetUserID(r *http.Request) (string, bool) {
 
 func RequireAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		cookie, err := r.Cookie("session_token")
-		if err != nil || cookie.Value == "" {
+		session, err := Store.Get(r, "session-name")
+		if err != nil {
+			log.Printf("Erreur session: %v", err)
 			rejectUnauthorized(w, r)
 			return
 		}
 
-		sessionsMu.RLock()
-		session, ok := sessions[cookie.Value]
-		sessionsMu.RUnlock()
-		if !ok {
-			clearSessionCookie(w)
+		if session.IsNew {
 			rejectUnauthorized(w, r)
 			return
 		}
 
-		if session.Userid == "" || time.Now().After(session.Expiry) {
-			DeleteSession(cookie.Value)
-			clearSessionCookie(w)
+		userID, ok := session.Values["user_id"].(string)
+		if !ok || userID == "" {
 			rejectUnauthorized(w, r)
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), userIDContextKey, session.Userid)
+		ctx := context.WithValue(r.Context(), userIDContextKey, userID)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
@@ -76,22 +74,4 @@ func rejectUnauthorized(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Error(w, "unauthorized", http.StatusUnauthorized)
-}
-
-func clearSessionCookie(w http.ResponseWriter) {
-	http.SetCookie(w, &http.Cookie{
-		Name:     "session_token",
-		Value:    "",
-		Path:     "/",
-		MaxAge:   -1,
-		HttpOnly: true,
-		Secure:   true,
-		SameSite: http.SameSiteLaxMode,
-	})
-}
-
-func requireAuth(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		RequireAuth(next).ServeHTTP(w, r)
-	}
 }

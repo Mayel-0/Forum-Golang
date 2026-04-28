@@ -10,6 +10,7 @@ import (
 	handlerspkg "lyrics/handlers"
 	tplpkg "lyrics/template"
 
+	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
 	"gorm.io/gorm"
 )
@@ -17,8 +18,10 @@ import (
 var err error
 var tpl *template.Template
 var db *gorm.DB
+var store = sessions.NewCookieStore([]byte("votre-cle-secrete-tres-longue-et-aleatoire-32-octets-minimum"))
 
 func main() {
+	auth.SetStore(store)
 	if err = godotenv.Load("env/.env"); err == nil {
 		log.Println("✅ Variables d'environnement chargées depuis env/.env")
 	} else {
