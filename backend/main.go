@@ -58,6 +58,10 @@ func main() {
 	http.Handle("/like/add", auth.RequireAuth(http.HandlerFunc(handlerspkg.LikeHandlerAdd)))
 	http.Handle("/like/rm", auth.RequireAuth(http.HandlerFunc(handlerspkg.LikeHandlerRm)))
 
+	http.Handle("/poste/create", auth.RequireAuth(http.HandlerFunc(handlerspkg.PosteCreateHandler)))
+	http.Handle("/poste/modifier", auth.RequireAuth(http.HandlerFunc(handlerspkg.PosteModifierHandle)))
+	http.Handle("/poste/supprimer", auth.RequireAuth(http.HandlerFunc(handlerspkg.PosteDeleteHandler)))
+
 	log.Println("🚀 Serveur démarré sur http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 

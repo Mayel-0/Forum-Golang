@@ -64,3 +64,14 @@ func FindUserByEmail(email string) (*models.User, error) {
 
 	return &user, nil
 }
+
+func ModifyUser(user *models.User) error {
+	if dbpkg.Db == nil {
+		return errors.New("db not initialized")
+	}
+	if user == nil {
+		return errors.New("user is nil")
+	}
+
+	return dbpkg.Db.Save(user).Error
+}
