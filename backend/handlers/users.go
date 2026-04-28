@@ -4,11 +4,13 @@ import (
 	"log"
 	"lyrics/auth"
 	"lyrics/models"
+	repositoriespkg "lyrics/repositories"
 	"net/http"
 	"text/template"
 )
 
 var tpl *template.Template
+var err error
 
 func SetTemplates(t *template.Template) {
 	tpl = t
@@ -55,13 +57,37 @@ func ProfileHandle(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Erreur récupération utilisateur: %v", err)
 		return
 	}
+	switch r.Method {
+	case http.MethodGet:
+		data := models.Data{
+			User: User,
+		}
 
-	data := models.Data{
-		User: User,
-	}
+		if err := tpl.ExecuteTemplate(w, "profile.html", data); err != nil {
+			http.Error(w, "Erreur lors du rendu de la page de profil", http.StatusInternalServerError)
+			log.Printf("Erreur template: %v", err)
+		}
+	case http.MethodPost:
+		Bio := r.FormValue("bio")
+		Email := r.FormValue("email")
+		Name := r.FormValue("username")
 
-	if err := tpl.ExecuteTemplate(w, "profile.html", data); err != nil {
-		http.Error(w, "Erreur lors du rendu de la page de profil", http.StatusInternalServerError)
-		log.Printf("Erreur template: %v", err)
+		bioPtr := &Bio
+		updatedUser := &models.User{
+			ID:       User.ID,
+			Username: Name,
+			Email:    Email,
+			Bio:      bioPtr,
+		}
+
+		if err = repositoriespkg.ModifyUser(updatedUser); err != nil {
+			http.Error(w, "Erreur lors de la modification de l'utilisateur", http.StatusInternalServerError)
+			log.Printf("Erreur modification utilisateur: %v", err)
+			return
+		}
+
+		http.Redirect(w, r, "/profile", http.StatusSeeOther)
+	default:
+		http.Error(w, "méthode non autorisée", http.StatusMethodNotAllowed)
 	}
 }

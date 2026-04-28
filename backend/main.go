@@ -55,6 +55,7 @@ func main() {
 	http.HandleFunc("/auth/logout", handlerspkg.LogoutHandle)
 
 	http.Handle("/profile", auth.RequireAuth(http.HandlerFunc(handlerspkg.ProfileHandle)))
+	http.Handle("/profile/modify", auth.RequireAuth(http.HandlerFunc(handlerspkg.ProfileHandle)))
 	http.Handle("/like/add", auth.RequireAuth(http.HandlerFunc(handlerspkg.LikeHandlerAdd)))
 	http.Handle("/like/rm", auth.RequireAuth(http.HandlerFunc(handlerspkg.LikeHandlerRm)))
 

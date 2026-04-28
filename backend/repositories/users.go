@@ -73,5 +73,11 @@ func ModifyUser(user *models.User) error {
 		return errors.New("user is nil")
 	}
 
-	return dbpkg.Db.Save(user).Error
+	return dbpkg.Db.Model(&models.User{}).
+		Where("id = ?", user.ID).
+		Updates(map[string]interface{}{
+			"username": user.Username,
+			"email":    user.Email,
+			"bio":      user.Bio,
+		}).Error
 }
