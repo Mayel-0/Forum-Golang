@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"crypto/rand"
-	"encoding/base64"
 	"errors"
 	"log"
 	"net/http"
@@ -63,14 +61,6 @@ func LoginHandle(w http.ResponseWriter, r *http.Request) {
 	default:
 		http.Error(w, "méthode non autorisée", http.StatusMethodNotAllowed)
 	}
-}
-
-func generateSessionToken() (string, error) {
-	b := make([]byte, 32)
-	if _, err := rand.Read(b); err != nil {
-		return "", err
-	}
-	return base64.RawURLEncoding.EncodeToString(b), nil
 }
 
 func RegisterHandle(w http.ResponseWriter, r *http.Request) {
