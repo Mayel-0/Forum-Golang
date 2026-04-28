@@ -10,7 +10,6 @@ import (
 )
 
 var tpl *template.Template
-var err error
 
 func SetTemplates(t *template.Template) {
 	tpl = t
