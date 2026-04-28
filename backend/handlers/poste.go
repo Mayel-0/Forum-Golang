@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"lyrics/auth"
 	"net/http"
 )
@@ -13,6 +14,7 @@ func PosteCreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	switch r.Method {
 	case http.MethodPost:
+		log.Println(UserID)
 	default:
 		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
 	}
@@ -26,6 +28,7 @@ func PosteDeleteHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	switch r.Method {
 	case http.MethodPost:
+		log.Println(UserID)
 	default:
 		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
 	}
@@ -39,6 +42,7 @@ func PosteModifierHandle(w http.ResponseWriter, r *http.Request) {
 	}
 	switch r.Method {
 	case http.MethodPost:
+		log.Println(UserID)
 	default:
 		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
 	}
