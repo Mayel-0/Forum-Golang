@@ -7,6 +7,8 @@ import (
 
 	dbpkg "lyrics/db"
 	"lyrics/models"
+
+	"github.com/google/uuid"
 )
 
 func slugify(s string) string {
@@ -74,4 +76,30 @@ func UpdatePostSlugFromTitle(Slug string, newTitle string) (string, error) {
 	newSlug := prefix + slugify(newTitle)
 
 	return newSlug, nil
+}
+
+func GetCategoryIDByName(categoryName string) (uuid.UUID, error) {
+	if dbpkg.Db == nil {
+		return uuid.Nil, errors.New("db not initialized")
+	}
+
+	var category models.Category
+	if err := dbpkg.Db.Where("name = ?", categoryName).First(&category).Error; err != nil {
+		return uuid.Nil, err
+	}
+
+	return category.ID, nil
+}
+
+func GetAllPostsByCategory(categoryID uuid.UUID) ([]models.Post, error) {
+	if dbpkg.Db == nil {
+		return nil, errors.New("db not initialized")
+	}
+
+	var posts []models.Post
+	if err := dbpkg.Db.Where("category_id = ?", categoryID).Order("name ASC").Find(&posts).Error; err != nil {
+		return nil, err
+	}
+
+	return posts, nil
 }

@@ -6,10 +6,19 @@ import (
 	"github.com/google/uuid"
 )
 
+type PostSubCategory string
+
+const (
+	SubCategoryConcerts   PostSubCategory = "concerts"
+	SubCategoryArtistes   PostSubCategory = "artistes"
+	SubCategoryNouveautes PostSubCategory = "nouveautes"
+)
+
 type Data struct {
 	User            User
 	Post            Post
 	Categories      []Category
+	Posts           []Post
 	messagesError   string
 	messagesSuccess string
 }
@@ -81,16 +90,17 @@ type Category struct {
 }
 
 type Post struct {
-	ID         uuid.UUID  `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
-	AuthorID   uuid.UUID  `gorm:"type:uuid;not null"`
-	CategoryID *uuid.UUID `gorm:"type:uuid"`
-	Title      string     `gorm:"type:varchar(300);not null"`
-	Body       string     `gorm:"type:text;not null"`
-	Slug       string     `gorm:"type:varchar(350);uniqueIndex;not null"`
-	IsPinned   bool       `gorm:"type:boolean;not null;default:false"`
-	IsLocked   bool       `gorm:"type:boolean;not null;default:false"`
-	ViewsCount int        `gorm:"type:integer;not null;default:0"`
-	CreatedAt  time.Time  `gorm:"type:timestamptz;not null;default:now()"`
-	UpdatedAt  time.Time  `gorm:"type:timestamptz;not null;default:now()"`
-	DeletedAt  *time.Time `gorm:"type:timestamptz"`
+	ID          uuid.UUID       `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
+	AuthorID    uuid.UUID       `gorm:"type:uuid;not null"`
+	CategoryID  *uuid.UUID      `gorm:"type:uuid"`
+	SubCategory PostSubCategory `gorm:"type:post_sub_category;not null"`
+	Title       string          `gorm:"type:varchar(300);not null"`
+	Body        string          `gorm:"type:text;not null"`
+	Slug        string          `gorm:"type:varchar(350);uniqueIndex;not null"`
+	IsPinned    bool            `gorm:"type:boolean;not null;default:false"`
+	IsLocked    bool            `gorm:"type:boolean;not null;default:false"`
+	ViewsCount  int             `gorm:"type:integer;not null;default:0"`
+	CreatedAt   time.Time       `gorm:"type:timestamptz;not null;default:now()"`
+	UpdatedAt   time.Time       `gorm:"type:timestamptz;not null;default:now()"`
+	DeletedAt   *time.Time      `gorm:"type:timestamptz"`
 }

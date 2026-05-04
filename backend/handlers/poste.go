@@ -52,10 +52,11 @@ func PosteCreateHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		Post := models.Post{
-			AuthorID: userIDParsed,
-			Title:    r.FormValue("title"),
-			Body:     r.FormValue("body"),
-			Slug:     r.FormValue("category") + r.FormValue("subcategory") + "/" + slugify(r.FormValue("title")),
+			AuthorID:    userIDParsed,
+			Title:       r.FormValue("title"),
+			Body:        r.FormValue("body"),
+			Slug:        r.FormValue("category") + r.FormValue("subcategory") + "/" + slugify(r.FormValue("title")),
+			SubCategory: models.PostSubCategory(r.FormValue("subcategory")),
 		}
 
 		if err := db.Db.Create(&Post).Error; err != nil {
@@ -126,6 +127,19 @@ func PosteModifierHandle(w http.ResponseWriter, r *http.Request) {
 		}
 
 		http.Redirect(w, r, Post.Slug, http.StatusSeeOther)
+	default:
+		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
+	}
+}
+
+func PostHandle(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		data := models.Data{
+			Posts: repo.GetAllPostsByCategory(),
+		}
+		render(w, "post.html", data)
+	case http.MethodPost:
 	default:
 		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
 	}

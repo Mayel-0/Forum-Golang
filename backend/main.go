@@ -53,6 +53,7 @@ func main() {
 	http.HandleFunc("/auth/login", handlerspkg.LoginHandle)
 	http.HandleFunc("/auth/register", handlerspkg.RegisterHandle)
 	http.HandleFunc("/auth/logout", handlerspkg.LogoutHandle)
+	http.HandleFunc("/post", handlerspkg.PostHandle)
 
 	http.Handle("/profile", auth.RequireAuth(http.HandlerFunc(handlerspkg.ProfileHandle)))
 	http.Handle("/profile/modify", auth.RequireAuth(http.HandlerFunc(handlerspkg.ProfileHandle)))
