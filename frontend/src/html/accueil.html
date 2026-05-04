@@ -1,29 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lyrics</title>
-  <link rel="stylesheet" href="../css/styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll/bundled/locomotive-scroll.min.js"></script>
-</head>
-<body>
-  <header>
-    {{ template "navbar" . }}
-  </header>
-  <section id="hero-section">
+{{ define "pageTitle" }}Accueil{{ end }}
+
+{{ define "pageContent" }}
+<section id="hero-section">
     <h1>Lyrics.</h1>
     <h2>Partagez vos meilleurs écoutes sur le forum</h2>
-  </section>
+</section>
 
-  <section id="features-section">
+<section id="features-section">
 
-  </section>
+</section>
 
-</body>
-
-{{ template "footer" . }}
+<script src="https://cdn.jsdelivr.net/npm/locomotive-scroll/bundled/locomotive-scroll.min.js"></script>
 <script>
-  const locomotiveScroll = new LocomotiveScroll();
+    const locomotiveScroll = new LocomotiveScroll();
 </script>
-</html>
+{{ end }}

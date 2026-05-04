@@ -16,7 +16,7 @@ import (
 )
 
 var err error
-var tpl *template.Template
+var tpl map[string]*template.Template
 var db *gorm.DB
 var store = sessions.NewCookieStore([]byte("votre-cle-secrete-tres-longue-et-aleatoire-32-octets-minimum"))
 

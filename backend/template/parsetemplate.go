@@ -2,23 +2,38 @@ package template
 
 import "text/template"
 
-var tpl *template.Template
-var err error
+const base = "../frontend/src/html/"
 
-func ParseTemplates() (*template.Template, error) {
-	tpl, err = template.ParseFiles(
-		"../frontend/src/html/accueil.html",
-		"../frontend/src/html/profile/profile.html",
-		"../frontend/src/html/forum/index.html",
-		"../frontend/src/html/partials/navbar.html",
-		"../frontend/src/html/partials/footer.html",
-		"../frontend/src/html/auth/login.html",
-		"../frontend/src/html/auth/register.html",
-		"../frontend/src/html/forum/post/post-create.html",
-		"../frontend/src/html/forum/post/post-edit.html",
-	)
-	if err != nil {
-		return nil, err
+var partials = []string{
+	base + "partials/template.html",
+	base + "partials/navbar.html",
+	base + "partials/footer.html",
+}
+
+func parsePage(pagePath string) (*template.Template, error) {
+	files := append([]string{pagePath}, partials...)
+	return template.ParseFiles(files...)
+}
+
+func ParseTemplates() (map[string]*template.Template, error) {
+	pages := map[string]string{
+		"accueil.html":     base + "accueil.html",
+		"index.html":       base + "forum/index.html",
+		"post.html":        base + "forum/post.html",
+		"post-create.html": base + "forum/post/post-create.html",
+		"post-edit.html":   base + "forum/post/post-edit.html",
+		"login.html":       base + "auth/login.html",
+		"register.html":    base + "auth/register.html",
+		"profile.html":     base + "profile/profile.html",
 	}
-	return tpl, nil
+
+	templates := make(map[string]*template.Template)
+	for name, path := range pages {
+		t, err := parsePage(path)
+		if err != nil {
+			return nil, err
+		}
+		templates[name] = t
+	}
+	return templates, nil
 }

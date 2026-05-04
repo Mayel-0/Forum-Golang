@@ -18,15 +18,7 @@ func PosteCreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	switch r.Method {
 	case http.MethodGet:
-		if tpl == nil {
-			http.Error(w, "templates non initialisés", http.StatusInternalServerError)
-			return
-		}
-
-		if err := tpl.ExecuteTemplate(w, "post-create.html", nil); err != nil {
-			http.Error(w, "Erreur lors du rendu de la page de création de post", http.StatusInternalServerError)
-			log.Printf("Erreur template: %v", err)
-		}
+		render(w, "post-create.html", nil)
 	case http.MethodPost:
 		userIDParsed, err := uuid.Parse(UserID)
 		if err != nil {
