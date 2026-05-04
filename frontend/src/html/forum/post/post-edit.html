@@ -6,10 +6,16 @@
 
     <form action="/post/modifier" method="POST" autocomplete="on">
         <label>
-            <input type="text" name="title" placeholder="Titre" required>
+            <input type="text" name="title" placeholder="{{.Post.Title}}" required>
         </label>
         <label>
-            <textarea name="body" placeholder="Contenu" required></textarea>
+            <textarea type="text" name="body" placeholder="{{.Post.Body}}" required></textarea>
+        </label>
+        <label>
+            <input type="hidden" name="slug" value="{{.Post.Slug}}" required>
+        </label>
+        <label>
+            <input type="hidden" name="postID" value="{{.Post.ID}}" required>
         </label>
         <button type="submit">Enregistrer</button>
     </form>
