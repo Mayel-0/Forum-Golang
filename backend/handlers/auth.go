@@ -15,15 +15,7 @@ import (
 func LoginHandle(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		if tpl == nil {
-			http.Error(w, "templates non initialisés", http.StatusInternalServerError)
-			return
-		}
-
-		if err := tpl.ExecuteTemplate(w, "login.html", nil); err != nil {
-			http.Error(w, "Erreur lors du rendu de la page de connexion", http.StatusInternalServerError)
-			log.Printf("Erreur template: %v", err)
-		}
+		render(w, "login.html", nil)
 	case http.MethodPost:
 		email := r.FormValue("email")
 		password := r.FormValue("password")
@@ -49,7 +41,6 @@ func LoginHandle(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Utiliser setSession de main.go
 		if err := authpkg.SetSession(w, r, user.ID.String()); err != nil {
 			http.Error(w, "erreur serveur", http.StatusInternalServerError)
 			log.Printf("set session error: %v", err)
@@ -66,15 +57,7 @@ func LoginHandle(w http.ResponseWriter, r *http.Request) {
 func RegisterHandle(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		if tpl == nil {
-			http.Error(w, "templates non initialisés", http.StatusInternalServerError)
-			return
-		}
-
-		if err := tpl.ExecuteTemplate(w, "register.html", nil); err != nil {
-			http.Error(w, "Erreur lors du rendu de la page d'inscription", http.StatusInternalServerError)
-			log.Printf("Erreur template: %v", err)
-		}
+		render(w, "register.html", nil)
 	case http.MethodPost:
 		user := models.User{
 			Username: r.FormValue("username"),

@@ -2,9 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+
+    <title>{{ template "pageTitle" . }} | LyricsForum</title>
+
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <link rel="stylesheet" type="text/css" href="/css/forum.css">
 </head>
 <body>
+    <header>
+        {{ template "navbar" . }}
+    </header>
 
+    <main>
+        {{ template "pageContent" . }}
+    </main>
 </body>
+<footer>
+    {{ template "footer" . }}
+</footer>
 </html>

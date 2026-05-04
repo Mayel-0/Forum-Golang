@@ -1,23 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Créer un nouveau post | Lyrics</title>
-</head>
-<body>
-    <section id="create-section">
-        <h1>Créer un nouveau post</h1>
+{{ define "pageTitle" }}Créer un post{{ end }}
 
-        <form action="/post/create" method="POST" autocomplete="on">
-            <label>
-                <input type="text" name="title" placeholder="Titre" required>
-            </label>
-            <label>
-                <textarea type="text" name="body" placeholder="Contenu" required></textarea>
-            </label>
-            <button type="submit">Créer</button>
-        </form>
+{{ define "pageContent" }}
+<section id="create-section">
+    <h1>Créer un nouveau post</h1>
 
-    </section>
-</body>
-</html>
+    <form action="/post/create" method="POST" autocomplete="on">
+        <label>
+            <input type="text" name="title" placeholder="Titre" required>
+        </label>
+        <label>
+            <textarea name="body" placeholder="Contenu" required></textarea>
+        </label>
+        <button type="submit">Créer</button>
+    </form>
+</section>
+{{ end }}

@@ -1,14 +1,6 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Créer un compte - Forum</title>
-</head>
-<body>
+{{ define "pageTitle" }}Inscription{{ end }}
 
-<header>
-    {{ template "navbar" . }}
-</header>
+{{ define "pageContent" }}
 <section id="register-section">
     <h1>Créer votre compte</h1>
 
@@ -28,11 +20,5 @@
 
         <button type="submit">S'inscrire</button>
     </form>
-
 </section>
-</body>
-
-<footer>
-    {{ template "footer" . }}
-</footer>
-</html>
+{{ end }}

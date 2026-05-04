@@ -1,31 +1,17 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Connectez-vous - Forum</title>
-</head>
-<body>
+{{ define "pageTitle" }}Connexion{{ end }}
 
-    <header>
-        {{ template "navbar" . }}
-    </header>
-    <section id="login-section">
-        <h1>Connectez-vous à votre compte</h1>
+{{ define "pageContent" }}
+<section id="login-section">
+    <h1>Connectez-vous à votre compte</h1>
 
-        <form action="/auth/login" method="POST" autocomplete="on">
-            <label>
-                <input type="email" name="email" placeholder="Adresse email" required>
-            </label>
-            <label>
-                <input type="password" name="password" placeholder="Mot de passe" required>
-            </label>
-            <button type="submit">Se connecter</button>
-        </form>
-
-    </section>
-</body>
-
-<footer>
-    {{ template "footer" . }}
-</footer>
-</html>
+    <form action="/auth/login" method="POST" autocomplete="on">
+        <label>
+            <input type="email" name="email" placeholder="Adresse email" required>
+        </label>
+        <label>
+            <input type="password" name="password" placeholder="Mot de passe" required>
+        </label>
+        <button type="submit">Se connecter</button>
+    </form>
+</section>
+{{ end }}

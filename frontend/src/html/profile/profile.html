@@ -1,51 +1,34 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Profil - Forum</title>
-    <link rel="stylesheet" href="../../css/styles.css">
-</head>
-<body>
-    <header>
-        {{ template "navbar" . }}
-    </header>
+{{ define "pageTitle" }}Mon Profil{{ end }}
 
-    <main>
-        <section id="profile-section">
-            <h1>{{ .User.Username }}</h1>
-            <p><strong>Bio:</strong> {{ .User.Bio }}</p>
+{{ define "pageContent" }}
+<section id="profile-section">
+    <h1>{{ .User.Username }}</h1>
+    <p><strong>Bio:</strong> {{ .User.Bio }}</p>
 
-            <div>
-                <h2>Informations</h2>
-                <p><strong>Email:</strong> {{ .User.Email }}</p>
-                <p><strong>Membre depuis:</strong> {{ .User.CreatedAt }}</p>
-            </div>
+    <div>
+        <h2>Informations</h2>
+        <p><strong>Email:</strong> {{ .User.Email }}</p>
+        <p><strong>Membre depuis:</strong> {{ .User.CreatedAt }}</p>
+    </div>
 
-            <div>
-                <form action="/profile/modify" method="POST">
-                    <label for="bio">Bio:</label>
+    <div>
+        <form action="/profile/modify" method="POST">
+            <label for="bio">Bio:</label>
 
-                    <label>
-                        <input type="email" name="email" placeholder="Email" required value="{{ .User.Email }}">
-                    </label>
+            <label>
+                <input type="email" name="email" placeholder="Email" required value="{{ .User.Email }}">
+            </label>
 
-                    <label>
-                        <input type="text" name="username" placeholder="Nom d'utilisateur" required value="{{ .User.Username }}">
-                    </label>
+            <label>
+                <input type="text" name="username" placeholder="Nom d'utilisateur" required value="{{ .User.Username }}">
+            </label>
 
-                    <textarea type="text" id="bio" name="bio" rows="4" required>{{ .User.Bio }}</textarea>
+            <textarea id="bio" name="bio" rows="4" required>{{ .User.Bio }}</textarea>
 
-                    <input type="submit" value="Modifier">
-                </form>
-            </div>
-        </section>
-    </main>
+            <input type="submit" value="Modifier">
+        </form>
+    </div>
 
     <button onclick="location.href='/auth/logout'">Déconnexion</button>
-
-    <footer>
-        {{ template "footer" . }}
-    </footer>
-</body>
-</html>
+</section>
+{{ end }}
