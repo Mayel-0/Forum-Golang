@@ -3,6 +3,7 @@ package handlers
 import (
 	"log"
 	"lyrics/auth"
+	"lyrics/db"
 	"lyrics/models"
 	"net/http"
 
@@ -16,6 +17,16 @@ func PosteCreateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	switch r.Method {
+	case http.MethodGet:
+		if tpl == nil {
+			http.Error(w, "templates non initialisés", http.StatusInternalServerError)
+			return
+		}
+
+		if err := tpl.ExecuteTemplate(w, "post-create.html", nil); err != nil {
+			http.Error(w, "Erreur lors du rendu de la page de création de post", http.StatusInternalServerError)
+			log.Printf("Erreur template: %v", err)
+		}
 	case http.MethodPost:
 		userIDParsed, err := uuid.Parse(UserID)
 		if err != nil {
@@ -27,6 +38,12 @@ func PosteCreateHandler(w http.ResponseWriter, r *http.Request) {
 			AuthorID: userIDParsed,
 			Title:    r.FormValue("title"),
 			Body:     r.FormValue("body"),
+		}
+
+		if err := db.Db.Create(&Post).Error; err != nil {
+			http.Error(w, "Erreur lors de la création du post", http.StatusInternalServerError)
+			log.Printf("Erreur création post: %v", err)
+			return
 		}
 		log.Printf("Nouveau post: %+v", Post)
 	default:
