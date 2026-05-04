@@ -8,12 +8,12 @@
     <section id="create-section">
         <h1>Créer un nouveau post</h1>
 
-        <form action="/post/category/create" method="POST" autocomplete="on">
+        <form action="/post/create" method="POST" autocomplete="on">
             <label>
                 <input type="text" name="title" placeholder="Titre" required>
             </label>
             <label>
-                <textarea name="content" placeholder="Contenu" required></textarea>
+                <textarea type="text" name="body" placeholder="Contenu" required></textarea>
             </label>
             <button type="submit">Créer</button>
         </form>
