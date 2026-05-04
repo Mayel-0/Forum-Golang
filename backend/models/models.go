@@ -8,6 +8,8 @@ import (
 
 type Data struct {
 	User            User
+	Post            Post
+	Categories      []Category
 	messagesError   string
 	messagesSuccess string
 }

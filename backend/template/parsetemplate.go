@@ -19,7 +19,7 @@ func ParseTemplates() (map[string]*template.Template, error) {
 	pages := map[string]string{
 		"accueil.html":     base + "accueil.html",
 		"index.html":       base + "forum/index.html",
-		"post.html":        base + "forum/post.html",
+		"post.html":        base + "forum/post/post.html",
 		"post-create.html": base + "forum/post/post-create.html",
 		"post-edit.html":   base + "forum/post/post-edit.html",
 		"login.html":       base + "auth/login.html",
