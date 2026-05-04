@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Créer un nouveau post | Lyrics</title>
+</head>
+<body>
+    <section id="create-section">
+        <h1>Créer un nouveau post</h1>
+
+        <form action="/post/category/create" method="POST" autocomplete="on">
+            <label>
+                <input type="text" name="title" placeholder="Titre" required>
+            </label>
+            <label>
+                <textarea name="content" placeholder="Contenu" required></textarea>
+            </label>
+            <button type="submit">Créer</button>
+        </form>
+
+    </section>
+</body>
+</html>
