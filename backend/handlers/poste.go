@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"log"
-	"lyrics/auth"
+	auth "lyrics/auth"
 	"lyrics/db"
 	"lyrics/models"
 	repo "lyrics/repositories"
@@ -77,8 +77,15 @@ func PosteCreateHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		categoryID, err := repo.GetCategoryIDBySlug(r.FormValue("category"))
+		if err != nil {
+			http.Error(w, "Catégorie invalide", http.StatusBadRequest)
+			return
+		}
+
 		Post := models.Post{
 			AuthorID:    userIDParsed,
+			CategoryID:  &categoryID,
 			Title:       r.FormValue("title"),
 			Body:        r.FormValue("body"),
 			Slug:        categorySlug + "/" + subcategoryRaw + "/" + slugify(r.FormValue("title")),
@@ -104,10 +111,39 @@ func PosteDeleteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	switch r.Method {
-	case http.MethodGet:
-		render(w, "post-delete.html", nil)
 	case http.MethodPost:
-		log.Println(UserID)
+		userIDParsed, err := uuid.Parse(UserID)
+		if err != nil {
+			http.Error(w, "ID utilisateur invalide", http.StatusBadRequest)
+			return
+		}
+
+		postID := r.FormValue("postID")
+		postIDParsed, err := uuid.Parse(postID)
+		if err != nil {
+			http.Error(w, "ID post invalide", http.StatusBadRequest)
+			return
+		}
+
+		post, err := repo.GetPostByID(postIDParsed)
+		if err != nil {
+			http.Error(w, "Post introuvable", http.StatusNotFound)
+			log.Printf("Erreur récupération post: %v", err)
+			return
+		}
+
+		if !auth.VerifyUserRequest(userIDParsed, post.AuthorID) {
+			http.Error(w, "Utilisateur non autorisé à modifier ce post", http.StatusForbidden)
+			return
+		}
+
+		if err := repo.DeletePoste(&post); err != nil {
+			http.Error(w, "Erreur lors de la suppression du post", http.StatusInternalServerError)
+			log.Printf("Erreur suppression post: %v", err)
+			return
+		}
+
+		http.Redirect(w, r, "acceuil.html", http.StatusSeeOther)
 	default:
 		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
 	}
@@ -129,30 +165,43 @@ func PosteModifierHandle(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		Post := models.Post{
-			Title:    r.FormValue("title"),
-			Body:     r.FormValue("body"),
-			AuthorID: userIDParsed,
+		postID := r.FormValue("postID")
+		postIDParsed, err := uuid.Parse(postID)
+		if err != nil {
+			http.Error(w, "ID post invalide", http.StatusBadRequest)
+			return
 		}
 
-		lastSulg := r.FormValue("slug")
+		post, err := repo.GetPostByID(postIDParsed)
+		if err != nil {
+			http.Error(w, "Post introuvable", http.StatusNotFound)
+			log.Printf("Erreur récupération post: %v", err)
+			return
+		}
 
-		Newslug, err := repo.UpdatePostSlugFromTitle(lastSulg, Post.Title)
+		if !auth.VerifyUserRequest(userIDParsed, post.AuthorID) {
+			http.Error(w, "Utilisateur non autorisé à modifier ce post", http.StatusForbidden)
+			return
+		}
+
+		post.Title = r.FormValue("title")
+		post.Body = r.FormValue("body")
+
+		newSlug, err := repo.UpdatePostSlugFromTitle(post.Slug, post.Title)
 		if err != nil {
 			http.Error(w, "Erreur lors de la modification", http.StatusInternalServerError)
 			log.Printf("Erreur: %v", err)
 			return
 		}
+		post.Slug = newSlug
 
-		Post.Slug = Newslug
-
-		if err := repo.UpdatePoste(&Post); err != nil {
+		if err := repo.UpdatePoste(&post); err != nil {
 			http.Error(w, "Erreur lors de la modification du post", http.StatusInternalServerError)
 			log.Printf("Erreur modification post: %v", err)
 			return
 		}
 
-		http.Redirect(w, r, Post.Slug, http.StatusSeeOther)
+		http.Redirect(w, r, post.Slug, http.StatusSeeOther)
 	default:
 		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
 	}
@@ -162,7 +211,7 @@ func PostHandle(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		data := models.Data{
-			//Posts: repo.GetAllPostsByCategory(),
+			//Posts: repo.GetAllPostsByCategoryLimit(categoryID),
 		}
 		render(w, "post.html", data)
 	case http.MethodPost:

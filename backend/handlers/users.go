@@ -27,10 +27,6 @@ func render(w http.ResponseWriter, name string, data any) {
 	}
 }
 
-func AcceuilHandle(w http.ResponseWriter, r *http.Request) {
-	render(w, "accueil.html", nil)
-}
-
 func ForumIndexHandle(w http.ResponseWriter, r *http.Request) {
 	render(w, "index.html", nil)
 }

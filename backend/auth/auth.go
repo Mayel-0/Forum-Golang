@@ -10,6 +10,7 @@ import (
 
 	dbpkg "lyrics/db"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
 )
 
@@ -128,4 +129,11 @@ func rejectUnauthorized(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Error(w, "unauthorized", http.StatusUnauthorized)
+}
+
+func VerifyUserRequest(UserId uuid.UUID, AuthordID uuid.UUID) bool {
+	if UserId != AuthordID {
+		return false
+	}
+	return true
 }

@@ -94,7 +94,7 @@ type Post struct {
 	AuthorID    uuid.UUID       `gorm:"type:uuid;not null"`
 	CategoryID  *uuid.UUID      `gorm:"type:uuid"`
 	SubCategory PostSubCategory `gorm:"type:post_sub_category;not null"`
-	Title       string          `gorm:"type:varchar(300);not null"`
+	Title       string          `gorm:"type:varchar(300);uniqueIndex;not null"`
 	Body        string          `gorm:"type:text;not null"`
 	Slug        string          `gorm:"type:varchar(350);uniqueIndex;not null"`
 	IsPinned    bool            `gorm:"type:boolean;not null;default:false"`

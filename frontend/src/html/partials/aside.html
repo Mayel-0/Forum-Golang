@@ -1,0 +1,63 @@
+{{ define "asideForum" }}
+<div class="aside-container">
+    <div class="aside-title">
+        <h3>🏆 Top membres</h3>
+    </div>
+    <div>
+        <button>Likes</button>
+        <button>Réponses</button>
+        <button>Topics</button>
+    </div>
+    <div>
+        <!-- Liste des membres à looper -->
+        <div>
+            <div><span>1</span></div>
+            <div>
+                <div>
+                    <img src="../../assets/img/user.png" alt="user" />
+                </div>
+                <div>
+                    <span>Pseudo</span>
+                    <div>
+                        <span>Likes</span>
+                        <span>Réponses</span>
+                        <span>Topics</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <span>Légende/Expert/Actif/Membre</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="aside-container">
+    <div>
+        <h3>🆕 Nouveaux sujets</h3>
+    </div>
+    <div>
+        <!-- Liste des nouveaux sujets à looper -->
+        <div>
+            <h3>Titre du sujet</h3>
+            <span>Il y a x minutes/heures...</span>
+        </div>
+    </div>
+</div>
+
+<div class="aside-container">
+    <div>
+        <h3>🔥 Discussions populaires</h3>
+    </div>
+    <div>
+        <!-- Liste des discussions populaires à looper -->
+        <div>
+            <h3>Titre du sujet</h3>
+            <div>
+                <span>234 rép.</span>
+                <span>5600 vues</span>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}

@@ -47,9 +47,8 @@ func main() {
 
 	// router http
 
-	http.HandleFunc("/", handlerspkg.AcceuilHandle)
+	http.HandleFunc("/", handlerspkg.ForumIndexHandle)
 
-	http.HandleFunc("/forum/index", handlerspkg.ForumIndexHandle)
 	http.HandleFunc("/auth/login", handlerspkg.LoginHandle)
 	http.HandleFunc("/auth/register", handlerspkg.RegisterHandle)
 	http.HandleFunc("/auth/logout", handlerspkg.LogoutHandle)
@@ -63,6 +62,9 @@ func main() {
 	http.Handle("/post/create", auth.RequireAuth(http.HandlerFunc(handlerspkg.PosteCreateHandler)))
 	http.Handle("/post/modifier", auth.RequireAuth(http.HandlerFunc(handlerspkg.PosteModifierHandle)))
 	http.Handle("/post/supprimer", auth.RequireAuth(http.HandlerFunc(handlerspkg.PosteDeleteHandler)))
+
+	http.Handle("/comment/create", auth.RequireAuth(http.HandlerFunc(handlerspkg.AddCommentHandler)))
+	http.Handle("/comment/delete", auth.RequireAuth(http.HandlerFunc(handlerspkg.DeleteCommentHandler)))
 
 	log.Println("🚀 Serveur démarré sur http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
