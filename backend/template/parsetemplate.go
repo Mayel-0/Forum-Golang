@@ -10,26 +10,38 @@ var partials = []string{
 	base + "partials/footer.html",
 }
 
-func parsePage(pagePath string) (*template.Template, error) {
-	files := append([]string{pagePath}, partials...)
+var forumPartials = []string{
+	base + "partials/template.html",
+	base + "partials/navbar.html",
+	base + "partials/footer.html",
+	base + "partials/forum_template.html",
+	base + "partials/aside.html",
+}
+
+type pageConfig struct {
+	path     string
+	partials []string
+}
+
+func parsePage(pagePath string, p []string) (*template.Template, error) {
+	files := append([]string{pagePath}, p...)
 	return template.ParseFiles(files...)
 }
 
 func ParseTemplates() (map[string]*template.Template, error) {
-	pages := map[string]string{
-		"accueil.html":     base + "accueil.html",
-		"index.html":       base + "forum/index.html",
-		"post.html":        base + "forum/post/post.html",
-		"post-create.html": base + "forum/post/post-create.html",
-		"post-edit.html":   base + "forum/post/post-edit.html",
-		"login.html":       base + "auth/login.html",
-		"register.html":    base + "auth/register.html",
-		"profile.html":     base + "profile/profile.html",
+	pages := map[string]pageConfig{
+		"index.html":       {base + "forum/index.html", forumPartials},
+		"post.html":        {base + "forum/post/post.html", partials},
+		"post-create.html": {base + "forum/post/post-create.html", partials},
+		"post-edit.html":   {base + "forum/post/post-edit.html", partials},
+		"login.html":       {base + "auth/login.html", partials},
+		"register.html":    {base + "auth/register.html", partials},
+		"profile.html":     {base + "profile/profile.html", partials},
 	}
 
 	templates := make(map[string]*template.Template)
-	for name, path := range pages {
-		t, err := parsePage(path)
+	for name, cfg := range pages {
+		t, err := parsePage(cfg.path, cfg.partials)
 		if err != nil {
 			return nil, err
 		}

@@ -1,49 +1,41 @@
-body {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    padding: 0 16px;
 }
 
-/* Le wrapper qui centre tout */
-.mx-auto-container {
-    display: block;        /* S'assure que c'est un bloc */
-    width: 92%;           /* Largeur sur petits écrans (évite de coller aux bords) */
-    max-width: 1200px;     /* La largeur MAX de ton site (genre xl/2xl) */
-    margin-left: auto;     /* Pousse à gauche */
-    margin-right: auto;    /* Pousse à droite -> Résultat : Centré */
+main > section {
+    flex: 1;
+    min-width: 0;
 }
 
-/* La grille à l'intérieur */
-#grid-layout {
-    display: grid;
-    grid-template-columns: 2fr 1fr; /* Gauche 2/3, Droite 1/3 */
-    gap: 30px;                     /* Espace entre les deux */
-    align-items: start;            /* Évite que le petit côté s'étire bizarrement */
+main > aside {
+    width: 300px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-#left-side {
-    border-radius: 5px;
-    height: auto;
+@media (max-width: 768px) {
+    main {
+        flex-direction: column;
+    }
+
+    main > aside {
+        width: 100%;
+    }
 }
 
-#subjects {
-    border: 1px solid black;
-    border-radius: 5px;
-    padding: 10px;
+.aside-container {
+    background-color: white;
+    border-radius: 8px;
+    padding: 16px;
 }
 
-.subject {
-    padding: 10px;
-    border-bottom: 1px solid black;
-}
-
-.subject:hover {
-    background-color: lightgray;
-}
-
-.categories span {
-    padding: 5px;
-    background-color: lightblue;
-    border-radius: 5px;
+.aside-title {
+    border-bottom: 1px solid #ccc;
 }
