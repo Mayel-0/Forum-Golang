@@ -9,26 +9,26 @@
         <button class="aside-tab-btn">Topics</button>
     </div>
     <div class="aside-member-list">
-        <!-- Liste des membres à looper -->
+        {{ range $i, $u := .TopUsers }}
         <div class="aside-member">
-            <div class="aside-rank"><span>1</span></div>
+            <div class="aside-rank"><span>{{ add $i 1 }}</span></div>
             <div class="aside-user">
                 <div class="aside-avatar">
-                    <img src="../../assets/img/user.png" alt="user" />
+                    {{ if $u.AvatarURL }}
+                        <img src="{{ $u.AvatarURL }}" alt="{{ $u.Username }}" />
+                    {{ else }}
+                        <img src="/assets/img/user.png" alt="{{ $u.Username }}" />
+                    {{ end }}
                 </div>
                 <div class="aside-user-info">
-                    <span>Pseudo</span>
-                    <div class="aside-user-stats">
-                        <span>Likes</span>
-                        <span>Réponses</span>
-                        <span>Topics</span>
-                    </div>
+                    <span>{{ $u.Username }}</span>
                 </div>
             </div>
             <div class="aside-badge">
-                <span>Légende</span>
+                <span>{{ $u.Role }}</span>
             </div>
         </div>
+        {{ end }}
     </div>
 </div>
 

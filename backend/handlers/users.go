@@ -28,7 +28,12 @@ func render(w http.ResponseWriter, name string, data any) {
 }
 
 func ForumIndexHandle(w http.ResponseWriter, r *http.Request) {
-	render(w, "index.html", nil)
+	topUsers, err := repositoriespkg.GetTopUsers(3)
+	if err != nil {
+		http.Error(w, "Erreur récupération des utilisateurs", http.StatusInternalServerError)
+		return
+	}
+	render(w, "index.html", models.Data{TopUsers: topUsers})
 }
 
 func ProfileHandle(w http.ResponseWriter, r *http.Request) {

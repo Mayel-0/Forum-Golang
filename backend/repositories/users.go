@@ -81,3 +81,14 @@ func ModifyUser(user *models.User) error {
 			"bio":      user.Bio,
 		}).Error
 }
+
+func GetTopUsers(limit int) ([]models.User, error) {
+	if dbpkg.Db == nil {
+		return nil, errors.New("db not initialized")
+	}
+
+	var users []models.User
+	err := dbpkg.Db.Limit(limit).Find(&users).Error
+
+	return users, err
+}

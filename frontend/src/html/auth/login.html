@@ -2,16 +2,21 @@
 
 {{ define "pageContent" }}
 <section id="login-section">
-    <h1>Connectez-vous à votre compte</h1>
+    <div class="auth-card">
+        <h1>Connexion</h1>
+        <p class="auth-subtitle">Bon retour sur Lyrics.</p>
 
-    <form action="/auth/login" method="POST" autocomplete="on">
-        <label>
-            <input type="email" name="email" placeholder="Adresse email" required>
-        </label>
-        <label>
-            <input type="password" name="password" placeholder="Mot de passe" required>
-        </label>
-        <button type="submit">Se connecter</button>
-    </form>
+        <form action="/auth/login" method="POST" autocomplete="on">
+            <label>
+                <input type="email" name="email" placeholder="Adresse email" required>
+            </label>
+            <label>
+                <input type="password" name="password" placeholder="Mot de passe" required>
+            </label>
+            <button type="submit" class="auth-btn">Se connecter</button>
+        </form>
+
+        <p class="auth-switch">Pas encore de compte ? <a href="/auth/register">S'inscrire</a></p>
+    </div>
 </section>
 {{ end }}

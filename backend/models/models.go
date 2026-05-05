@@ -19,6 +19,7 @@ type Data struct {
 	Post            Post
 	Categories      []Category
 	Posts           []Post
+	TopUsers        []User
 	messagesError   string
 	messagesSuccess string
 }
