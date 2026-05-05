@@ -91,6 +91,19 @@ func GetCategoryIDByName(categoryName string) (uuid.UUID, error) {
 	return category.ID, nil
 }
 
+func GetAllPostsByCategoryLimit(categoryID uuid.UUID) ([]models.Post, error) {
+	if dbpkg.Db == nil {
+		return nil, errors.New("db not initialized")
+	}
+
+	var posts []models.Post
+	if err := dbpkg.Db.Where("category_id = ?", categoryID).Order("name ASC").Limit(10).Find(&posts).Error; err != nil {
+		return nil, err
+	}
+
+	return posts, nil
+}
+
 func GetAllPostsByCategory(categoryID uuid.UUID) ([]models.Post, error) {
 	if dbpkg.Db == nil {
 		return nil, errors.New("db not initialized")
@@ -104,15 +117,15 @@ func GetAllPostsByCategory(categoryID uuid.UUID) ([]models.Post, error) {
 	return posts, nil
 }
 
-func GetAllPosts() ([]models.Post, error) {
+func GetCategoryIDBySlug(slug string) (uuid.UUID, error) {
 	if dbpkg.Db == nil {
-		return nil, errors.New("db not initialized")
+		return uuid.Nil, errors.New("db not initialized")
 	}
 
-	var posts []models.Post
-	if err := dbpkg.Db.Order("created_at DESC").Find(&posts).Error; err != nil {
-		return nil, err
+	var category models.Category
+	if err := dbpkg.Db.Where("slug = ?", slug).First(&category).Error; err != nil {
+		return uuid.Nil, err
 	}
 
-	return posts, nil
+	return category.ID, nil
 }

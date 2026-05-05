@@ -77,8 +77,15 @@ func PosteCreateHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		categoryID, err := repo.GetCategoryIDBySlug(r.FormValue("category"))
+		if err != nil {
+			http.Error(w, "Catégorie invalide", http.StatusBadRequest)
+			return
+		}
+
 		Post := models.Post{
 			AuthorID:    userIDParsed,
+			CategoryID:  &categoryID,
 			Title:       r.FormValue("title"),
 			Body:        r.FormValue("body"),
 			Slug:        categorySlug + "/" + subcategoryRaw + "/" + slugify(r.FormValue("title")),
