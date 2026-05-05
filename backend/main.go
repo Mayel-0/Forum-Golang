@@ -63,6 +63,9 @@ func main() {
 	http.Handle("/post/modifier", auth.RequireAuth(http.HandlerFunc(handlerspkg.PosteModifierHandle)))
 	http.Handle("/post/supprimer", auth.RequireAuth(http.HandlerFunc(handlerspkg.PosteDeleteHandler)))
 
+	http.Handle("/comment/create", auth.RequireAuth(http.HandlerFunc(handlerspkg.AddCommentHandler)))
+	http.Handle("/comment/delete", auth.RequireAuth(http.HandlerFunc(handlerspkg.DeleteCommentHandler)))
+
 	log.Println("🚀 Serveur démarré sur http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 

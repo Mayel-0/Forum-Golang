@@ -142,3 +142,4 @@ func GetPostByID(postID uuid.UUID) (models.Post, error) {
 
 	return post, nil
 }
+
