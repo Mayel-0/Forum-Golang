@@ -47,9 +47,8 @@ func main() {
 
 	// router http
 
-	http.HandleFunc("/", handlerspkg.AcceuilHandle)
+	http.HandleFunc("/", handlerspkg.ForumIndexHandle)
 
-	http.HandleFunc("/forum/index", handlerspkg.ForumIndexHandle)
 	http.HandleFunc("/auth/login", handlerspkg.LoginHandle)
 	http.HandleFunc("/auth/register", handlerspkg.RegisterHandle)
 	http.HandleFunc("/auth/logout", handlerspkg.LogoutHandle)
