@@ -29,6 +29,21 @@ func slugify(s string) string {
 	return s
 }
 
+func sanitizeSlugPart(value string) string {
+	value = strings.TrimSpace(value)
+	value = strings.TrimPrefix(value, "/")
+	value = strings.TrimSuffix(value, "/")
+	return strings.TrimSpace(value)
+}
+
+func validSubCategory(value string) bool {
+	switch value {
+	case string(models.SubCategoryConcerts), string(models.SubCategoryArtistes), string(models.SubCategoryNouveautes):
+		return true
+	}
+	return false
+}
+
 func PosteCreateHandler(w http.ResponseWriter, r *http.Request) {
 	UserID, ok := auth.GetUserID(r)
 	if !ok {
@@ -51,12 +66,23 @@ func PosteCreateHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		categorySlug := sanitizeSlugPart(r.FormValue("category"))
+		subcategoryRaw := sanitizeSlugPart(r.FormValue("subcategory"))
+		if categorySlug == "" || subcategoryRaw == "" {
+			http.Error(w, "Catégorie ou sous-catégorie invalide", http.StatusBadRequest)
+			return
+		}
+		if !validSubCategory(subcategoryRaw) {
+			http.Error(w, "Sous-catégorie invalide", http.StatusBadRequest)
+			return
+		}
+
 		Post := models.Post{
 			AuthorID:    userIDParsed,
 			Title:       r.FormValue("title"),
 			Body:        r.FormValue("body"),
-			Slug:        r.FormValue("category") + r.FormValue("subcategory") + "/" + slugify(r.FormValue("title")),
-			SubCategory: models.PostSubCategory(r.FormValue("subcategory")),
+			Slug:        categorySlug + "/" + subcategoryRaw + "/" + slugify(r.FormValue("title")),
+			SubCategory: models.PostSubCategory(subcategoryRaw),
 		}
 
 		if err := db.Db.Create(&Post).Error; err != nil {
