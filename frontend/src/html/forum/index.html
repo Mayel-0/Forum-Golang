@@ -1,24 +1,24 @@
 {{ define "pageTitle" }}Forum{{ end }}
 
 {{ define "forumContent" }}
-<div>
+<div class="forum-category">
     <h2>🎷 Rock - Concerts | <span>x topics</span></h2>
     <hr>
     <div class="topics-container">
         <!-- Liste des topics à looper -->
         <div class="topic">
-            <div>
+            <div class="topic-avatar">
                 <img src="" alt="">
             </div>
-            <div>
-                <span>Épinglé</span>
+            <div class="topic-info">
+                <span class="topic-pinned">Épinglé</span>
                 <h3>Titre du sujet</h3>
-                <span>par ...</span>
+                <span class="topic-author">par ...</span>
             </div>
-        </div>
-        <div>
-            <span>142 rep</span>
-            <span>3800 vues</span>
+            <div class="topic-stats">
+                <span>142 rep</span>
+                <span>3800 vues</span>
+            </div>
         </div>
     </div>
 </div>
