@@ -142,21 +142,3 @@ func GetPostByID(postID uuid.UUID) (models.Post, error) {
 
 	return post, nil
 }
-
-func GetAuthorByPostID(postID uuid.UUID) (models.User, error) {
-	if dbpkg.Db == nil {
-		return models.User{}, errors.New("db not initialized")
-	}
-
-	var post models.Post
-	if err := dbpkg.Db.Where("id = ?", postID).First(&post).Error; err != nil {
-		return models.User{}, err
-	}
-
-	var author models.User
-	if err := dbpkg.Db.Where("id = ?", post.AuthorID).First(&author).Error; err != nil {
-		return models.User{}, err
-	}
-
-	return author, nil
-}

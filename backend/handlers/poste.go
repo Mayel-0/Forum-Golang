@@ -112,7 +112,36 @@ func PosteDeleteHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	switch r.Method {
 	case http.MethodPost:
-		print(UserID)
+		userIDParsed, err := uuid.Parse(UserID)
+		if err != nil {
+			http.Error(w, "ID utilisateur invalide", http.StatusBadRequest)
+			return
+		}
+
+		postID := r.FormValue("postID")
+		postIDParsed, err := uuid.Parse(postID)
+		if err != nil {
+			http.Error(w, "ID post invalide", http.StatusBadRequest)
+			return
+		}
+
+		post, err := repo.GetPostByID(postIDParsed)
+		if err != nil {
+			http.Error(w, "Post introuvable", http.StatusNotFound)
+			log.Printf("Erreur récupération post: %v", err)
+			return
+		}
+
+		if !auth.VerifyUserRequest(userIDParsed, post.AuthorID) {
+			http.Error(w, "Utilisateur non autorisé à modifier ce post", http.StatusForbidden)
+			return
+		}
+
+		if err := repo.DeletePoste(&post); err != nil {
+			http.Error(w, "Erreur lors de la suppression du post", http.StatusInternalServerError)
+			log.Printf("Erreur suppression post: %v", err)
+			return
+		}
 
 		http.Redirect(w, r, "acceuil.html", http.StatusSeeOther)
 	default:
@@ -150,14 +179,7 @@ func PosteModifierHandle(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		author, err := repo.GetAuthorByPostID(postIDParsed)
-		if err != nil {
-			http.Error(w, "Erreur lors de la récupération de l'auteur du post", http.StatusInternalServerError)
-			log.Printf("Erreur récupération auteur: %v", err)
-			return
-		}
-
-		if !auth.VerifyUserRequest(userIDParsed, author.ID) {
+		if !auth.VerifyUserRequest(userIDParsed, post.AuthorID) {
 			http.Error(w, "Utilisateur non autorisé à modifier ce post", http.StatusForbidden)
 			return
 		}
