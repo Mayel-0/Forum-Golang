@@ -56,17 +56,19 @@ func DeleteCommentHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Utilisateur non authentifié", http.StatusUnauthorized)
 			return
 		}
-		
+
 		UserIdParsed, err := uuid.Parse(UserId)
 		if err != nil {
 			http.Error(w, "ID utilisateur invalide", http.StatusBadRequest)
 			return
 		}
 
-		if !auth.VerifyUserRequest(UserIdParsed, post.AuthorID) {
-			http.Error(w, "Utilisateur non autorisé à modifier ce post", http.StatusForbidden)
-			return
-		}
+		print(UserIdParsed)
+
+		//if !auth.VerifyUserRequest(UserIdParsed, post.AuthorID) {
+		//http.Error(w, "Utilisateur non autorisé à modifier ce post", http.StatusForbidden)
+		//return
+		//}
 
 	default:
 		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
