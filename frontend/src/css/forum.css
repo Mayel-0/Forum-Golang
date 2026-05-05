@@ -1,41 +1,41 @@
 main {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    gap: 24px;
-    align-items: flex-start;
-    padding: 0 16px;
+	max-width: 1200px;
+	margin: 0 auto;
+	display: flex;
+	gap: 24px;
+	align-items: flex-start;
+	padding: 0 16px;
 }
 
 main > section {
-    flex: 1;
-    min-width: 0;
+	flex: 1;
+	min-width: 0;
 }
 
 main > aside {
-    width: 300px;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+	width: 300px;
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
 }
 
 @media (max-width: 768px) {
-    main {
-        flex-direction: column;
-    }
+	main {
+		flex-direction: column;
+	}
 
-    main > aside {
-        width: 100%;
-    }
+	main > aside {
+		width: 100%;
+	}
 }
 
 .aside-container {
-    background-color: white;
-    border-radius: 8px;
-    padding: 16px;
+	background-color: white;
+	border-radius: 8px;
+	padding: 16px;
 }
 
 .aside-title {
-    border-bottom: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
 }
