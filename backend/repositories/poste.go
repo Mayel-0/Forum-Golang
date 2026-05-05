@@ -103,3 +103,16 @@ func GetAllPostsByCategory(categoryID uuid.UUID) ([]models.Post, error) {
 
 	return posts, nil
 }
+
+func GetAllPosts() ([]models.Post, error) {
+	if dbpkg.Db == nil {
+		return nil, errors.New("db not initialized")
+	}
+
+	var posts []models.Post
+	if err := dbpkg.Db.Order("created_at DESC").Find(&posts).Error; err != nil {
+		return nil, err
+	}
+
+	return posts, nil
+}
