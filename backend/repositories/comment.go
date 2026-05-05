@@ -36,3 +36,16 @@ func GetCommentsByPostID(postID uuid.UUID) ([]models.Comment, error) {
 
 	return comments, nil
 }
+
+func GetCommentByID(commentID uuid.UUID) (*models.Comment, error) {
+	if dbpkg.Db == nil {
+		return nil, errors.New("db not initialized")
+	}
+
+	var comment models.Comment
+	if err := dbpkg.Db.Where("id = ?", commentID).First(&comment).Error; err != nil {
+		return nil, err
+	}
+
+	return &comment, nil
+}

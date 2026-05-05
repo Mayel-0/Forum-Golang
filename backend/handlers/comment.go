@@ -63,12 +63,23 @@ func DeleteCommentHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		print(UserIdParsed)
+		CommentId := uuid.MustParse(r.FormValue("comment_id"))
 
-		//if !auth.VerifyUserRequest(UserIdParsed, post.AuthorID) {
-		//http.Error(w, "Utilisateur non autorisé à modifier ce post", http.StatusForbidden)
-		//return
-		//}
+		comment, err := repo.GetCommentByID(CommentId)
+		if err != nil {
+			http.Error(w, "Commentaire non trouvé", http.StatusNotFound)
+			return
+		}
+
+		if !auth.VerifyUserRequest(UserIdParsed, comment.AuthorID) {
+			http.Error(w, "Utilisateur non autorisé à modifier ce commentaire", http.StatusForbidden)
+			return
+		}
+
+		if err := repo.DeleteComment(CommentId); err != nil {
+			http.Error(w, "Erreur lors de la suppression du commentaire", http.StatusInternalServerError)
+			return
+		}
 
 	default:
 		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
