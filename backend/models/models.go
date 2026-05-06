@@ -18,9 +18,13 @@ type Data struct {
 	User       User
 	Post       Post
 	Categories []Category
-	Posts      []Post
 	TopUsers   []User
 	Comments   []Comment
+
+	Posts           []Post
+	PostsArtists    []Post
+	PostsConcerts   []Post
+	PostsNouveautes []Post
 
 	messagesError   string
 	messagesSuccess string
