@@ -6,6 +6,7 @@ import (
 	"lyrics/db"
 	"lyrics/models"
 	repo "lyrics/repositories"
+	repositoriespkg "lyrics/repositories"
 	"net/http"
 	"regexp"
 	"strings"
@@ -233,4 +234,35 @@ func PostShowHandle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	render(w, "post.html", data)
+}
+
+func CategoryHandle(w http.ResponseWriter, r *http.Request) {
+	slug := r.PathValue("slug")
+
+	categoryID, err := repo.GetCategoryIDBySlug(slug)
+	if err != nil {
+		http.Error(w, "Catégorie non trouvée", http.StatusNotFound)
+		return
+	}
+
+	posts, err := repo.GetAllPostsByCategoryLimit(categoryID)
+	if err != nil {
+		http.Error(w, "Erreur récupération des posts", http.StatusInternalServerError)
+		return
+	}
+
+	topUsers, err := repositoriespkg.GetTopUsers(3)
+	if err != nil {
+		http.Error(w, "Erreur récupération des utilisateurs", http.StatusInternalServerError)
+		return
+	}
+	data := models.Data{
+		TopUsers: topUsers,
+		Posts:    posts,
+	}
+	if user, ok := auth.GetCurrentUser(r); ok {
+		data.User = user
+	}
+
+	render(w, "index.html", data)
 }

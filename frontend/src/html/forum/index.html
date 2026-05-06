@@ -5,21 +5,22 @@
     <h2>🎷 Rock - Concerts | <span>x topics</span></h2>
     <hr>
     <div class="topics-container">
-        <!-- Liste des topics à looper -->
+        {{ range .Posts }}
         <div class="topic">
             <div class="topic-avatar">
-                <img src="" alt="">
+                <img src="{{ .Author.AvatarURL }}" alt="">
             </div>
             <div class="topic-info">
                 <span class="topic-pinned">Épinglé</span>
-                <h3>Titre du sujet</h3>
-                <span class="topic-author">par ...</span>
+                <h3>{{ .Title }}</h3>
+                <span class="topic-author">par {{ .Author.Username }}</span>
             </div>
             <div class="topic-stats">
-                <span>142 rep</span>
-                <span>3800 vues</span>
+                <span> {{ .CommentsCount }} Com</span>
+                <span> {{ .LikesCount }} Likes</span>
             </div>
         </div>
+        {{ end }}
     </div>
 </div>
 {{ end }}

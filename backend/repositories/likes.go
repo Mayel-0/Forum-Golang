@@ -29,3 +29,16 @@ func LikeRemove(like models.Likes) error {
 
 	return dbpkg.Db.Delete(like).Error
 }
+
+func GetLikesByPostID(postID string) ([]models.Likes, error) {
+	if dbpkg.Db == nil {
+		return nil, errors.New("db not initialized")
+	}
+
+	var likes []models.Likes
+	if err := dbpkg.Db.Where("post_id = ?", postID).Find(&likes).Error; err != nil {
+		return nil, err
+	}
+
+	return likes, nil
+}

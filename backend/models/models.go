@@ -114,4 +114,6 @@ type Post struct {
 	CreatedAt     time.Time       `gorm:"type:timestamptz;not null;default:now()"`
 	UpdatedAt     time.Time       `gorm:"type:timestamptz;not null;default:now()"`
 	DeletedAt     *time.Time      `gorm:"type:timestamptz"`
+
+	Author User `gorm:"foreignKey:AuthorID"`
 }
