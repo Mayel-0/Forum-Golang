@@ -61,7 +61,12 @@ func PosteCreateHandler(w http.ResponseWriter, r *http.Request) {
 			log.Printf("Erreur récupération catégories: %v", err)
 			return
 		}
-		render(w, "post-create.html", categories)
+
+		data := models.Data{Categories: categories}
+		if user, ok := auth.GetCurrentUser(r); ok {
+			data.User = user
+		}
+		render(w, "post-create.html", data)
 	case http.MethodPost:
 		userIDParsed, err := uuid.Parse(UserID)
 		if err != nil {
@@ -101,7 +106,9 @@ func PosteCreateHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		http.Redirect(w, r, Post.Slug, http.StatusSeeOther)
+		reelSlug := "/p/" + Post.Slug
+
+		http.Redirect(w, r, reelSlug, http.StatusSeeOther)
 	default:
 		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
 	}
@@ -219,5 +226,11 @@ func PostShowHandle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render(w, "post.html", models.Data{Post: post})
+	data := models.Data{Post: post}
+
+	if user, ok := auth.GetCurrentUser(r); ok {
+		data.User = user
+	}
+
+	render(w, "post.html", data)
 }

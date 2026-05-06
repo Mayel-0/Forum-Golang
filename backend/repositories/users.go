@@ -146,3 +146,20 @@ func UpdateUserAvatar(userID string, avatarURL string) error {
 		Where("id = ?", userID).
 		Update("avatar_url", avatarURL).Error
 }
+
+func GetUserByID(userID string) (models.User, error) {
+	if dbpkg.Db == nil {
+		return models.User{}, errors.New("db not initialized")
+	}
+
+	var user models.User
+	err := dbpkg.Db.Where("id = ?", userID).First(&user).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return models.User{}, ErrUserNotFound
+	}
+	if err != nil {
+		return models.User{}, err
+	}
+
+	return user, nil
+}
