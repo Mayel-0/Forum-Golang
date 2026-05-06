@@ -15,7 +15,7 @@
             Catégorie:
             <select name="category" required>
                 <option value="">-- Sélectionnez une catégorie --</option>
-                {{range .}}
+                {{range .Categories}}
                     <option value="{{.Slug}}">{{.Name}}</option>
                 {{end}}
             </select>
