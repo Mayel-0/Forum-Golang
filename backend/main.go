@@ -38,37 +38,39 @@ func main() {
 	}
 	handlerspkg.SetTemplates(tpl)
 
-	// css chargement
+	mux := http.NewServeMux()
 
+	// CSS & Assets
 	fs := http.FileServer(http.Dir("../frontend/src/"))
-	http.Handle("/css/", http.StripPrefix("/", fs))
+	mux.Handle("/css/", http.StripPrefix("/", fs))
 	assetsFS := http.FileServer(http.Dir("../frontend/assets/"))
-	http.Handle("/assets/", http.StripPrefix("/assets/", assetsFS))
+	mux.Handle("/assets/", http.StripPrefix("/assets/", assetsFS))
 
-	// router http
+	// Routes publiques
+	mux.HandleFunc("/", handlerspkg.ForumIndexHandle)
+	mux.HandleFunc("GET /auth/login", handlerspkg.LoginHandle)
+	mux.HandleFunc("POST /auth/login", handlerspkg.LoginHandle)
+	mux.HandleFunc("GET /auth/register", handlerspkg.RegisterHandle)
+	mux.HandleFunc("POST /auth/register", handlerspkg.RegisterHandle)
+	mux.HandleFunc("GET /auth/logout", handlerspkg.LogoutHandle)
 
-	http.HandleFunc("/", handlerspkg.ForumIndexHandle)
+	// Route dynamique par slug
+	mux.HandleFunc("GET /p/{slug...}", handlerspkg.PostShowHandle)
+	// Routes protégées
+	mux.Handle("GET /profile", auth.RequireAuth(http.HandlerFunc(handlerspkg.ProfileHandle)))
+	mux.Handle("POST /profile/modify", auth.RequireAuth(http.HandlerFunc(handlerspkg.ProfileHandle)))
 
-	http.HandleFunc("/auth/login", handlerspkg.LoginHandle)
-	http.HandleFunc("/auth/register", handlerspkg.RegisterHandle)
-	http.HandleFunc("/auth/logout", handlerspkg.LogoutHandle)
-	http.HandleFunc("/post", handlerspkg.PostHandle)
+	mux.Handle("POST /like/add", auth.RequireAuth(http.HandlerFunc(handlerspkg.LikeHandlerAdd)))
+	mux.Handle("POST /like/rm", auth.RequireAuth(http.HandlerFunc(handlerspkg.LikeHandlerRm)))
 
-	http.Handle("/profile", auth.RequireAuth(http.HandlerFunc(handlerspkg.ProfileHandle)))
-	http.Handle("/profile/modify", auth.RequireAuth(http.HandlerFunc(handlerspkg.ProfileHandle)))
-	http.Handle("/like/add", auth.RequireAuth(http.HandlerFunc(handlerspkg.LikeHandlerAdd)))
-	http.Handle("/like/rm", auth.RequireAuth(http.HandlerFunc(handlerspkg.LikeHandlerRm)))
+	mux.Handle("GET /post/create", auth.RequireAuth(http.HandlerFunc(handlerspkg.PosteCreateHandler)))
+	mux.Handle("POST /post/create", auth.RequireAuth(http.HandlerFunc(handlerspkg.PosteCreateHandler)))
+	mux.Handle("POST /post/modifier", auth.RequireAuth(http.HandlerFunc(handlerspkg.PosteModifierHandle)))
+	mux.Handle("POST /post/supprimer", auth.RequireAuth(http.HandlerFunc(handlerspkg.PosteDeleteHandler)))
 
-	http.Handle("/post/create", auth.RequireAuth(http.HandlerFunc(handlerspkg.PosteCreateHandler)))
-	http.Handle("/post/modifier", auth.RequireAuth(http.HandlerFunc(handlerspkg.PosteModifierHandle)))
-	http.Handle("/post/supprimer", auth.RequireAuth(http.HandlerFunc(handlerspkg.PosteDeleteHandler)))
-
-	http.Handle("/comment/create", auth.RequireAuth(http.HandlerFunc(handlerspkg.AddCommentHandler)))
-	http.Handle("/comment/delete", auth.RequireAuth(http.HandlerFunc(handlerspkg.DeleteCommentHandler)))
+	mux.Handle("POST /comment/create", auth.RequireAuth(http.HandlerFunc(handlerspkg.AddCommentHandler)))
+	mux.Handle("POST /comment/delete", auth.RequireAuth(http.HandlerFunc(handlerspkg.DeleteCommentHandler)))
 
 	log.Println("🚀 Serveur démarré sur http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
-
-	// page qui doit etre securiser (login obligatoire)
-	// http.Handle("/exemple", auth.RequireAuth(http.HandlerFunc(exempleHandler)))
+	log.Fatal(http.ListenAndServe(":8080", mux))
 }

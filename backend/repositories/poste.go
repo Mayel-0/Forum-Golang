@@ -1,9 +1,7 @@
 package repositories
 
 import (
-	"encoding/json"
 	"errors"
-	"net/http"
 	"regexp"
 	"strings"
 
@@ -11,7 +9,6 @@ import (
 	"lyrics/models"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 func slugify(s string) string {
@@ -146,18 +143,10 @@ func GetPostByID(postID uuid.UUID) (models.Post, error) {
 	return post, nil
 }
 
-func GetPostBySlug(db *gorm.DB) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		slug := r.PathValue("slug") // net/http natif depuis Go 1.22
-
-		var post models.Post
-		result := db.Where("slug = ? AND deleted_at IS NULL", slug).First(&post)
-		if result.Error != nil {
-			http.Error(w, "Post non trouvé", http.StatusNotFound)
-			return
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(post)
+func GetPostBySlug(slug string) (models.Post, error) {
+	var post models.Post
+	if err := dbpkg.Db.Where("slug = ? AND deleted_at IS NULL", slug).First(&post).Error; err != nil {
+		return models.Post{}, err
 	}
+	return post, nil
 }
