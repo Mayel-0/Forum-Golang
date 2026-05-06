@@ -15,10 +15,12 @@ const (
 )
 
 type Data struct {
-	User            User
-	Post            Post
-	Categories      []Category
-	Posts           []Post
+	User       User
+	Post       Post
+	Categories []Category
+	Posts      []Post
+	Comments   []Comment
+
 	messagesError   string
 	messagesSuccess string
 }
@@ -45,6 +47,8 @@ type Comment struct {
 	CreatedAt time.Time  `gorm:"type:timestamptz;not null;default:now()"`
 	UpdatedAt time.Time  `gorm:"type:timestamptz;not null;default:now()"`
 	DeletedAt *time.Time `gorm:"type:timestamptz"`
+
+	CountLikes int `gorm:"-"`
 }
 
 type Follow struct {
@@ -103,4 +107,6 @@ type Post struct {
 	CreatedAt   time.Time       `gorm:"type:timestamptz;not null;default:now()"`
 	UpdatedAt   time.Time       `gorm:"type:timestamptz;not null;default:now()"`
 	DeletedAt   *time.Time      `gorm:"type:timestamptz"`
+
+	CountLikes int `gorm:"-"`
 }
