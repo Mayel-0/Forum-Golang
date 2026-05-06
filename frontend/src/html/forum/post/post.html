@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-</body>
-</html>
+{{ define "pageTitle" }}Modifier un post{{ end }}
+
+{{ define "pageContent" }}
+<section id="post-section">
+    <h1>{{ .Post.Title }}</h1>
+    <p>{{ .Post.Body }}</p>
+</section>
+{{ end }}
