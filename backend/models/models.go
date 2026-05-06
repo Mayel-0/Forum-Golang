@@ -15,11 +15,13 @@ const (
 )
 
 type Data struct {
-	User            User
-	Post            Post
-	Categories      []Category
-	Posts           []Post
-	TopUsers        []User
+	User       User
+	Post       Post
+	Categories []Category
+	Posts      []Post
+	TopUsers   []User
+	Comments   []Comment
+
 	messagesError   string
 	messagesSuccess string
 }
@@ -38,14 +40,16 @@ type Likes struct {
 }
 
 type Comment struct {
-	ID        uuid.UUID  `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
-	PostID    uuid.UUID  `gorm:"type:uuid;not null"`
-	AuthorID  uuid.UUID  `gorm:"type:uuid;not null"`
-	ParentID  *uuid.UUID `gorm:"type:uuid"`
-	Body      string     `gorm:"type:text;not null"`
-	CreatedAt time.Time  `gorm:"type:timestamptz;not null;default:now()"`
-	UpdatedAt time.Time  `gorm:"type:timestamptz;not null;default:now()"`
-	DeletedAt *time.Time `gorm:"type:timestamptz"`
+	ID            uuid.UUID  `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
+	PostID        uuid.UUID  `gorm:"type:uuid;not null"`
+	AuthorID      uuid.UUID  `gorm:"type:uuid;not null"`
+	ParentID      *uuid.UUID `gorm:"type:uuid"`
+	Body          string     `gorm:"type:text;not null"`
+	LikesCount    int        `gorm:"type:integer;not null;default:0"`
+	CommentsCount int        `gorm:"type:integer;not null;default:0"`
+	CreatedAt     time.Time  `gorm:"type:timestamptz;not null;default:now()"`
+	UpdatedAt     time.Time  `gorm:"type:timestamptz;not null;default:now()"`
+	DeletedAt     *time.Time `gorm:"type:timestamptz"`
 }
 
 type Follow struct {
@@ -91,17 +95,18 @@ type Category struct {
 }
 
 type Post struct {
-	ID          uuid.UUID       `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
-	AuthorID    uuid.UUID       `gorm:"type:uuid;not null"`
-	CategoryID  *uuid.UUID      `gorm:"type:uuid"`
-	SubCategory PostSubCategory `gorm:"type:post_sub_category;not null"`
-	Title       string          `gorm:"type:varchar(300);uniqueIndex;not null"`
-	Body        string          `gorm:"type:text;not null"`
-	Slug        string          `gorm:"type:varchar(350);uniqueIndex;not null"`
-	IsPinned    bool            `gorm:"type:boolean;not null;default:false"`
-	IsLocked    bool            `gorm:"type:boolean;not null;default:false"`
-	ViewsCount  int             `gorm:"type:integer;not null;default:0"`
-	CreatedAt   time.Time       `gorm:"type:timestamptz;not null;default:now()"`
-	UpdatedAt   time.Time       `gorm:"type:timestamptz;not null;default:now()"`
-	DeletedAt   *time.Time      `gorm:"type:timestamptz"`
+	ID            uuid.UUID       `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
+	AuthorID      uuid.UUID       `gorm:"type:uuid;not null"`
+	CategoryID    *uuid.UUID      `gorm:"type:uuid"`
+	SubCategory   PostSubCategory `gorm:"type:post_sub_category;not null"`
+	Title         string          `gorm:"type:varchar(300);uniqueIndex;not null"`
+	Body          string          `gorm:"type:text;not null"`
+	Slug          string          `gorm:"type:varchar(350);uniqueIndex;not null"`
+	IsPinned      bool            `gorm:"type:boolean;not null;default:false"`
+	IsLocked      bool            `gorm:"type:boolean;not null;default:false"`
+	LikesCount    int             `gorm:"type:integer;not null;default:0"`
+	CommentsCount int             `gorm:"type:integer;not null;default:0"`
+	CreatedAt     time.Time       `gorm:"type:timestamptz;not null;default:now()"`
+	UpdatedAt     time.Time       `gorm:"type:timestamptz;not null;default:now()"`
+	DeletedAt     *time.Time      `gorm:"type:timestamptz"`
 }
