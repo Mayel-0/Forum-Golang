@@ -1,2 +1,4 @@
 *.env
-/backend/tmp/main
+/temp
+*.log
+*.tmp

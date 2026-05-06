@@ -9,9 +9,12 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"text/template"
 
 	"github.com/google/uuid"
 )
+
+var tpl map[string]*template.Template
 
 func slugify(s string) string {
 	// Convertir en minuscules
@@ -207,15 +210,14 @@ func PosteModifierHandle(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func PostHandle(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		data := models.Data{
-			//Posts: repo.GetAllPostsByCategoryLimit(categoryID),
-		}
-		render(w, "post.html", data)
-	case http.MethodPost:
-	default:
-		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
+func PostShowHandle(w http.ResponseWriter, r *http.Request) {
+	slug := r.PathValue("slug")
+
+	post, err := repo.GetPostBySlug(slug)
+	if err != nil {
+		http.Error(w, "Post non trouvé", http.StatusNotFound)
+		return
 	}
+
+	render(w, "post.html", models.Data{Post: post})
 }

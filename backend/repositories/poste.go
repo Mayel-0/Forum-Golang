@@ -143,3 +143,10 @@ func GetPostByID(postID uuid.UUID) (models.Post, error) {
 	return post, nil
 }
 
+func GetPostBySlug(slug string) (models.Post, error) {
+	var post models.Post
+	if err := dbpkg.Db.Where("slug = ? AND deleted_at IS NULL", slug).First(&post).Error; err != nil {
+		return models.Post{}, err
+	}
+	return post, nil
+}

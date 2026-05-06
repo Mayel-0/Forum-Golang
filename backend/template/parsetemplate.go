@@ -2,6 +2,10 @@ package template
 
 import "text/template"
 
+var funcMap = template.FuncMap{
+	"add": func(a, b int) int { return a + b },
+}
+
 const base = "../frontend/src/html/"
 
 var partials = []string{
@@ -25,7 +29,7 @@ type pageConfig struct {
 
 func parsePage(pagePath string, p []string) (*template.Template, error) {
 	files := append([]string{pagePath}, p...)
-	return template.ParseFiles(files...)
+	return template.New("").Funcs(funcMap).ParseFiles(files...)
 }
 
 func ParseTemplates() (map[string]*template.Template, error) {
