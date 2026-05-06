@@ -1,5 +1,19 @@
 {{ define "navbar" }}
 <nav>
+    <div class="nav-left">
+        <h1>Lyrics.</h1>
+        <div class="search-bar">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" name="search" id="search" placeholder="Rechercher un sujet, un artiste, un concert...">
+        </div>
+    </div>
+    <div class="nav-right">
+        <ul>
+            <li class="button-white">Connexion</li>
+            <li class="button-brown">Créer un compte</li>
+        </ul>
+    </div>
+    <!--
     <div>
         <img src="../../assets/img/logo.png" alt="logo-site" />
     </div>
@@ -11,6 +25,25 @@
             <li><a href="/auth/login">Connexion</a></li>
             <li><a href="/auth/register">Inscription</a></li>
         </ul>
-    </div>
+    </div> -->
 </nav>
+<div class="subnav">
+    <div class="subnav-categories">
+        <ul class="subnav-categories-list">
+            <li>Rock</li>
+            <li>Techno</li>
+            <li>Hard</li>
+            <li>Rap</li>
+            <li>R&B</li>
+            <li>Pop</li>
+            <li>House</li>
+            <li>Jazz</li>
+            <li>Métal</li>
+            <li>Reggaeton</li>
+        </ul>
+    </div>
+    <div class="">
+        <button class="button-brown">Lancer un sujet</button>
+    </div>
+</div>
 {{ end }}
