@@ -33,7 +33,11 @@ func ForumIndexHandle(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Erreur récupération des utilisateurs", http.StatusInternalServerError)
 		return
 	}
-	render(w, "index.html", models.Data{TopUsers: topUsers})
+	data := models.Data{TopUsers: topUsers}
+	if user, ok := auth.GetCurrentUser(r); ok {
+		data.User = user
+	}
+	render(w, "index.html", data)
 }
 
 func ProfileHandle(w http.ResponseWriter, r *http.Request) {

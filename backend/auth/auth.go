@@ -79,6 +79,26 @@ func GetUserID(r *http.Request) (string, bool) {
 	return userID, ok
 }
 
+// GetCurrentUser lit la session sans bloquer — utilisable sur les pages publiques.
+func GetCurrentUser(r *http.Request) (models.User, bool) {
+	if Store == nil {
+		return models.User{}, false
+	}
+	session, err := Store.Get(r, sessionName)
+	if err != nil || session.IsNew {
+		return models.User{}, false
+	}
+	userID, ok := session.Values["user_id"].(string)
+	if !ok || userID == "" {
+		return models.User{}, false
+	}
+	user, err := GetUserByID(userID)
+	if err != nil {
+		return models.User{}, false
+	}
+	return user, true
+}
+
 func GetUserByID(userID string) (models.User, error) {
 	var user models.User
 	err := dbpkg.Db.Where("id = ?", userID).First(&user).Error

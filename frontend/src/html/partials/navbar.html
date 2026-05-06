@@ -9,8 +9,12 @@
     </div>
     <div class="nav-right">
         <ul>
-            <li class="button-white">Connexion</li>
-            <li class="button-brown">Créer un compte</li>
+            {{ if .User.ID }}
+                <li><a href="/profile" class="button-white">{{ .User.Username }}</a></li>
+            {{ else }}
+                <li><a href="/auth/login" class="button-white">Connexion</a></li>
+                <li><a href="/auth/register" class="button-brown">Créer un compte</a></li>
+            {{ end }}
         </ul>
     </div>
     <!--
