@@ -141,3 +141,57 @@ func GetAllPostsByCategoryLimit(categoryID uuid.UUID) ([]models.Post, error) {
 
 	return posts, nil
 }
+
+func GetAllPostsByCategoryLimitArtistes(categoryID uuid.UUID) ([]models.Post, error) {
+	if dbpkg.Db == nil {
+		return nil, errors.New("db not initialized")
+	}
+
+	var posts []models.Post
+	if err := dbpkg.Db.
+		Preload("Author").
+		Where("category_id = ? AND sub_category = ? AND deleted_at IS NULL", categoryID, models.SubCategoryArtistes).
+		Order("created_at DESC").
+		Limit(10).
+		Find(&posts).Error; err != nil {
+		return nil, err
+	}
+
+	return posts, nil
+}
+
+func GetAllPostsByCategoryLimitConcerts(categoryID uuid.UUID) ([]models.Post, error) {
+	if dbpkg.Db == nil {
+		return nil, errors.New("db not initialized")
+	}
+
+	var posts []models.Post
+	if err := dbpkg.Db.
+		Preload("Author").
+		Where("category_id = ? AND sub_category = ? AND deleted_at IS NULL", categoryID, models.SubCategoryConcerts).
+		Order("created_at DESC").
+		Limit(10).
+		Find(&posts).Error; err != nil {
+		return nil, err
+	}
+
+	return posts, nil
+}
+
+func GetAllPostsByCategoryLimitNouveautes(categoryID uuid.UUID) ([]models.Post, error) {
+	if dbpkg.Db == nil {
+		return nil, errors.New("db not initialized")
+	}
+
+	var posts []models.Post
+	if err := dbpkg.Db.
+		Preload("Author").
+		Where("category_id = ? AND sub_category = ? AND deleted_at IS NULL", categoryID, models.SubCategoryNouveautes).
+		Order("created_at DESC").
+		Limit(10).
+		Find(&posts).Error; err != nil {
+		return nil, err
+	}
+
+	return posts, nil
+}

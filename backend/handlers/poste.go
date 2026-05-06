@@ -237,7 +237,7 @@ func PostShowHandle(w http.ResponseWriter, r *http.Request) {
 }
 
 func CategoryHandle(w http.ResponseWriter, r *http.Request) {
-	slug := r.PathValue("slug")
+	slug := "/" + r.PathValue("slug")
 
 	categoryID, err := repo.GetCategoryIDBySlug(slug)
 	if err != nil {
@@ -245,7 +245,19 @@ func CategoryHandle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	posts, err := repo.GetAllPostsByCategoryLimit(categoryID)
+	postsA, err := repo.GetAllPostsByCategoryLimitArtistes(categoryID)
+	if err != nil {
+		http.Error(w, "Erreur récupération des posts", http.StatusInternalServerError)
+		return
+	}
+
+	postsC, err := repo.GetAllPostsByCategoryLimitConcerts(categoryID)
+	if err != nil {
+		http.Error(w, "Erreur récupération des posts", http.StatusInternalServerError)
+		return
+	}
+
+	postsN, err := repo.GetAllPostsByCategoryLimitNouveautes(categoryID)
 	if err != nil {
 		http.Error(w, "Erreur récupération des posts", http.StatusInternalServerError)
 		return
@@ -256,9 +268,19 @@ func CategoryHandle(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Erreur récupération des utilisateurs", http.StatusInternalServerError)
 		return
 	}
+
+	category, err := repo.GetCategoryByID(categoryID)
+	if err != nil {
+		http.Error(w, "Erreur récupération de la catégorie", http.StatusInternalServerError)
+		return
+	}
+
 	data := models.Data{
-		TopUsers: topUsers,
-		Posts:    posts,
+		TopUsers:        topUsers,
+		PostsArtists:    postsA,
+		PostsConcerts:   postsC,
+		PostsNouveautes: postsN,
+		Category:        category,
 	}
 	if user, ok := auth.GetCurrentUser(r); ok {
 		data.User = user

@@ -15,8 +15,10 @@ const (
 )
 
 type Data struct {
-	User       User
-	Post       Post
+	User     User
+	Post     Post
+	Category Category
+
 	Categories []Category
 	TopUsers   []User
 	Comments   []Comment

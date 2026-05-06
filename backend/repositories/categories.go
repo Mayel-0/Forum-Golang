@@ -49,8 +49,21 @@ func GetCategoryIDByName(categoryName string) (uuid.UUID, error) {
 func GetCategoryIDBySlug(slug string) (uuid.UUID, error) {
 	var category models.Category
 	// Cherche avec le slash préfixé comme stocké en DB
-	if err := dbpkg.Db.Where("slug = ?", "/"+slug).First(&category).Error; err != nil {
+	if err := dbpkg.Db.Where("slug = ?", slug).First(&category).Error; err != nil {
 		return uuid.Nil, err
 	}
 	return category.ID, nil
+}
+
+func GetCategoryByID(categoryID uuid.UUID) (models.Category, error) {
+	if dbpkg.Db == nil {
+		return models.Category{}, errors.New("db not initialized")
+	}
+
+	var category models.Category
+	if err := dbpkg.Db.Where("id = ?", categoryID).First(&category).Error; err != nil {
+		return models.Category{}, err
+	}
+
+	return category, nil
 }

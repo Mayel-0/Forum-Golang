@@ -2,24 +2,70 @@
 
 {{ define "forumContent" }}
 <div class="forum-category">
-    <h2>🎷 Rock - Concerts | <span>x topics</span></h2>
+    <h2>{{ .Category.Name }} - Artistes | <span>x topics</span></h2>
     <hr>
     <div class="topics-container">
-        {{ range .Posts }}
-        <div class="topic">
-            <div class="topic-avatar">
-                <img src="{{ .Author.AvatarURL }}" alt="">
+        {{ range .PostsArtists }}
+        <a href="/p/{{ .Slug }}">
+            <div class="topic">
+                <div class="topic-avatar">
+                    <img src="{{ .Author.AvatarURL }}" alt="">
+                </div>
+                <div class="topic-info">
+                    <span class="topic-pinned">Épinglé</span>
+                    <h3>{{ .Title }}</h3>
+                    <span class="topic-author">par {{ .Author.Username }}</span>
+                </div>
+                <div class="topic-stats">
+                    <span> {{ .CommentsCount }} Com</span>
+                    <span> {{ .LikesCount }} Likes</span>
+                </div>
             </div>
-            <div class="topic-info">
-                <span class="topic-pinned">Épinglé</span>
-                <h3>{{ .Title }}</h3>
-                <span class="topic-author">par {{ .Author.Username }}</span>
+        </a>
+        {{ end }}
+    </div>
+    <h2>{{ .Category.Name }} - Concerts | <span>x topics</span></h2>
+    <hr>
+    <div class="topics-container">
+        {{ range .PostsConcerts }}
+        <a href="/p/{{ .Slug }}">
+            <div class="topic">
+                <div class="topic-avatar">
+                    <img src="{{ .Author.AvatarURL }}" alt="">
+                </div>
+                <div class="topic-info">
+                    <span class="topic-pinned">Épinglé</span>
+                    <h3>{{ .Title }}</h3>
+                    <span class="topic-author">par {{ .Author.Username }}</span>
+                </div>
+                <div class="topic-stats">
+                    <span> {{ .CommentsCount }} Com</span>
+                    <span> {{ .LikesCount }} Likes</span>
+                </div>
             </div>
-            <div class="topic-stats">
-                <span> {{ .CommentsCount }} Com</span>
-                <span> {{ .LikesCount }} Likes</span>
+        </a>
+        {{ end }}
+    </div>
+    <h2>{{ .Category.Name }} - Nouveautés | <span>x topics</span></h2>
+    <hr>
+    <div class="topics-container">
+        {{ range .PostsNouveautes }}
+        <a href="/p/{{ .Slug }}">
+            <div class="topic">
+                <div class="topic-avatar">
+                    <img src="{{ .Author.AvatarURL }}" alt="">
+                </div>
+                <div class="topic-info">
+                    <span class="topic-pinned">Épinglé</span>
+                    <h3>{{ .Title }}</h3>
+                    <span class="topic-author">par {{ .Author.Username }}</span>
+                </div>
+                <div class="topic-stats">
+                    <span> {{ .CommentsCount }} Com</span>
+                    <span> {{ .LikesCount }} Likes</span>
+                </div>
             </div>
-        </div>
+        </a>
         {{ end }}
     </div>
 </div>

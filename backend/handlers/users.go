@@ -30,16 +30,18 @@ func render(w http.ResponseWriter, name string, data any) {
 }
 
 func ForumIndexHandle(w http.ResponseWriter, r *http.Request) {
-	topUsers, err := repositoriespkg.GetTopUsers(3)
-	if err != nil {
-		http.Error(w, "Erreur récupération des utilisateurs", http.StatusInternalServerError)
-		return
-	}
-	data := models.Data{TopUsers: topUsers}
-	if user, ok := auth.GetCurrentUser(r); ok {
-		data.User = user
-	}
-	render(w, "index.html", data)
+
+	http.Redirect(w, r, "/category/rock", http.StatusSeeOther)
+	// topUsers, err := repositoriespkg.GetTopUsers(3)
+	//if err != nil {
+	//	http.Error(w, "Erreur récupération des utilisateurs", http.StatusInternalServerError)
+	//	return
+	//}
+	//data := models.Data{TopUsers: topUsers}
+	//if user, ok := auth.GetCurrentUser(r); ok {
+	//	data.User = user
+	//}
+	//render(w, "index.html", data)
 }
 
 func ProfileHandle(w http.ResponseWriter, r *http.Request) {
