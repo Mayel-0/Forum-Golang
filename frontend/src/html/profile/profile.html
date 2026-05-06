@@ -3,7 +3,7 @@
 {{ define "pageContent" }}
 <section id="profile-section">
 
-    <div class="profile-header">
+    <div class="profile-header {{ if isAdmin .User.Role }}admin{{ end }}">
         <div class="profile-avatar">
             {{ if .User.AvatarURL }}
                 <img src="{{ .User.AvatarURL }}" alt="{{ .User.Username }}">
@@ -33,16 +33,23 @@
     <!-- Card upload avatar séparée -->
     <div class="profile-card">
         <h2>Photo de profil</h2>
-        <form action="/profile/avatar" method="POST" enctype="multipart/form-data">
+        <form action="/profile/avatar" method="POST" enctype="multipart/form-data" class="avatar-form">
             <div class="avatar-upload">
-                {{ if .User.AvatarURL }}
-                    <img src="{{ .User.AvatarURL }}" alt="avatar actuel" width="100" height="100">
-                {{ else }}
-                    <img src="/assets/img/user.png" alt="avatar par défaut" width="100" height="100">
-                {{ end }}
-                <input type="file" name="avatar" accept=".jpg,.jpeg,.png,.webp">
-                <button type="submit" class="profile-btn-save">Mettre à jour</button>
+                <div class="avatar-preview">
+                    {{ if .User.AvatarURL }}
+                        <img src="{{ .User.AvatarURL }}" alt="avatar actuel">
+                    {{ else }}
+                        <img src="/assets/img/user.png" alt="avatar par défaut">
+                    {{ end }}
+                </div>
+                <label class="avatar-drop-zone" for="avatar-input">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span>Choisir une image</span>
+                    <span class="avatar-hint">JPG, PNG, WEBP · 5 Mo max</span>
+                    <input id="avatar-input" type="file" name="avatar" accept=".jpg,.jpeg,.png,.webp">
+                </label>
             </div>
+            <button type="submit" class="profile-btn-save">Mettre à jour</button>
         </form>
     </div>
 

@@ -17,6 +17,35 @@
     padding: 24px;
 }
 
+.profile-header.admin {
+    border-color: goldenrod;
+    background:
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 40px,
+            rgba(218, 165, 32, 0.08) 40px,
+            rgba(218, 165, 32, 0.08) 80px
+        ),
+        linear-gradient(
+            135deg,
+            #fffdf0 0%,
+            #fff8dc 40%,
+            #fef3c0 60%,
+            #fffdf0 100%
+        );
+    background-size: 100% 100%, 400% 400%;
+    animation: gold-shine 4s ease infinite;
+    border-width: 2px;
+    box-shadow: 0 0 12px rgba(218, 165, 32, 0.25);
+}
+
+@keyframes gold-shine {
+    0%   { background-position: 0 0, 0% 50%; }
+    50%  { background-position: 0 0, 100% 50%; }
+    100% { background-position: 0 0, 0% 50%; }
+}
+
 .profile-avatar img {
     width: 72px;
     height: 72px;
@@ -138,6 +167,73 @@
 
 .profile-btn-save:hover {
     opacity: 0.88;
+}
+
+/* Avatar upload */
+.avatar-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.avatar-upload {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.avatar-preview img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #EAE0D6;
+    flex-shrink: 0;
+}
+
+.avatar-drop-zone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 20px;
+    border: 2px dashed #EAE0D6;
+    border-radius: 10px;
+    background-color: #FAFAF8;
+    cursor: pointer;
+    transition: border-color 0.15s, background-color 0.15s;
+}
+
+.avatar-drop-zone:hover {
+    border-color: var(--main-brown);
+    background-color: rgba(123, 79, 46, 0.03);
+}
+
+.avatar-drop-zone i {
+    font-size: 22px;
+    color: var(--main-brown);
+}
+
+.avatar-drop-zone span {
+    font-size: 13px;
+    font-weight: 500;
+    color: #555;
+}
+
+.avatar-hint {
+    font-size: 11px !important;
+    color: #bbb !important;
+    font-weight: 400 !important;
+}
+
+.avatar-drop-zone input[type="file"] {
+    display: none;
+}
+
+.profile-btn-save {
+    align-self: flex-end;
 }
 
 /* Actions */

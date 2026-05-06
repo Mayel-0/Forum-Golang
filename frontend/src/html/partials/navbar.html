@@ -1,38 +1,28 @@
 {{ define "navbar" }}
 <nav>
-    <div class="nav-left">
-        <h1>Lyrics.</h1>
-        <div class="search-bar">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" name="search" id="search" placeholder="Rechercher un sujet, un artiste, un concert...">
+    <div class="nav-inner">
+        <div class="nav-left">
+            <h1><a href="/">Lyrics</a></h1>
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" name="search" id="search" placeholder="Rechercher un sujet, un artiste, un concert...">
+            </div>
+        </div>
+        <div class="nav-right">
+            <ul>
+                {{ if .User.Username }}
+                    <li><a href="/profile" class="button-white">{{ .User.Username }}</a></li>
+                    <li><a href="/" class="button-brown">Accueil</a></li>
+                {{ else }}
+                    <li><a href="/auth/login" class="button-white">Connexion</a></li>
+                    <li><a href="/auth/register" class="button-brown">Créer un compte</a></li>
+                {{ end }}
+            </ul>
         </div>
     </div>
-    <div class="nav-right">
-        <ul>
-            {{ if .User.ID }}
-                <li><a href="/profile" class="button-white">{{ .User.Username }}</a></li>
-            {{ else }}
-                <li><a href="/auth/login" class="button-white">Connexion</a></li>
-                <li><a href="/auth/register" class="button-brown">Créer un compte</a></li>
-            {{ end }}
-        </ul>
-    </div>
-    <!--
-    <div>
-        <img src="../../assets/img/logo.png" alt="logo-site" />
-    </div>
-    <div>
-        <ul>
-            <li><a href="/profile">Profil</a></li>
-            <li><a href="/">Accueil</a></li>
-            <li><a href="/forum/index">Forum</a></li>
-            <li><a href="/auth/login">Connexion</a></li>
-            <li><a href="/auth/register">Inscription</a></li>
-        </ul>
-    </div> -->
 </nav>
 <div class="subnav">
-    <div class="subnav-categories">
+    <div class="subnav-inner">
         <ul class="subnav-categories-list">
             <li>Rock</li>
             <li>Techno</li>
@@ -45,8 +35,6 @@
             <li>Métal</li>
             <li>Reggaeton</li>
         </ul>
-    </div>
-    <div class="">
         <button class="button-brown">Lancer un sujet</button>
     </div>
 </div>

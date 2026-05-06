@@ -1,9 +1,13 @@
 package template
 
-import "text/template"
+import (
+	"lyrics/models"
+	"text/template"
+)
 
 var funcMap = template.FuncMap{
-	"add": func(a, b int) int { return a + b },
+	"add":     func(a, b int) int { return a + b },
+	"isAdmin": func(role models.UserRole) bool { return role == models.UserRoleAdmin },
 }
 
 const base = "../frontend/src/html/"
