@@ -84,6 +84,11 @@ type User struct {
 	EmailVerifiedAt *time.Time `gorm:"type:timestamptz"`
 	CreatedAt       time.Time  `gorm:"type:timestamptz;not null;default:now()"`
 	UpdatedAt       time.Time  `gorm:"type:timestamptz;not null;default:now()"`
+
+	// Champs calculés — pas en DB
+	LikesCount    int `gorm:"->"`
+	PostsCount    int `gorm:"->"`
+	CommentsCount int `gorm:"->"`
 }
 
 type Category struct {
