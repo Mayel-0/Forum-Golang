@@ -39,7 +39,7 @@ func parsePage(pagePath string, p []string) (*template.Template, error) {
 func ParseTemplates() (map[string]*template.Template, error) {
 	pages := map[string]pageConfig{
 		"index.html":       {base + "forum/index.html", forumPartials},
-		"post.html":        {base + "forum/post/post.html", partials},
+		"post.html":        {base + "forum/post/post.html", forumPartials},
 		"post-create.html": {base + "forum/post/post-create.html", partials},
 		"post-edit.html":   {base + "forum/post/post-edit.html", partials},
 		"login.html":       {base + "auth/login.html", partials},

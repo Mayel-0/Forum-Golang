@@ -186,7 +186,6 @@ nav ul {
 
 .subnav-categories-list li {
 	background-color: white;
-	color: #333;
 	border: 1px solid #EAE0D6;
 	padding: 4px 14px;
 	font-size: 13px;
@@ -197,10 +196,17 @@ nav ul {
 	transition: background-color 0.15s, color 0.15s, border-color 0.15s;
 }
 
+.subnav-categories-list li a {
+	color: #333;
+}
+
 .subnav-categories-list li:hover {
 	background-color: var(--main-brown);
-	color: white;
 	border-color: var(--main-brown);
+}
+
+.subnav-categories-list li:hover a {
+	color: white;
 }
 
 @media (max-width: 768px) {

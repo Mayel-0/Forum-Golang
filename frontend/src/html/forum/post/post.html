@@ -1,6 +1,6 @@
-{{ define "pageTitle" }}Modifier un post{{ end }}
+{{ define "pageTitle" }} {{ .Post.Title }} {{ end }}
 
-{{ define "pageContent" }}
+{{ define "forumContent" }}
 <section id="post-section">
     <h1>{{ .Post.Title }}</h1>
     <p>{{ .Post.Body }}</p>
