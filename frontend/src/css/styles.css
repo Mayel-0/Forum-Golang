@@ -201,12 +201,14 @@ nav ul {
 	color: #333;
 }
 
-.subnav-categories-list li:hover {
+.subnav-categories-list li:hover,
+.subnav-categories-list li.active {
 	background-color: var(--main-brown);
 	border-color: var(--main-brown);
 }
 
-.subnav-categories-list li:hover a {
+.subnav-categories-list li:hover a,
+.subnav-categories-list li.active a {
 	color: white;
 }
 

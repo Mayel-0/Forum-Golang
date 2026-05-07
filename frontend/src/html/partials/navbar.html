@@ -38,4 +38,11 @@
         <button class="button-brown">Lancer un sujet</button>
     </div>
 </div>
+<script>
+    document.querySelectorAll('.subnav-categories-list li a').forEach(a => {
+        if (window.location.pathname.startsWith(a.getAttribute('href'))) {
+            a.closest('li').classList.add('active');
+        }
+    });
+</script>
 {{ end }}
