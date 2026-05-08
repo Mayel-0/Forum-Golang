@@ -1,4 +1,5 @@
 *.env
-/temp
+/tmp
 *.log
 *.tmp
+/backend/tmp/
