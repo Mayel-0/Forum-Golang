@@ -344,3 +344,148 @@ footer {
         gap: 24px;
     }
 }
+
+/* ── Page création de post ── */
+#create-section {
+    max-width: 720px;
+    margin: 40px auto;
+    padding: 0 16px;
+    width: 100%;
+}
+
+.create-card {
+    background: white;
+    border: 1px solid #EAE0D6;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.create-card-header {
+    padding: 28px 32px 20px;
+    border-bottom: 1px solid #EAE0D6;
+}
+
+.create-card-header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 4px;
+}
+
+.create-card-header p {
+    font-size: 13px;
+    color: #999;
+}
+
+.create-form {
+    padding: 24px 32px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.create-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.create-field label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+}
+
+.create-field input,
+.create-field textarea,
+.create-field select {
+    padding: 10px 14px;
+    border: 1px solid #EAE0D6;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+    background-color: #FAFAF8;
+    outline: none;
+    transition: border-color 0.15s, background-color 0.15s;
+    box-sizing: border-box;
+    width: 100%;
+    font-family: inherit;
+}
+
+.create-field textarea {
+    resize: vertical;
+    min-height: 160px;
+}
+
+.create-field input:focus,
+.create-field textarea:focus,
+.create-field select:focus {
+    border-color: var(--main-brown);
+    background-color: white;
+}
+
+.create-field select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    cursor: pointer;
+}
+
+.create-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.create-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.create-btn-cancel {
+    font-size: 14px;
+    color: #999;
+    text-decoration: none;
+    padding: 9px 18px;
+    border: 1px solid #EAE0D6;
+    border-radius: 8px;
+    transition: border-color 0.15s, color 0.15s;
+}
+
+.create-btn-cancel:hover {
+    border-color: #ccc;
+    color: #666;
+}
+
+.create-btn-submit {
+    padding: 9px 24px;
+    background-color: var(--main-brown);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.create-btn-submit:hover {
+    opacity: 0.88;
+}
+
+@media (max-width: 600px) {
+    .create-row {
+        grid-template-columns: 1fr;
+    }
+
+    .create-card-header,
+    .create-form {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}

@@ -4,17 +4,20 @@
 <section id="profile-section">
 
     <div class="profile-header {{ if isAdmin .User.Role }}admin{{ end }}">
-        <div class="profile-avatar">
-            {{ if .User.AvatarURL }}
-                <img src="{{ .User.AvatarURL }}" alt="{{ .User.Username }}">
-            {{ else }}
-                <img src="/assets/img/user.png" alt="{{ .User.Username }}">
-            {{ end }}
-        </div>
-        <div class="profile-identity">
-            <h1>{{ .User.Username }}</h1>
-            <span class="profile-role">{{ .User.Role }}</span>
-            {{ if .User.Bio }}<p>{{ .User.Bio }}</p>{{ end }}
+        <div class="profile-banner"></div>
+        <div class="profile-header-body">
+            <div class="profile-avatar">
+                {{ if .User.AvatarURL }}
+                    <img src="{{ .User.AvatarURL }}" alt="{{ .User.Username }}">
+                {{ else }}
+                    <img src="/assets/img/user.png" alt="{{ .User.Username }}">
+                {{ end }}
+            </div>
+            <div class="profile-identity">
+                <h1>{{ .User.Username }}</h1>
+                <span class="profile-role">{{ .User.Role }}</span>
+                {{ if .User.Bio }}<p>{{ .User.Bio }}</p>{{ end }}
+            </div>
         </div>
     </div>
 
