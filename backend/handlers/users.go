@@ -191,3 +191,12 @@ func UploadBanniereHandler(w http.ResponseWriter, r *http.Request) {
 
 	http.Redirect(w, r, "/profile", http.StatusSeeOther)
 }
+
+func SearchHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+
+	default:
+		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
+	}
+}

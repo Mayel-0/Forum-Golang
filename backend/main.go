@@ -80,6 +80,8 @@ func main() {
 	mux.Handle("POST /comment/create", auth.RequireAuth(http.HandlerFunc(handlerspkg.AddCommentHandler)))
 	mux.Handle("POST /comment/delete", auth.RequireAuth(http.HandlerFunc(handlerspkg.DeleteCommentHandler)))
 
+	mux.Handle("GET /search/", handlerspkg.SearchHandler)
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
