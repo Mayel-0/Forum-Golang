@@ -476,6 +476,12 @@ footer {
     margin: 0;
 }
 
+#comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
 .comment-item {
     display: flex;
     gap: 12px;
@@ -600,6 +606,120 @@ footer {
 .comment-submit-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+/* ── Actions sous un commentaire ── */
+.comment-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.btn-toggle-reply {
+    background: none;
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--main-brown);
+    cursor: pointer;
+    padding: 0;
+    transition: opacity 0.15s;
+}
+
+.btn-toggle-reply:hover {
+    opacity: 0.7;
+}
+
+.toggle-replies-btn {
+    background: none;
+    border: none;
+    font-size: 12px;
+    color: #aaa;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.15s;
+}
+
+.toggle-replies-btn:hover {
+    color: #666;
+}
+
+.btn-delete {
+    background: none;
+    border: none;
+    font-size: 12px;
+    color: #ddd;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.15s;
+    margin-left: auto;
+}
+
+.btn-delete:hover {
+    color: #e57373;
+}
+
+/* ── Formulaire de réponse inline ── */
+.reply-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 12px;
+    background: #F5F2EF;
+    border-radius: 8px;
+    border: 1px solid #EAE0D6;
+}
+
+.reply-form textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #EAE0D6;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #333;
+    background: white;
+    resize: none;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.15s;
+    box-sizing: border-box;
+}
+
+.reply-form textarea:focus {
+    border-color: var(--main-brown);
+}
+
+.reply-form button[type="submit"] {
+    align-self: flex-end;
+    padding: 6px 16px;
+    background-color: var(--main-brown);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.reply-form button[type="submit"]:hover {
+    opacity: 0.88;
+}
+
+/* ── Réponses imbriquées ── */
+.comment-replies {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-left: 16px;
+    border-left: 2px solid #EAE0D6;
+}
+
+.comment-reply .comment-content {
+    background: #F5F2EF;
 }
 
 .comment-login-prompt {
