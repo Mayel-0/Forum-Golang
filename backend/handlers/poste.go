@@ -250,6 +250,8 @@ func PostShowHandle(w http.ResponseWriter, r *http.Request) {
 
 	if user, ok := auth.GetCurrentUser(r); ok {
 		data.User = user
+		data.UserLikedPost = repo.HasUserLikedPost(user.ID, post.ID)
+		data.UserLikedCommentIDs = repo.GetUserLikedCommentIDs(user.ID, post.ID)
 	}
 
 	render(w, "post.html", data)

@@ -36,6 +36,9 @@ type Data struct {
 	RecentPosts  []Post
 	PopularPosts []Post
 
+	UserLikedPost       bool
+	UserLikedCommentIDs []string
+
 	messagesError   string
 	messagesSuccess string
 }

@@ -18,6 +18,16 @@
     <h1 class="post-title">{{ .Post.Title }}</h1>
     <div class="post-body">{{ .Post.Body }}</div>
 
+    <div class="post-like-row">
+        <button class="like-btn {{ if .UserLikedPost }}liked{{ end }}"
+                data-type="post"
+                data-id="{{ .Post.ID }}"
+                data-liked="{{ .UserLikedPost }}">
+            <i class="fa-{{ if .UserLikedPost }}solid{{ else }}regular{{ end }} fa-heart"></i>
+            <span>{{ .Post.LikesCount }}</span>
+        </button>
+    </div>
+
 </article>
 
 <section class="comments-section">
@@ -47,6 +57,20 @@
                     <p class="comment-body">{{ .Body }}</p>
 
                     <div class="comment-actions">
+                        {{ $idStr := printf "%s" .ID }}
+                        <button class="like-btn {{ if strIn $idStr $.UserLikedCommentIDs }}liked{{ end }}"
+                                data-type="comment"
+                                data-id="{{ .ID }}"
+                                data-liked="{{ strIn $idStr $.UserLikedCommentIDs }}">
+                            <i class="fa-{{ if strIn $idStr $.UserLikedCommentIDs }}solid{{ else }}regular{{ end }} fa-heart"></i>
+                            <span>{{ .LikesCount }}</span>
+                        </button>
+
+                        {{/* Bouton toggle répondre */}}
+                        <button class="btn-toggle-reply" data-target="reply-form-{{ $parentIDStr }}">
+                            Répondre
+                        </button>
+
                         {{/* Bouton supprimer uniquement si c'est notre commentaire */}}
                         {{ if eq .AuthorID $.User.ID }}
                         <form method="POST" action="/comment/delete" style="display:inline;">
@@ -55,11 +79,6 @@
                             <button type="submit" class="btn-delete">Supprimer</button>
                         </form>
                         {{ end }}
-
-                        {{/* Bouton toggle répondre */}}
-                        <button class="btn-toggle-reply" data-target="reply-form-{{ $parentIDStr }}">
-                            Répondre
-                        </button>
 
                         {{/* Bouton toggle réponses s'il y en a */}}
                         {{ $hasReplies := false }}
@@ -159,6 +178,45 @@
 
 <script>
 (function () {
+
+    // ── Like ──────────────────────────────────────────────────────
+    document.querySelectorAll('.like-btn').forEach(btn => {
+        btn.addEventListener('click', async function () {
+            if (!this.dataset.id) return;
+
+            const liked = this.dataset.liked === 'true';
+            const type  = this.dataset.type;
+            const id    = this.dataset.id;
+
+            const body = new FormData();
+            if (type === 'post')    body.append('post_id', id);
+            if (type === 'comment') body.append('comment_id', id);
+
+            const url = liked ? '/like/rm' : '/like/add';
+            try {
+                const res = await fetch(url, { method: 'POST', body });
+                if (!res.ok && res.status !== 204) return;
+
+                const icon  = this.querySelector('i');
+                const count = this.querySelector('span');
+                const n     = parseInt(count.textContent) || 0;
+
+                if (liked) {
+                    this.dataset.liked = 'false';
+                    this.classList.remove('liked');
+                    icon.className = 'fa-regular fa-heart';
+                    count.textContent = Math.max(0, n - 1);
+                } else {
+                    this.dataset.liked = 'true';
+                    this.classList.add('liked');
+                    icon.className = 'fa-solid fa-heart';
+                    count.textContent = n + 1;
+                    this.classList.add('like-pop');
+                    this.addEventListener('animationend', () => this.classList.remove('like-pop'), { once: true });
+                }
+            } catch (_) {}
+        });
+    });
 
     // ── Toggle formulaire de réponse ──────────────────────────────
     document.querySelectorAll('.btn-toggle-reply').forEach(btn => {

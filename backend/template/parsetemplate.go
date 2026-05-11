@@ -10,6 +10,14 @@ import (
 var funcMap = template.FuncMap{
 	"add":     func(a, b int) int { return a + b },
 	"isAdmin": func(role models.UserRole) bool { return role == models.UserRoleAdmin },
+	"strIn": func(s string, list []string) bool {
+		for _, v := range list {
+			if v == s {
+				return true
+			}
+		}
+		return false
+	},
 	"timeAgo": func(t time.Time) string {
 		d := time.Since(t)
 		switch {
