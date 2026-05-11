@@ -33,6 +33,15 @@
             <span>{{ .Post.LikesCount }}</span>
         </button>
     </div>
+    {{ if eq .User.Role "admin" }}
+        <div class="post-delete-admin">
+            <form action="/post/supprimer" method="POST">
+                <input type="hidden" name="postID" value="{{ .Post.ID }}"/>
+                <input type="hidden" name="slug" value="/p/{{ .Post.Slug }}"/>
+                <button type="submit">Supprimer</button>
+            </form>
+        </div>
+    {{ end }}
 
 </article>
 

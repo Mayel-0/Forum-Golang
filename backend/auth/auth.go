@@ -152,7 +152,14 @@ func rejectUnauthorized(w http.ResponseWriter, r *http.Request) {
 }
 
 func VerifyUserRequest(UserId uuid.UUID, AuthordID uuid.UUID) bool {
-	if UserId != AuthordID {
+	User, err := GetUserByID(UserId.String())
+	if err != nil {
+		return false
+	}
+	if User.Role != "admin" {
+		if UserId != AuthordID {
+			return false
+		}
 		return false
 	}
 	return true
