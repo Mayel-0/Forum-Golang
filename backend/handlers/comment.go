@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"lyrics/auth"
 	"lyrics/models"
 	"net/http"
@@ -24,27 +25,46 @@ func AddCommentHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		ParentID := uuid.MustParse(r.FormValue("parent_id"))
-		if ParentID == uuid.Nil {
-			ParentID = uuid.Nil
+		postID, err := uuid.Parse(r.FormValue("post_id"))
+		if err != nil {
+			http.Error(w, "ID post invalide", http.StatusBadRequest)
+			return
 		}
 
-		Slug := r.FormValue("slug")
+		var parentID *uuid.UUID
+		if raw := r.FormValue("parent_id"); raw != "" {
+			if pid, err := uuid.Parse(raw); err == nil {
+				parentID = &pid
+			}
+		}
 
 		comment := models.Comment{
 			AuthorID: UserIdParsed,
-			PostID:   uuid.MustParse(r.FormValue("post_id")),
+			PostID:   postID,
 			Body:     r.FormValue("content"),
-			ParentID: &ParentID,
+			ParentID: parentID,
 		}
 		if err := repo.AddComment(&comment); err != nil {
 			http.Error(w, "Erreur lors de la création du commentaire", http.StatusInternalServerError)
 			return
 		}
-		http.Redirect(w, r, Slug, http.StatusSeeOther)
+
+		if r.Header.Get("X-Requested-With") == "fetch" {
+			user, _ := auth.GetCurrentUser(r)
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(map[string]any{
+				"id":                comment.ID,
+				"body":              comment.Body,
+				"created_at":        comment.CreatedAt,
+				"author_username":   user.Username,
+				"author_avatar_url": user.AvatarURL,
+			})
+			return
+		}
+
+		http.Redirect(w, r, r.FormValue("slug"), http.StatusSeeOther)
 	default:
 		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
-		return
 	}
 }
 
@@ -63,7 +83,11 @@ func DeleteCommentHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		CommentId := uuid.MustParse(r.FormValue("comment_id"))
+		CommentId, err := uuid.Parse(r.FormValue("comment_id"))
+		if err != nil {
+			http.Error(w, "ID commentaire invalide", http.StatusBadRequest)
+			return
+		}
 
 		comment, err := repo.GetCommentByID(CommentId)
 		if err != nil {
@@ -83,6 +107,5 @@ func DeleteCommentHandler(w http.ResponseWriter, r *http.Request) {
 
 	default:
 		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
-		return
 	}
 }

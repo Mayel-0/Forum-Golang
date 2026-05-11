@@ -1,8 +1,143 @@
-{{ define "pageTitle" }} {{ .Post.Title }} {{ end }}
+{{ define "pageTitle" }}{{ .Post.Title }}{{ end }}
 
 {{ define "forumContent" }}
-<section id="post-section">
-    <h1>{{ .Post.Title }}</h1>
-    <p>{{ .Post.Body }}</p>
+<article class="post-article">
+
+    <div class="post-meta">
+        {{ if .Post.Author.AvatarURL }}
+            <img src="{{ .Post.Author.AvatarURL }}" alt="{{ .Post.Author.Username }}" class="post-author-avatar">
+        {{ else }}
+            <img src="/assets/img/user.png" alt="{{ .Post.Author.Username }}" class="post-author-avatar">
+        {{ end }}
+        <div>
+            <span class="post-author-name">{{ .Post.Author.Username }}</span>
+            <span class="post-date">{{ .Post.CreatedAt.Format "02/01/2006 à 15:04" }}</span>
+        </div>
+    </div>
+
+    <h1 class="post-title">{{ .Post.Title }}</h1>
+    <div class="post-body">{{ .Post.Body }}</div>
+
+</article>
+
+<section class="comments-section">
+
+    <h2 class="comments-title">
+        {{ len .Comments }} commentaire{{ if gt (len .Comments) 1 }}s{{ end }}
+    </h2>
+
+    <div id="comments-list">
+        {{ range .Comments }}
+        <div class="comment-item" data-id="{{ .ID }}">
+            <div class="comment-avatar">
+                {{ if .Author.AvatarURL }}
+                    <img src="{{ .Author.AvatarURL }}" alt="{{ .Author.Username }}">
+                {{ else }}
+                    <img src="/assets/img/user.png" alt="{{ .Author.Username }}">
+                {{ end }}
+            </div>
+            <div class="comment-content">
+                <div class="comment-header">
+                    <span class="comment-author">{{ .Author.Username }}</span>
+                    <span class="comment-date">{{ .CreatedAt.Format "02/01/2006 à 15:04" }}</span>
+                </div>
+                <p class="comment-body">{{ .Body }}</p>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+
+    {{ if .User.Username }}
+    <form id="comment-form" class="comment-form">
+        <input type="hidden" name="post_id" value="{{ .Post.ID }}">
+        <input type="hidden" name="slug" value="/p/{{ .Post.Slug }}">
+        <div class="comment-form-inner">
+            <div class="comment-form-avatar">
+                {{ if .User.AvatarURL }}
+                    <img src="{{ .User.AvatarURL }}" alt="{{ .User.Username }}">
+                {{ else }}
+                    <img src="/assets/img/user.png" alt="{{ .User.Username }}">
+                {{ end }}
+            </div>
+            <div class="comment-form-fields">
+                <textarea name="content" placeholder="Écrire un commentaire..." rows="3" required></textarea>
+                <div class="comment-form-actions">
+                    <button type="submit" class="comment-submit-btn">Commenter</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    {{ else }}
+    <p class="comment-login-prompt">
+        <a href="/auth/login">Connecte-toi</a> pour laisser un commentaire.
+    </p>
+    {{ end }}
+
 </section>
+
+<script>
+(function () {
+    const form = document.getElementById('comment-form');
+    if (!form) return;
+
+    const list = document.getElementById('comments-list');
+    const title = document.querySelector('.comments-title');
+
+    function countLabel(n) {
+        return n + ' commentaire' + (n > 1 ? 's' : '');
+    }
+
+    function buildComment(c) {
+        const avatar = c.author_avatar_url
+            ? `<img src="${c.author_avatar_url}" alt="${c.author_username}">`
+            : `<img src="/assets/img/user.png" alt="${c.author_username}">`;
+
+        const date = new Date(c.created_at).toLocaleString('fr-FR', {
+            day: '2-digit', month: '2-digit', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+
+        return `
+        <div class="comment-item" data-id="${c.id}">
+            <div class="comment-avatar">${avatar}</div>
+            <div class="comment-content">
+                <div class="comment-header">
+                    <span class="comment-author">${c.author_username}</span>
+                    <span class="comment-date">${date}</span>
+                </div>
+                <p class="comment-body">${c.body.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p>
+            </div>
+        </div>`;
+    }
+
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const btn = form.querySelector('button[type="submit"]');
+        btn.disabled = true;
+
+        const data = new FormData(form);
+        try {
+            const res = await fetch('/comment/create', {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'fetch' },
+                body: data,
+            });
+            if (!res.ok) throw new Error('Erreur serveur');
+
+            const comment = await res.json();
+            list.insertAdjacentHTML('beforeend', buildComment(comment));
+
+            const current = parseInt(title.textContent) || 0;
+            title.textContent = countLabel(current + 1);
+
+            form.querySelector('textarea').value = '';
+            list.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } catch (err) {
+            alert('Une erreur est survenue, réessaie.');
+        } finally {
+            btn.disabled = false;
+        }
+    });
+})();
+</script>
 {{ end }}

@@ -227,7 +227,13 @@ func PostShowHandle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := models.Data{Post: post}
+	comments, err := repo.GetCommentsByPostID(post.ID)
+	if err != nil {
+		http.Error(w, "Erreur récupération commentaires", http.StatusInternalServerError)
+		return
+	}
+
+	data := models.Data{Post: post, Comments: comments}
 
 	if user, ok := auth.GetCurrentUser(r); ok {
 		data.User = user
