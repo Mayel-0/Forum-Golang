@@ -258,15 +258,62 @@ main > aside {
     text-overflow: ellipsis;
 }
 
-.aside-topic > span,
-.aside-topic-meta span {
-    font-size: 11px;
-    color: #999;
-}
-
-.aside-topic-meta {
+.aside-topic {
     display: flex;
     gap: 10px;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid #EAE0D6;
+    text-decoration: none;
+}
+
+.aside-topic:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.aside-topic:hover .aside-topic-body h4 {
+    color: var(--main-brown);
+}
+
+.aside-topic-avatar img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    display: block;
+}
+
+.aside-topic-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.aside-topic-body h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.15s;
+}
+
+.aside-topic-body > span {
+    font-size: 11px;
+    color: #aaa;
+}
+
+.aside-topic-stats {
+    display: flex;
+    gap: 8px;
+}
+
+.aside-topic-stats span {
+    font-size: 11px;
+    color: #aaa;
 }
 
 /* === Footer === */

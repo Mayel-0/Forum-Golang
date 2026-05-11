@@ -33,6 +33,9 @@ type Data struct {
 	TotalNouveautes  int64
 	SubCategoryLabel string
 
+	RecentPosts  []Post
+	PopularPosts []Post
+
 	messagesError   string
 	messagesSuccess string
 }

@@ -1,13 +1,42 @@
 package template
 
 import (
+	"fmt"
 	"lyrics/models"
 	"text/template"
+	"time"
 )
 
 var funcMap = template.FuncMap{
 	"add":     func(a, b int) int { return a + b },
 	"isAdmin": func(role models.UserRole) bool { return role == models.UserRoleAdmin },
+	"timeAgo": func(t time.Time) string {
+		d := time.Since(t)
+		switch {
+		case d < time.Minute:
+			return "à l'instant"
+		case d < time.Hour:
+			m := int(d.Minutes())
+			if m == 1 {
+				return "il y a 1 min"
+			}
+			return fmt.Sprintf("il y a %d min", m)
+		case d < 24*time.Hour:
+			h := int(d.Hours())
+			if h == 1 {
+				return "il y a 1 h"
+			}
+			return fmt.Sprintf("il y a %d h", h)
+		case d < 7*24*time.Hour:
+			days := int(d.Hours() / 24)
+			if days == 1 {
+				return "hier"
+			}
+			return fmt.Sprintf("il y a %d j", days)
+		default:
+			return t.Format("02/01/2006")
+		}
+	},
 }
 
 const base = "../frontend/src/html/"

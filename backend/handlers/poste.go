@@ -218,6 +218,18 @@ func PosteModifierHandle(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func loadAsideData(data *models.Data) {
+	if top, err := repositoriespkg.GetTopUsers(3); err == nil {
+		data.TopUsers = top
+	}
+	if recent, err := repo.GetRecentPosts(5); err == nil {
+		data.RecentPosts = recent
+	}
+	if popular, err := repo.GetPopularPosts(5); err == nil {
+		data.PopularPosts = popular
+	}
+}
+
 func PostShowHandle(w http.ResponseWriter, r *http.Request) {
 	slug := r.PathValue("slug")
 
@@ -234,6 +246,7 @@ func PostShowHandle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := models.Data{Post: post, Comments: comments}
+	loadAsideData(&data)
 
 	if user, ok := auth.GetCurrentUser(r); ok {
 		data.User = user
@@ -288,6 +301,7 @@ func SubCategoryHandle(w http.ResponseWriter, r *http.Request) {
 		TopUsers:         topUsers,
 		SubCategoryLabel: labels[subRaw],
 	}
+	loadAsideData(&data)
 	if user, ok := auth.GetCurrentUser(r); ok {
 		data.User = user
 	}
@@ -348,6 +362,7 @@ func CategoryHandle(w http.ResponseWriter, r *http.Request) {
 		TotalConcerts:   totalC,
 		TotalNouveautes: totalN,
 	}
+	loadAsideData(&data)
 	if user, ok := auth.GetCurrentUser(r); ok {
 		data.User = user
 	}

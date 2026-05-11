@@ -211,6 +211,38 @@ func GetAllPostsByCategoryAndSub(categoryID uuid.UUID, sub models.PostSubCategor
 	return posts, nil
 }
 
+func GetRecentPosts(limit int) ([]models.Post, error) {
+	if dbpkg.Db == nil {
+		return nil, errors.New("db not initialized")
+	}
+	var posts []models.Post
+	if err := dbpkg.Db.
+		Preload("Author").
+		Where("deleted_at IS NULL").
+		Order("created_at DESC").
+		Limit(limit).
+		Find(&posts).Error; err != nil {
+		return nil, err
+	}
+	return posts, nil
+}
+
+func GetPopularPosts(limit int) ([]models.Post, error) {
+	if dbpkg.Db == nil {
+		return nil, errors.New("db not initialized")
+	}
+	var posts []models.Post
+	if err := dbpkg.Db.
+		Preload("Author").
+		Where("deleted_at IS NULL").
+		Order("likes_count DESC, comments_count DESC").
+		Limit(limit).
+		Find(&posts).Error; err != nil {
+		return nil, err
+	}
+	return posts, nil
+}
+
 func CountPostsByCategoryAndSub(categoryID uuid.UUID, subCategory models.PostSubCategory) (int64, error) {
 	var count int64
 	err := dbpkg.Db.Model(&models.Post{}).Where("category_id = ? AND sub_category = ? AND deleted_at IS NULL", categoryID, subCategory).Count(&count).Error
