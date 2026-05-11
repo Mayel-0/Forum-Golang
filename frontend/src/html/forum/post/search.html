@@ -1,0 +1,53 @@
+{{ define "pageTitle" }}Recherche — {{ .Query }}{{ end }}
+
+{{ define "pageContent" }}
+<div class="forum-category">
+
+    <div class="subcategory-header">
+        <a href="/" class="subcategory-back">← Accueil</a>
+        <h2>— Résultats pour "{{ .Query }}"</h2>
+    </div>
+    <hr>
+
+    <p class="search-stats">
+        {{ if .Posts }}
+            {{ len .Posts }} résultat(s) trouvé(s)
+        {{ else }}
+            Aucun résultat pour "{{ .Query }}"
+        {{ end }}
+    </p>
+
+    <div class="topics-container">
+        {{ range .Posts }}
+        <a href="/p/{{ .Slug }}">
+            <div class="topic">
+                <div class="topic-avatar">
+                    {{ if .Author.AvatarURL }}
+                        <img src="{{ deref .Author.AvatarURL }}" alt="{{ .Author.Username }}">
+                    {{ else }}
+                        <img src="/assets/default-avatar.png" alt="{{ .Author.Username }}">
+                    {{ end }}
+                </div>
+                <div class="topic-info">
+                    {{ if .IsPinned }}<span class="topic-pinned">Épinglé</span>{{ end }}
+                    <h3>{{ .Title }}</h3>
+                    <span class="topic-author">par
+                        <span class="user-card-trigger"
+                              data-username="{{ .Author.Username }}"
+                              data-avatar="{{ if .Author.AvatarURL }}{{ deref .Author.AvatarURL }}{{ end }}"
+                              data-role="{{ .Author.Role }}"
+                              data-bio="{{ if .Author.Bio }}{{ deref .Author.Bio }}{{ end }}">
+                            {{ .Author.Username }}
+                        </span>
+                    </span>
+                </div>
+                <div class="topic-stats">
+                    <span>{{ .CommentsCount }} Com</span>
+                    <span>{{ .LikesCount }} Likes</span>
+                </div>
+            </div>
+        </a>
+        {{ end }}
+    </div>
+</div>
+{{ end }}

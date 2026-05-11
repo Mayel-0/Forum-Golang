@@ -8,6 +8,8 @@ import (
 
 	"lyrics/auth"
 	dbpkg "lyrics/db"
+	"lyrics/handlers"
+
 	handlerspkg "lyrics/handlers"
 	tplpkg "lyrics/template"
 
@@ -60,6 +62,8 @@ func main() {
 	mux.HandleFunc("POST /auth/register", handlerspkg.RegisterHandle)
 	mux.HandleFunc("GET /auth/logout", handlerspkg.LogoutHandle)
 	mux.HandleFunc("GET /user/{username}", handlerspkg.PublicProfileHandle)
+	searchHandler := &handlers.SearchHandler{Templates: tpl}
+	mux.HandleFunc("/search", searchHandler.Search)
 
 	// Route dynamique par slug
 	mux.HandleFunc("GET /p/{slug...}", handlerspkg.PostShowHandle)
@@ -79,8 +83,6 @@ func main() {
 
 	mux.Handle("POST /comment/create", auth.RequireAuth(http.HandlerFunc(handlerspkg.AddCommentHandler)))
 	mux.Handle("POST /comment/delete", auth.RequireAuth(http.HandlerFunc(handlerspkg.DeleteCommentHandler)))
-
-	mux.Handle("GET /search/", handlerspkg.SearchHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {

@@ -5,7 +5,9 @@
             <h1><a href="/">Lyrics</a></h1>
             <div class="search-bar">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" name="search" id="search" placeholder="Rechercher un sujet, un artiste, un concert...">
+                <form action="/search" method="GET">
+                    <input type="text" name="q" id="q" placeholder="Rechercher un sujet, un artiste, un concert...">
+                </form>
             </div>
         </div>
         <div class="nav-right">

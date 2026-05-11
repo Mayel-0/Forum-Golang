@@ -4,10 +4,13 @@ import (
 	"io"
 	"log"
 	"lyrics/auth"
+	dbpkg "lyrics/db"
 	"lyrics/models"
 	repositoriespkg "lyrics/repositories"
 	"net/http"
 	"path/filepath"
+	"strconv"
+	"strings"
 	"text/template"
 )
 
@@ -192,11 +195,46 @@ func UploadBanniereHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/profile", http.StatusSeeOther)
 }
 
-func SearchHandler(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
+type SearchHandler struct {
+	Templates map[string]*template.Template
+}
 
-	default:
-		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
+func (h *SearchHandler) Search(w http.ResponseWriter, r *http.Request) {
+	query := strings.TrimSpace(r.URL.Query().Get("q"))
+
+	// Requête vide → redirect accueil
+	if query == "" {
+		http.Redirect(w, r, "/", http.StatusFound)
+		return
+	}
+
+	// Pagination
+	page := 1
+	if p := r.URL.Query().Get("page"); p != "" {
+		if parsed, err := strconv.Atoi(p); err == nil && parsed > 0 {
+			page = parsed
+		}
+	}
+
+	const perPage = 20
+
+	posts, _, err := repositoriespkg.SearchPosts(dbpkg.Db, query, page, perPage)
+	if err != nil {
+		http.Error(w, "Erreur serveur", http.StatusInternalServerError)
+		return
+	}
+
+	data := models.Data{
+		Query: query,
+		Posts: posts,
+	}
+
+	tmpl, ok := h.Templates["search.html"]
+	if !ok {
+		http.Error(w, "Template introuvable", http.StatusInternalServerError)
+		return
+	}
+
+	if err := tmpl.ExecuteTemplate(w, "template.html", data); err != nil {
 	}
 }

@@ -8,7 +8,13 @@ import (
 )
 
 var funcMap = template.FuncMap{
-	"add":     func(a, b int) int { return a + b },
+	"add": func(a, b int) int { return a + b },
+	"deref": func(s *string) string {
+		if s == nil {
+			return ""
+		}
+		return *s
+	},
 	"isAdmin": func(role models.UserRole) bool { return role == models.UserRoleAdmin },
 	"strIn": func(s string, list []string) bool {
 		for _, v := range list {
@@ -84,6 +90,7 @@ func ParseTemplates() (map[string]*template.Template, error) {
 		"register.html":    {base + "auth/register.html", partials},
 		"profile.html":     {base + "profile/profile.html", partials},
 		"user.html":        {base + "profile/user.html", partials},
+		"search.html":      {base + "forum/post/search.html", partials},
 	}
 
 	templates := make(map[string]*template.Template)

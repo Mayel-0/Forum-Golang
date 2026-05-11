@@ -20,6 +20,8 @@ type Data struct {
 	Post        Post
 	Category    Category
 
+	Query string
+
 	Categories []Category
 	TopUsers   []User
 	Comments   []Comment
