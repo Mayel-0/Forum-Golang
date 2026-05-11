@@ -29,7 +29,7 @@ type Data struct {
 	PostsConcerts   []Post
 	PostsNouveautes []Post
 
-	TotalArtistdes   int64
+	TotalArtistes    int64
 	TotalConcerts    int64
 	TotalNouveautes  int64
 	SubCategoryLabel string
