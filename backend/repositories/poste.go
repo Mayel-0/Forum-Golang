@@ -152,7 +152,7 @@ func GetAllPostsByCategoryLimitArtistes(categoryID uuid.UUID) ([]models.Post, er
 		Preload("Author").
 		Where("category_id = ? AND sub_category = ? AND deleted_at IS NULL", categoryID, models.SubCategoryArtistes).
 		Order("created_at DESC").
-		Limit(10).
+		Limit(5).
 		Find(&posts).Error; err != nil {
 		return nil, err
 	}
@@ -170,7 +170,7 @@ func GetAllPostsByCategoryLimitConcerts(categoryID uuid.UUID) ([]models.Post, er
 		Preload("Author").
 		Where("category_id = ? AND sub_category = ? AND deleted_at IS NULL", categoryID, models.SubCategoryConcerts).
 		Order("created_at DESC").
-		Limit(10).
+		Limit(5).
 		Find(&posts).Error; err != nil {
 		return nil, err
 	}
@@ -188,7 +188,7 @@ func GetAllPostsByCategoryLimitNouveautes(categoryID uuid.UUID) ([]models.Post, 
 		Preload("Author").
 		Where("category_id = ? AND sub_category = ? AND deleted_at IS NULL", categoryID, models.SubCategoryNouveautes).
 		Order("created_at DESC").
-		Limit(10).
+		Limit(5).
 		Find(&posts).Error; err != nil {
 		return nil, err
 	}
