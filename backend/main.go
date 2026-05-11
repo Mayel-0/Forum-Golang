@@ -49,6 +49,7 @@ func main() {
 	// Routes publiques
 	mux.HandleFunc("/", handlerspkg.ForumIndexHandle)
 	mux.HandleFunc("GET /category/{slug}", handlerspkg.CategoryHandle)
+	mux.HandleFunc("GET /category/{slug}/{subcategory}", handlerspkg.SubCategoryHandle)
 	mux.HandleFunc("GET /auth/login", handlerspkg.LoginHandle)
 	mux.HandleFunc("POST /auth/login", handlerspkg.LoginHandle)
 	mux.HandleFunc("GET /auth/register", handlerspkg.RegisterHandle)

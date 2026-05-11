@@ -242,6 +242,59 @@ func PostShowHandle(w http.ResponseWriter, r *http.Request) {
 	render(w, "post.html", data)
 }
 
+func SubCategoryHandle(w http.ResponseWriter, r *http.Request) {
+	slug := "/" + r.PathValue("slug")
+	subRaw := r.PathValue("subcategory")
+
+	if !validSubCategory(subRaw) {
+		http.Error(w, "Sous-catégorie invalide", http.StatusNotFound)
+		return
+	}
+	sub := models.PostSubCategory(subRaw)
+
+	categoryID, err := repo.GetCategoryIDBySlug(slug)
+	if err != nil {
+		http.Error(w, "Catégorie non trouvée", http.StatusNotFound)
+		return
+	}
+
+	posts, err := repo.GetAllPostsByCategoryAndSub(categoryID, sub)
+	if err != nil {
+		http.Error(w, "Erreur récupération des posts", http.StatusInternalServerError)
+		return
+	}
+
+	category, err := repo.GetCategoryByID(categoryID)
+	if err != nil {
+		http.Error(w, "Erreur récupération de la catégorie", http.StatusInternalServerError)
+		return
+	}
+
+	topUsers, err := repositoriespkg.GetTopUsers(3)
+	if err != nil {
+		http.Error(w, "Erreur récupération des utilisateurs", http.StatusInternalServerError)
+		return
+	}
+
+	labels := map[string]string{
+		"artistes":   "Artistes",
+		"concerts":   "Concerts",
+		"nouveautes": "Nouveautés",
+	}
+
+	data := models.Data{
+		Posts:            posts,
+		Category:         category,
+		TopUsers:         topUsers,
+		SubCategoryLabel: labels[subRaw],
+	}
+	if user, ok := auth.GetCurrentUser(r); ok {
+		data.User = user
+	}
+
+	render(w, "subcategory.html", data)
+}
+
 func CategoryHandle(w http.ResponseWriter, r *http.Request) {
 	slug := "/" + r.PathValue("slug")
 
@@ -281,12 +334,19 @@ func CategoryHandle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	totalA, _ := repo.CountPostsByCategoryAndSub(categoryID, models.SubCategoryArtistes)
+	totalC, _ := repo.CountPostsByCategoryAndSub(categoryID, models.SubCategoryConcerts)
+	totalN, _ := repo.CountPostsByCategoryAndSub(categoryID, models.SubCategoryNouveautes)
+
 	data := models.Data{
 		TopUsers:        topUsers,
 		PostsArtists:    postsA,
 		PostsConcerts:   postsC,
 		PostsNouveautes: postsN,
 		Category:        category,
+		TotalArtistes:   totalA,
+		TotalConcerts:   totalC,
+		TotalNouveautes: totalN,
 	}
 	if user, ok := auth.GetCurrentUser(r); ok {
 		data.User = user

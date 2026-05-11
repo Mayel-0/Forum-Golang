@@ -559,6 +559,65 @@ footer {
     text-decoration: none;
 }
 
+/* ── Page sous-catégorie ── */
+.subcategory-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+}
+
+.subcategory-back {
+    font-size: 13px;
+    color: var(--main-brown);
+    text-decoration: none;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.subcategory-back:hover {
+    text-decoration: underline;
+}
+
+.subcategory-header h2 {
+    flex: 1;
+    margin: 0;
+}
+
+.subcategory-count {
+    font-size: 12px;
+    color: #aaa;
+    white-space: nowrap;
+}
+
+.subcategory-empty {
+    font-size: 14px;
+    color: #aaa;
+    text-align: center;
+    padding: 32px 0;
+}
+
+/* ── Voir plus ── */
+.voir-plus-btn {
+    display: block;
+    width: fit-content;
+    margin: 8px 0 20px auto;
+    padding: 7px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--main-brown);
+    border: 1px solid var(--main-brown);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.voir-plus-btn:hover {
+    background-color: var(--main-brown);
+    color: white;
+}
+
 /* ── Page création de post ── */
 #create-section {
     max-width: 720px;

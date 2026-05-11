@@ -195,3 +195,24 @@ func GetAllPostsByCategoryLimitNouveautes(categoryID uuid.UUID) ([]models.Post, 
 
 	return posts, nil
 }
+
+func GetAllPostsByCategoryAndSub(categoryID uuid.UUID, sub models.PostSubCategory) ([]models.Post, error) {
+	if dbpkg.Db == nil {
+		return nil, errors.New("db not initialized")
+	}
+	var posts []models.Post
+	if err := dbpkg.Db.
+		Preload("Author").
+		Where("category_id = ? AND sub_category = ? AND deleted_at IS NULL", categoryID, sub).
+		Order("created_at DESC").
+		Find(&posts).Error; err != nil {
+		return nil, err
+	}
+	return posts, nil
+}
+
+func CountPostsByCategoryAndSub(categoryID uuid.UUID, subCategory models.PostSubCategory) (int64, error) {
+	var count int64
+	err := dbpkg.Db.Model(&models.Post{}).Where("category_id = ? AND sub_category = ? AND deleted_at IS NULL", categoryID, subCategory).Count(&count).Error
+	return count, err
+}
