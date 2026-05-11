@@ -22,13 +22,26 @@
 	font-display: swap;
 }
 
+@font-face {
+	font-family: "Roboto";
+	src: url("../../assets/fonts/Roboto-VariableFont_wdth\,wght.ttf")
+		format("woff2");
+	font-weight: 300;
+	font-style: normal;
+	font-display: swap;
+}
+
 :root {
-	--font-script: "Dancing Script", cursive;
+	--font-script: "Dancing Script", "DM Sans", sans-serif;
+	--font-base: "Roboto", "DM Sans", sans-serif;
 	--main-brown: rgb(123, 79, 46);
 	--secondary-brown: rgb(154, 128, 96);
 }
 
 /** BUTTON **/
+body {
+	font-family: var(--font-base);
+}
 
 .button-white {
 	background-color: white;
@@ -84,7 +97,7 @@ body {
 
 nav {
 	background-color: white;
-	border-bottom: 1px solid #EAE0D6;
+	border-bottom: 1px solid #eae0d6;
 }
 
 .nav-inner {
@@ -132,7 +145,7 @@ nav ul {
 	display: flex;
 	align-items: center;
 	gap: 10px;
-	border: 1px solid #EAE0D6;
+	border: 1px solid #eae0d6;
 	padding: 6px 15px;
 	border-radius: 18px;
 	background-color: #fafaf8;
@@ -156,7 +169,7 @@ nav ul {
 
 .subnav {
 	background-color: white;
-	border-bottom: 1px solid #EAE0D6;
+	border-bottom: 1px solid #eae0d6;
 }
 
 .subnav-inner {
@@ -186,13 +199,16 @@ nav ul {
 
 .subnav-categories-list li {
 	background-color: white;
-	border: 1px solid #EAE0D6;
+	border: 1px solid #eae0d6;
 	font-size: 13px;
 	font-weight: 500;
 	cursor: pointer;
 	border-radius: 18px;
 	white-space: nowrap;
-	transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+	transition:
+		background-color 0.15s,
+		color 0.15s,
+		border-color 0.15s;
 }
 
 .subnav-categories-list li a {
@@ -212,6 +228,14 @@ nav ul {
 	color: white;
 }
 
+i {
+	color: var(--main-brown);
+}
+
+span {
+	color: black;
+}
+
 @media (max-width: 768px) {
 	.search-bar {
 		display: none;
@@ -229,4 +253,3 @@ nav ul {
 a {
 	text-decoration: none;
 }
-
