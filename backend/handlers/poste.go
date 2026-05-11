@@ -246,10 +246,7 @@ func PostShowHandle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := models.Data{Post: post, Comments: comments}
-<<<<<<< HEAD
 	loadAsideData(&data)
-=======
->>>>>>> comment
 
 	if user, ok := auth.GetCurrentUser(r); ok {
 		data.User = user
@@ -304,10 +301,7 @@ func SubCategoryHandle(w http.ResponseWriter, r *http.Request) {
 		TopUsers:         topUsers,
 		SubCategoryLabel: labels[subRaw],
 	}
-<<<<<<< HEAD
 	loadAsideData(&data)
-=======
->>>>>>> comment
 	if user, ok := auth.GetCurrentUser(r); ok {
 		data.User = user
 	}

@@ -211,7 +211,6 @@ func GetAllPostsByCategoryAndSub(categoryID uuid.UUID, sub models.PostSubCategor
 	return posts, nil
 }
 
-<<<<<<< HEAD
 func GetRecentPosts(limit int) ([]models.Post, error) {
 	if dbpkg.Db == nil {
 		return nil, errors.New("db not initialized")
@@ -244,8 +243,6 @@ func GetPopularPosts(limit int) ([]models.Post, error) {
 	return posts, nil
 }
 
-=======
->>>>>>> comment
 func CountPostsByCategoryAndSub(categoryID uuid.UUID, subCategory models.PostSubCategory) (int64, error) {
 	var count int64
 	err := dbpkg.Db.Model(&models.Post{}).Where("category_id = ? AND sub_category = ? AND deleted_at IS NULL", categoryID, subCategory).Count(&count).Error

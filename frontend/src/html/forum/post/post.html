@@ -28,24 +28,6 @@
 
     <div id="comments-list">
         {{ range .Comments }}
-<<<<<<< HEAD
-        <div class="comment-item" data-id="{{ .ID }}">
-            <div class="comment-avatar">
-                {{ if .Author.AvatarURL }}
-                    <img src="{{ .Author.AvatarURL }}" alt="{{ .Author.Username }}">
-                {{ else }}
-                    <img src="/assets/img/user.png" alt="{{ .Author.Username }}">
-                {{ end }}
-            </div>
-            <div class="comment-content">
-                <div class="comment-header">
-                    <span class="comment-author">{{ .Author.Username }}</span>
-                    <span class="comment-date">{{ .CreatedAt.Format "02/01/2006 à 15:04" }}</span>
-                </div>
-                <p class="comment-body">{{ .Body }}</p>
-            </div>
-        </div>
-=======
             {{ if not .ParentID }}
             {{ $parentIDStr := printf "%s" .ID }}
 
@@ -144,7 +126,6 @@
                 </div>
             </div>
             {{ end }}
->>>>>>> comment
         {{ end }}
     </div>
 
@@ -178,8 +159,6 @@
 
 <script>
 (function () {
-<<<<<<< HEAD
-=======
 
     // ── Toggle formulaire de réponse ──────────────────────────────
     document.querySelectorAll('.btn-toggle-reply').forEach(btn => {
@@ -204,7 +183,6 @@
     });
 
     // ── Soumission AJAX du commentaire principal ──────────────────
->>>>>>> comment
     const form = document.getElementById('comment-form');
     if (!form) return;
 
@@ -266,13 +244,6 @@
             btn.disabled = false;
         }
     });
-<<<<<<< HEAD
 })();
 </script>
 {{ end }}
-=======
-
-})();
-</script>
-{{ end }}
->>>>>>> comment
