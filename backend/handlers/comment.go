@@ -105,6 +105,8 @@ func DeleteCommentHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		http.Redirect(w, r, r.FormValue("slug"), http.StatusSeeOther)
+
 	default:
 		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
 	}

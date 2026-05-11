@@ -183,3 +183,54 @@ func UpdateUserAvatar(userID string, avatarURL string) error {
 		Where("id = ?", userID).
 		Update("avatar_url", avatarURL).Error
 }
+
+func UploadBanniere(userID string, ext string, fileBytes []byte) (string, error) {
+	supabaseURL := os.Getenv("SUPABASE_URL")
+	supabaseKey := os.Getenv("SUPABASE_SERVICE_KEY")
+
+	log.Printf("SUPABASE_URL: %s", supabaseURL)
+	log.Printf("SUPABASE_SERVICE_KEY présent: %v", supabaseKey != "")
+
+	fileName := userID + ext
+	uploadURL := supabaseURL + "/storage/v1/object/bannieres/" + fileName
+
+	log.Printf("Upload URL: %s", uploadURL)
+
+	req, err := http.NewRequest("POST", uploadURL, bytes.NewReader(fileBytes))
+	if err != nil {
+		log.Printf("Erreur création requête: %v", err)
+		return "", err
+	}
+
+	req.Header.Set("Authorization", "Bearer "+supabaseKey)
+	req.Header.Set("Content-Type", "image/"+ext[1:])
+	req.Header.Set("x-upsert", "true")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Printf("Erreur envoi requête: %v", err)
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	body, _ := io.ReadAll(resp.Body)
+	log.Printf("Status Supabase: %d", resp.StatusCode)
+	log.Printf("Réponse Supabase: %s", string(body))
+
+	if resp.StatusCode != http.StatusOK {
+		return "", errors.New("upload supabase échoué")
+	}
+
+	publicURL := supabaseURL + "/storage/v1/object/public/bannieres/" + fileName
+	return publicURL, nil
+}
+
+func UpdateUserBanniere(userID string, banniereURL string) error {
+	if dbpkg.Db == nil {
+		return errors.New("db not initialized")
+	}
+	return dbpkg.Db.Model(&models.User{}).
+		Where("id = ?", userID).
+		Update("baniere_url", banniereURL).Error
+}

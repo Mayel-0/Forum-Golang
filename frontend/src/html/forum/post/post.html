@@ -28,6 +28,7 @@
 
     <div id="comments-list">
         {{ range .Comments }}
+<<<<<<< HEAD
         <div class="comment-item" data-id="{{ .ID }}">
             <div class="comment-avatar">
                 {{ if .Author.AvatarURL }}
@@ -44,6 +45,106 @@
                 <p class="comment-body">{{ .Body }}</p>
             </div>
         </div>
+=======
+            {{ if not .ParentID }}
+            {{ $parentIDStr := printf "%s" .ID }}
+
+            <div class="comment-item" data-id="{{ .ID }}">
+                <div class="comment-avatar">
+                    {{ if .Author.AvatarURL }}
+                        <img src="{{ .Author.AvatarURL }}" alt="{{ .Author.Username }}">
+                    {{ else }}
+                        <img src="/assets/img/user.png" alt="{{ .Author.Username }}">
+                    {{ end }}
+                </div>
+                <div class="comment-content">
+                    <div class="comment-header">
+                        <span class="comment-author">{{ .Author.Username }}</span>
+                        <span class="comment-date">{{ .CreatedAt.Format "02/01/2006 à 15:04" }}</span>
+                    </div>
+                    <p class="comment-body">{{ .Body }}</p>
+
+                    <div class="comment-actions">
+                        {{/* Bouton supprimer uniquement si c'est notre commentaire */}}
+                        {{ if eq .AuthorID $.User.ID }}
+                        <form method="POST" action="/comment/delete" style="display:inline;">
+                            <input type="hidden" name="comment_id" value="{{ .ID }}"/>
+                            <input type="hidden" name="slug" value="/p/{{ $.Post.Slug }}"/>
+                            <button type="submit" class="btn-delete">Supprimer</button>
+                        </form>
+                        {{ end }}
+
+                        {{/* Bouton toggle répondre */}}
+                        <button class="btn-toggle-reply" data-target="reply-form-{{ $parentIDStr }}">
+                            Répondre
+                        </button>
+
+                        {{/* Bouton toggle réponses s'il y en a */}}
+                        {{ $hasReplies := false }}
+                        {{ range $.Comments }}
+                            {{ if .ParentID }}
+                                {{ if eq (printf "%s" .ParentID) $parentIDStr }}
+                                    {{ $hasReplies = true }}
+                                {{ end }}
+                            {{ end }}
+                        {{ end }}
+
+                        {{ if $hasReplies }}
+                        <button class="toggle-replies-btn" data-target="replies-{{ $parentIDStr }}">
+                            ▶ Voir les réponses
+                        </button>
+                        {{ end }}
+                    </div>
+
+                    {{/* Formulaire de réponse — caché par défaut */}}
+                    <div id="reply-form-{{ $parentIDStr }}" style="display:none;">
+                        <form method="POST" action="/comment/create" class="reply-form">
+                            <input name="post_id" type="hidden" value="{{ $.Post.ID }}"/>
+                            <input name="parent_id" type="hidden" value="{{ .ID }}"/>
+                            <input name="slug" type="hidden" value="/p/{{ $.Post.Slug }}"/>
+                            <textarea name="content" placeholder="Répondre..." rows="2" required></textarea>
+                            <button type="submit">Envoyer</button>
+                        </form>
+                    </div>
+
+                    {{/* Réponses imbriquées — cachées par défaut */}}
+                    <div class="comment-replies" id="replies-{{ $parentIDStr }}" style="display:none;">
+                        {{ range $.Comments }}
+                            {{ if .ParentID }}
+                                {{ if eq (printf "%s" .ParentID) $parentIDStr }}
+                                <div class="comment-item comment-reply" data-id="{{ .ID }}">
+                                    <div class="comment-avatar">
+                                        {{ if .Author.AvatarURL }}
+                                            <img src="{{ .Author.AvatarURL }}" alt="{{ .Author.Username }}">
+                                        {{ else }}
+                                            <img src="/assets/img/user.png" alt="{{ .Author.Username }}">
+                                        {{ end }}
+                                    </div>
+                                    <div class="comment-content">
+                                        <div class="comment-header">
+                                            <span class="comment-author">{{ .Author.Username }}</span>
+                                            <span class="comment-date">{{ .CreatedAt.Format "02/01/2006 à 15:04" }}</span>
+                                        </div>
+                                        <p class="comment-body">{{ .Body }}</p>
+
+                                        {{ if eq .AuthorID $.User.ID }}
+                                        <form method="POST" action="/comment/delete">
+                                            <input type="hidden" name="comment_id" value="{{ .ID }}"/>
+                                            <input type="hidden" name="slug" value="/p/{{ $.Post.Slug }}"/>
+                                            <button type="submit" class="btn-delete">Supprimer</button>
+                                        </form>
+                                        {{ end }}
+                                    </div>
+                                </div>
+                                {{ end }}
+                            {{ end }}
+                        {{ end }}
+                    </div>
+
+                </div>
+            </div>
+            {{ end }}
+>>>>>>> comment
         {{ end }}
     </div>
 
@@ -77,6 +178,33 @@
 
 <script>
 (function () {
+<<<<<<< HEAD
+=======
+
+    // ── Toggle formulaire de réponse ──────────────────────────────
+    document.querySelectorAll('.btn-toggle-reply').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const target = document.getElementById(this.dataset.target);
+            const isOpen = target.style.display !== 'none';
+            target.style.display = isOpen ? 'none' : 'block';
+            this.textContent = isOpen ? 'Répondre' : 'Annuler';
+        });
+    });
+
+    // ── Toggle affichage des réponses ─────────────────────────────
+    document.querySelectorAll('.toggle-replies-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const target = document.getElementById(this.dataset.target);
+            const isOpen = target.style.display !== 'none';
+            target.style.display = isOpen ? 'none' : 'block';
+            this.textContent = isOpen
+                ? this.textContent.replace('▼', '▶')
+                : this.textContent.replace('▶', '▼');
+        });
+    });
+
+    // ── Soumission AJAX du commentaire principal ──────────────────
+>>>>>>> comment
     const form = document.getElementById('comment-form');
     if (!form) return;
 
@@ -138,6 +266,13 @@
             btn.disabled = false;
         }
     });
+<<<<<<< HEAD
 })();
 </script>
 {{ end }}
+=======
+
+})();
+</script>
+{{ end }}
+>>>>>>> comment

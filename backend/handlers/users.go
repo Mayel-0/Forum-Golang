@@ -131,3 +131,49 @@ func UploadAvatarHandler(w http.ResponseWriter, r *http.Request) {
 
 	http.Redirect(w, r, "/profile", http.StatusSeeOther)
 }
+
+func UploadBanniereHandler(w http.ResponseWriter, r *http.Request) {
+	UserID, ok := auth.GetUserID(r)
+	if !ok {
+		http.Error(w, "Utilisateur non authentifié", http.StatusUnauthorized)
+		return
+	}
+
+	r.ParseMultipartForm(5 << 20) // 5MB max
+	file, header, err := r.FormFile("avatar")
+	if err != nil {
+		http.Error(w, "Fichier invalide", http.StatusBadRequest)
+		return
+	}
+	defer file.Close()
+
+	// Vérifier le type MIME
+	ext := filepath.Ext(header.Filename)
+	allowed := map[string]bool{".jpg": true, ".jpeg": true, ".png": true, ".webp": true}
+	if !allowed[ext] {
+		http.Error(w, "Format non supporté", http.StatusBadRequest)
+		return
+	}
+
+	// Lire le contenu
+	fileBytes, err := io.ReadAll(file)
+	if err != nil {
+		http.Error(w, "Erreur lecture fichier", http.StatusInternalServerError)
+		return
+	}
+
+	// Upload vers Supabase Storage
+	avatarURL, err := repositoriespkg.UploadBanniere(UserID, ext, fileBytes)
+	if err != nil {
+		http.Error(w, "Erreur upload", http.StatusInternalServerError)
+		return
+	}
+
+	// Mettre à jour avatar_url en DB
+	if err := repositoriespkg.UpdateUserBanniere(UserID, avatarURL); err != nil {
+		http.Error(w, "Erreur mise à jour", http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/profile", http.StatusSeeOther)
+}

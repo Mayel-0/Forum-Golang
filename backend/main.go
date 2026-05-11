@@ -62,6 +62,7 @@ func main() {
 	mux.Handle("GET /profile", auth.RequireAuth(http.HandlerFunc(handlerspkg.ProfileHandle)))
 	mux.Handle("POST /profile/modify", auth.RequireAuth(http.HandlerFunc(handlerspkg.ProfileHandle)))
 	mux.Handle("POST /profile/avatar", auth.RequireAuth(http.HandlerFunc(handlerspkg.UploadAvatarHandler)))
+	mux.Handle("POST /profile/banniere", auth.RequireAuth(http.HandlerFunc(handlerspkg.UploadBanniereHandler)))
 
 	mux.Handle("POST /like/add", auth.RequireAuth(http.HandlerFunc(handlerspkg.LikeHandlerAdd)))
 	mux.Handle("POST /like/rm", auth.RequireAuth(http.HandlerFunc(handlerspkg.LikeHandlerRm)))
