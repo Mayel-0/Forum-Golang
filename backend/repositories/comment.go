@@ -30,7 +30,7 @@ func GetCommentsByPostID(postID uuid.UUID) ([]models.Comment, error) {
 	}
 
 	var comments []models.Comment
-	if err := dbpkg.Db.Where("post_id = ?", postID).Order("created_at ASC").Find(&comments).Error; err != nil {
+	if err := dbpkg.Db.Preload("Author").Where("post_id = ? AND deleted_at IS NULL", postID).Order("created_at ASC").Find(&comments).Error; err != nil {
 		return nil, err
 	}
 

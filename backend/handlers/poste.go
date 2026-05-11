@@ -6,6 +6,7 @@ import (
 	"lyrics/db"
 	"lyrics/models"
 	repo "lyrics/repositories"
+	repositoriespkg "lyrics/repositories"
 	"net/http"
 	"regexp"
 	"strings"
@@ -61,7 +62,12 @@ func PosteCreateHandler(w http.ResponseWriter, r *http.Request) {
 			log.Printf("Erreur récupération catégories: %v", err)
 			return
 		}
-		render(w, "post-create.html", categories)
+
+		data := models.Data{Categories: categories}
+		if user, ok := auth.GetCurrentUser(r); ok {
+			data.User = user
+		}
+		render(w, "post-create.html", data)
 	case http.MethodPost:
 		userIDParsed, err := uuid.Parse(UserID)
 		if err != nil {
@@ -101,7 +107,9 @@ func PosteCreateHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		http.Redirect(w, r, Post.Slug, http.StatusSeeOther)
+		reelSlug := "/p/" + Post.Slug
+
+		http.Redirect(w, r, reelSlug, http.StatusSeeOther)
 	default:
 		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
 	}
@@ -210,6 +218,18 @@ func PosteModifierHandle(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func loadAsideData(data *models.Data) {
+	if top, err := repositoriespkg.GetTopUsers(3); err == nil {
+		data.TopUsers = top
+	}
+	if recent, err := repo.GetRecentPosts(5); err == nil {
+		data.RecentPosts = recent
+	}
+	if popular, err := repo.GetPopularPosts(5); err == nil {
+		data.PopularPosts = popular
+	}
+}
+
 func PostShowHandle(w http.ResponseWriter, r *http.Request) {
 	slug := r.PathValue("slug")
 
@@ -219,5 +239,133 @@ func PostShowHandle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render(w, "post.html", models.Data{Post: post})
+	comments, err := repo.GetCommentsByPostID(post.ID)
+	if err != nil {
+		http.Error(w, "Erreur récupération commentaires", http.StatusInternalServerError)
+		return
+	}
+
+	data := models.Data{Post: post, Comments: comments}
+	loadAsideData(&data)
+
+	if user, ok := auth.GetCurrentUser(r); ok {
+		data.User = user
+	}
+
+	render(w, "post.html", data)
+}
+
+func SubCategoryHandle(w http.ResponseWriter, r *http.Request) {
+	slug := "/" + r.PathValue("slug")
+	subRaw := r.PathValue("subcategory")
+
+	if !validSubCategory(subRaw) {
+		http.Error(w, "Sous-catégorie invalide", http.StatusNotFound)
+		return
+	}
+	sub := models.PostSubCategory(subRaw)
+
+	categoryID, err := repo.GetCategoryIDBySlug(slug)
+	if err != nil {
+		http.Error(w, "Catégorie non trouvée", http.StatusNotFound)
+		return
+	}
+
+	posts, err := repo.GetAllPostsByCategoryAndSub(categoryID, sub)
+	if err != nil {
+		http.Error(w, "Erreur récupération des posts", http.StatusInternalServerError)
+		return
+	}
+
+	category, err := repo.GetCategoryByID(categoryID)
+	if err != nil {
+		http.Error(w, "Erreur récupération de la catégorie", http.StatusInternalServerError)
+		return
+	}
+
+	topUsers, err := repositoriespkg.GetTopUsers(3)
+	if err != nil {
+		http.Error(w, "Erreur récupération des utilisateurs", http.StatusInternalServerError)
+		return
+	}
+
+	labels := map[string]string{
+		"artistes":   "Artistes",
+		"concerts":   "Concerts",
+		"nouveautes": "Nouveautés",
+	}
+
+	data := models.Data{
+		Posts:            posts,
+		Category:         category,
+		TopUsers:         topUsers,
+		SubCategoryLabel: labels[subRaw],
+	}
+	loadAsideData(&data)
+	if user, ok := auth.GetCurrentUser(r); ok {
+		data.User = user
+	}
+
+	render(w, "subcategory.html", data)
+}
+
+func CategoryHandle(w http.ResponseWriter, r *http.Request) {
+	slug := "/" + r.PathValue("slug")
+
+	categoryID, err := repo.GetCategoryIDBySlug(slug)
+	if err != nil {
+		http.Error(w, "Catégorie non trouvée", http.StatusNotFound)
+		return
+	}
+
+	postsA, err := repo.GetAllPostsByCategoryLimitArtistes(categoryID)
+	if err != nil {
+		http.Error(w, "Erreur récupération des posts", http.StatusInternalServerError)
+		return
+	}
+
+	postsC, err := repo.GetAllPostsByCategoryLimitConcerts(categoryID)
+	if err != nil {
+		http.Error(w, "Erreur récupération des posts", http.StatusInternalServerError)
+		return
+	}
+
+	postsN, err := repo.GetAllPostsByCategoryLimitNouveautes(categoryID)
+	if err != nil {
+		http.Error(w, "Erreur récupération des posts", http.StatusInternalServerError)
+		return
+	}
+
+	topUsers, err := repositoriespkg.GetTopUsers(3)
+	if err != nil {
+		http.Error(w, "Erreur récupération des utilisateurs", http.StatusInternalServerError)
+		return
+	}
+
+	category, err := repo.GetCategoryByID(categoryID)
+	if err != nil {
+		http.Error(w, "Erreur récupération de la catégorie", http.StatusInternalServerError)
+		return
+	}
+
+	totalA, _ := repo.CountPostsByCategoryAndSub(categoryID, models.SubCategoryArtistes)
+	totalC, _ := repo.CountPostsByCategoryAndSub(categoryID, models.SubCategoryConcerts)
+	totalN, _ := repo.CountPostsByCategoryAndSub(categoryID, models.SubCategoryNouveautes)
+
+	data := models.Data{
+		TopUsers:        topUsers,
+		PostsArtists:    postsA,
+		PostsConcerts:   postsC,
+		PostsNouveautes: postsN,
+		Category:        category,
+		TotalArtistes:   totalA,
+		TotalConcerts:   totalC,
+		TotalNouveautes: totalN,
+	}
+	loadAsideData(&data)
+	if user, ok := auth.GetCurrentUser(r); ok {
+		data.User = user
+	}
+
+	render(w, "index.html", data)
 }

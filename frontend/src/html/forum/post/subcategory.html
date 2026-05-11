@@ -1,0 +1,39 @@
+{{ define "pageTitle" }}{{ .Category.Name }} - {{ .SubCategoryLabel }}{{ end }}
+
+{{ define "forumContent" }}
+<div class="forum-category">
+
+    <div class="subcategory-header">
+        <a href="/category{{ .Category.Slug }}" class="subcategory-back">← {{ .Category.Name }}</a>
+        <h2>{{ .Category.Name }} — {{ .SubCategoryLabel }}</h2>
+        <span class="subcategory-count">{{ len .Posts }} topic{{ if gt (len .Posts) 1 }}s{{ end }}</span>
+    </div>
+    <hr>
+
+    <div class="topics-container">
+        {{ range .Posts }}
+        <a href="/p/{{ .Slug }}">
+            <div class="topic">
+                <div class="topic-avatar">
+                    <img src="{{ .Author.AvatarURL }}" alt="">
+                </div>
+                <div class="topic-info">
+                    {{ if .IsPinned }}<span class="topic-pinned">Épinglé</span>{{ end }}
+                    <h3>{{ .Title }}</h3>
+                    <span class="topic-author">par {{ .Author.Username }}</span>
+                </div>
+                <div class="topic-stats">
+                    <span>{{ .CommentsCount }} Com</span>
+                    <span>{{ .LikesCount }} Likes</span>
+                </div>
+            </div>
+        </a>
+        {{ end }}
+
+        {{ if eq (len .Posts) 0 }}
+        <p class="subcategory-empty">Aucun topic pour le moment.</p>
+        {{ end }}
+    </div>
+
+</div>
+{{ end }}

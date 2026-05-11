@@ -1,35 +1,55 @@
-{{ define "pageTitle" }}Créer un post{{ end }}
+{{ define "pageTitle" }}Créer un sujet{{ end }}
 
 {{ define "pageContent" }}
 <section id="create-section">
-    <h1>Créer un nouveau post</h1>
 
-    <form action="/post/create" method="POST" autocomplete="on">
-        <label>
-            <input type="text" name="title" placeholder="Titre" required>
-        </label>
-        <label>
-            <textarea name="body" placeholder="Contenu" required></textarea>
-        </label>
-        <label>
-            Catégorie:
-            <select name="category" required>
-                <option value="">-- Sélectionnez une catégorie --</option>
-                {{range .}}
-                    <option value="{{.Slug}}">{{.Name}}</option>
-                {{end}}
-            </select>
-        </label>
-        <label>
-            Sous-catégorie:
-            <select name="subcategory" required>
-                <option value="">-- Sélectionnez une sous-catégorie --</option>
-                    <option value="concerts">Concerts</option>
-                    <option value="artistes">Artistes</option>
-                    <option value="nouveautes">Nouveautés</option>
-            </select>
-        </label>
-        <button type="submit">Créer</button>
-    </form>
+    <div class="create-card">
+        <div class="create-card-header">
+            <h1>Lancer un sujet</h1>
+            <p>Partage tes découvertes, concerts et coups de cœur avec la communauté.</p>
+        </div>
+
+        <form action="/post/create" method="POST" autocomplete="on" class="create-form">
+
+            <div class="create-field">
+                <label for="title">Titre</label>
+                <input type="text" id="title" name="title" placeholder="Donne un titre accrocheur à ton sujet..." required>
+            </div>
+
+            <div class="create-field">
+                <label for="body">Contenu</label>
+                <textarea id="body" name="body" rows="7" placeholder="Exprime-toi..." required></textarea>
+            </div>
+
+            <div class="create-row">
+                <div class="create-field">
+                    <label for="category">Catégorie</label>
+                    <select id="category" name="category" required>
+                        <option value="">Sélectionner...</option>
+                        {{range .Categories}}
+                            <option value="{{.Slug}}">{{.Name}}</option>
+                        {{end}}
+                    </select>
+                </div>
+
+                <div class="create-field">
+                    <label for="subcategory">Sous-catégorie</label>
+                    <select id="subcategory" name="subcategory" required>
+                        <option value="">Sélectionner...</option>
+                        <option value="concerts">Concerts</option>
+                        <option value="artistes">Artistes</option>
+                        <option value="nouveautes">Nouveautés</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="create-actions">
+                <a href="/" class="create-btn-cancel">Annuler</a>
+                <button type="submit" class="create-btn-submit">Publier le sujet</button>
+            </div>
+
+        </form>
+    </div>
+
 </section>
 {{ end }}

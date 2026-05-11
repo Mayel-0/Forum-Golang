@@ -2,24 +2,82 @@
 
 {{ define "forumContent" }}
 <div class="forum-category">
-    <h2>🎷 Rock - Concerts | <span>x topics</span></h2>
+    <h2>{{ .Category.Name }} - Artistes | <span>{{ .TotalArtistes }} topics</span></h2>
     <hr>
     <div class="topics-container">
-        <!-- Liste des topics à looper -->
-        <div class="topic">
-            <div class="topic-avatar">
-                <img src="" alt="">
+        {{ range .PostsArtists }}
+        <a href="/p/{{ .Slug }}">
+            <div class="topic">
+                <div class="topic-avatar">
+                    <img src="{{ .Author.AvatarURL }}" alt="">
+                </div>
+                <div class="topic-info">
+                    <span class="topic-pinned">Épinglé</span>
+                    <h3>{{ .Title }}</h3>
+                    <span class="topic-author">par {{ .Author.Username }}</span>
+                </div>
+                <div class="topic-stats">
+                    <span> {{ .CommentsCount }} Com</span>
+                    <span> {{ .LikesCount }} Likes</span>
+                </div>
             </div>
-            <div class="topic-info">
-                <span class="topic-pinned">Épinglé</span>
-                <h3>Titre du sujet</h3>
-                <span class="topic-author">par ...</span>
-            </div>
-            <div class="topic-stats">
-                <span>142 rep</span>
-                <span>3800 vues</span>
-            </div>
-        </div>
+        </a>
+        {{ end }}
     </div>
+    {{ if gt .TotalArtistes 5 }}
+    <a href="{{ .Category.Slug }}/artistes" class="voir-plus-btn">Voir plus</a>
+    {{ end }}
+
+    <h2>{{ .Category.Name }} - Concerts | <span>{{ .TotalConcerts }} topics</span></h2>
+    <hr>
+    <div class="topics-container">
+        {{ range .PostsConcerts }}
+        <a href="/p/{{ .Slug }}">
+            <div class="topic">
+                <div class="topic-avatar">
+                    <img src="{{ .Author.AvatarURL }}" alt="">
+                </div>
+                <div class="topic-info">
+                    <span class="topic-pinned">Épinglé</span>
+                    <h3>{{ .Title }}</h3>
+                    <span class="topic-author">par {{ .Author.Username }}</span>
+                </div>
+                <div class="topic-stats">
+                    <span> {{ .CommentsCount }} Com</span>
+                    <span> {{ .LikesCount }} Likes</span>
+                </div>
+            </div>
+        </a>
+        {{ end }}
+    </div>
+    {{ if gt .TotalConcerts 5 }}
+    <a href="{{ .Category.Slug }}/concerts" class="voir-plus-btn">Voir plus</a>
+    {{ end }}
+
+    <h2>{{ .Category.Name }} - Nouveautés | <span>{{ .TotalNouveautes }} topics</span></h2>
+    <hr>
+    <div class="topics-container">
+        {{ range .PostsNouveautes }}
+        <a href="/p/{{ .Slug }}">
+            <div class="topic">
+                <div class="topic-avatar">
+                    <img src="{{ .Author.AvatarURL }}" alt="">
+                </div>
+                <div class="topic-info">
+                    <span class="topic-pinned">Épinglé</span>
+                    <h3>{{ .Title }}</h3>
+                    <span class="topic-author">par {{ .Author.Username }}</span>
+                </div>
+                <div class="topic-stats">
+                    <span> {{ .CommentsCount }} Com</span>
+                    <span> {{ .LikesCount }} Likes</span>
+                </div>
+            </div>
+        </a>
+        {{ end }}
+    </div>
+    {{ if gt .TotalNouveautes 5 }}
+    <a href="{{ .Category.Slug }}/nouveautes" class="voir-plus-btn">Voir plus</a>
+    {{ end }}
 </div>
 {{ end }}

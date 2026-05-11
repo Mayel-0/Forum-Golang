@@ -22,6 +22,11 @@
                 </div>
                 <div class="aside-user-info">
                     <span>{{ $u.Username }}</span>
+                    <div>
+                        <span>{{ $u.LikesCount }} likes</span>
+                        <span>{{ $u.CommentsCount }} rép.</span>
+                        <span>{{ $u.PostsCount }} topics</span>
+                    </div>
                 </div>
             </div>
             <div class="aside-badge">
@@ -34,14 +39,24 @@
 
 <div class="aside-container">
     <div class="aside-title">
-        <h3>🆕 Nouveaux sujets</h3>
+        <h3>🆕 Derniers sujets</h3>
     </div>
     <div class="aside-topic-list">
-        <!-- Liste des nouveaux sujets à looper -->
-        <div class="aside-topic">
-            <h3>Titre du sujet</h3>
-            <span>Il y a x minutes/heures...</span>
-        </div>
+        {{ range .RecentPosts }}
+        <a href="/p/{{ .Slug }}" class="aside-topic">
+            <div class="aside-topic-avatar">
+                {{ if .Author.AvatarURL }}
+                    <img src="{{ .Author.AvatarURL }}" alt="{{ .Author.Username }}">
+                {{ else }}
+                    <img src="/assets/img/user.png" alt="{{ .Author.Username }}">
+                {{ end }}
+            </div>
+            <div class="aside-topic-body">
+                <h4>{{ .Title }}</h4>
+                <span>{{ .Author.Username }} · {{ timeAgo .CreatedAt }}</span>
+            </div>
+        </a>
+        {{ end }}
     </div>
 </div>
 
@@ -50,14 +65,24 @@
         <h3>🔥 Discussions populaires</h3>
     </div>
     <div class="aside-topic-list">
-        <!-- Liste des discussions populaires à looper -->
-        <div class="aside-topic">
-            <h3>Titre du sujet</h3>
-            <div class="aside-topic-meta">
-                <span>234 rép.</span>
-                <span>5600 vues</span>
+        {{ range .PopularPosts }}
+        <a href="/p/{{ .Slug }}" class="aside-topic">
+            <div class="aside-topic-avatar">
+                {{ if .Author.AvatarURL }}
+                    <img src="{{ .Author.AvatarURL }}" alt="{{ .Author.Username }}">
+                {{ else }}
+                    <img src="/assets/img/user.png" alt="{{ .Author.Username }}">
+                {{ end }}
             </div>
-        </div>
+            <div class="aside-topic-body">
+                <h4>{{ .Title }}</h4>
+                <div class="aside-topic-stats">
+                    <span>{{ .CommentsCount }} rép.</span>
+                    <span>{{ .LikesCount }} likes</span>
+                </div>
+            </div>
+        </a>
+        {{ end }}
     </div>
 </div>
 {{ end }}

@@ -1,53 +1,48 @@
 {{ define "navbar" }}
 <nav>
-    <div class="nav-left">
-        <h1>Lyrics.</h1>
-        <div class="search-bar">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" name="search" id="search" placeholder="Rechercher un sujet, un artiste, un concert...">
+    <div class="nav-inner">
+        <div class="nav-left">
+            <h1><a href="/">Lyrics</a></h1>
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" name="search" id="search" placeholder="Rechercher un sujet, un artiste, un concert...">
+            </div>
+        </div>
+        <div class="nav-right">
+            <ul>
+                {{ if .User.Username }}
+                    <li><a href="/profile" class="button-white">{{ .User.Username }}</a></li>
+                    <li><a href="/" class="button-brown">Accueil</a></li>
+                {{ else }}
+                    <li><a href="/auth/login" class="button-white">Connexion</a></li>
+                    <li><a href="/auth/register" class="button-brown">Créer un compte</a></li>
+                {{ end }}
+            </ul>
         </div>
     </div>
-    <div class="nav-right">
-        <ul>
-            {{ if .User.ID }}
-                <li><a href="/profile" class="button-white">{{ .User.Username }}</a></li>
-            {{ else }}
-                <li><a href="/auth/login" class="button-white">Connexion</a></li>
-                <li><a href="/auth/register" class="button-brown">Créer un compte</a></li>
-            {{ end }}
-        </ul>
-    </div>
-    <!--
-    <div>
-        <img src="../../assets/img/logo.png" alt="logo-site" />
-    </div>
-    <div>
-        <ul>
-            <li><a href="/profile">Profil</a></li>
-            <li><a href="/">Accueil</a></li>
-            <li><a href="/forum/index">Forum</a></li>
-            <li><a href="/auth/login">Connexion</a></li>
-            <li><a href="/auth/register">Inscription</a></li>
-        </ul>
-    </div> -->
 </nav>
 <div class="subnav">
-    <div class="subnav-categories">
+    <div class="subnav-inner">
         <ul class="subnav-categories-list">
-            <li>Rock</li>
-            <li>Techno</li>
-            <li>Hard</li>
-            <li>Rap</li>
-            <li>R&B</li>
-            <li>Pop</li>
-            <li>House</li>
-            <li>Jazz</li>
-            <li>Métal</li>
-            <li>Reggaeton</li>
+            <li><a href="/category/rock">Rock</a></li>
+            <li><a href="/category/techno">Techno</a></li>
+            <li><a href="/category/hard">Hard</a></li>
+            <li><a href="/category/rap">Rap</a></li>
+            <li><a href="/category/r-and-b">R&B</a></li>
+            <li><a href="/category/pop">Pop</a></li>
+            <li><a href="/category/house">House</a></li>
+            <li><a href="/category/jazz">Jazz</a></li>
+            <li><a href="/category/metal">Métal</a></li>
+            <li><a href="/category/reggaeton">Reggaeton</a></li>
         </ul>
-    </div>
-    <div class="">
-        <button class="button-brown">Lancer un sujet</button>
+        <a href="/post/create" class="button-brown">Lancer un sujet</a>
     </div>
 </div>
+<script>
+    document.querySelectorAll('.subnav-categories-list li a').forEach(a => {
+        if (window.location.pathname.startsWith(a.getAttribute('href'))) {
+            a.closest('li').classList.add('active');
+        }
+    });
+</script>
 {{ end }}

@@ -15,12 +15,26 @@ const (
 )
 
 type Data struct {
-	User       User
-	Post       Post
+	User     User
+	Post     Post
+	Category Category
+
 	Categories []Category
-	Posts      []Post
 	TopUsers   []User
 	Comments   []Comment
+
+	Posts           []Post
+	PostsArtists    []Post
+	PostsConcerts   []Post
+	PostsNouveautes []Post
+
+	TotalArtistes    int64
+	TotalConcerts    int64
+	TotalNouveautes  int64
+	SubCategoryLabel string
+
+	RecentPosts  []Post
+	PopularPosts []Post
 
 	messagesError   string
 	messagesSuccess string
@@ -50,6 +64,7 @@ type Comment struct {
 	CreatedAt     time.Time  `gorm:"type:timestamptz;not null;default:now()"`
 	UpdatedAt     time.Time  `gorm:"type:timestamptz;not null;default:now()"`
 	DeletedAt     *time.Time `gorm:"type:timestamptz"`
+	Author        User       `gorm:"foreignKey:AuthorID"`
 }
 
 type Follow struct {
@@ -84,6 +99,11 @@ type User struct {
 	EmailVerifiedAt *time.Time `gorm:"type:timestamptz"`
 	CreatedAt       time.Time  `gorm:"type:timestamptz;not null;default:now()"`
 	UpdatedAt       time.Time  `gorm:"type:timestamptz;not null;default:now()"`
+
+	// Champs calculés — pas en DB
+	LikesCount    int `gorm:"->"`
+	PostsCount    int `gorm:"->"`
+	CommentsCount int `gorm:"->"`
 }
 
 type Category struct {
@@ -109,4 +129,6 @@ type Post struct {
 	CreatedAt     time.Time       `gorm:"type:timestamptz;not null;default:now()"`
 	UpdatedAt     time.Time       `gorm:"type:timestamptz;not null;default:now()"`
 	DeletedAt     *time.Time      `gorm:"type:timestamptz"`
+
+	Author User `gorm:"foreignKey:AuthorID"`
 }
