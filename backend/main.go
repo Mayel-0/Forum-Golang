@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 	"text/template"
 
 	"lyrics/auth"
@@ -22,10 +23,13 @@ var store = sessions.NewCookieStore([]byte("votre-cle-secrete-tres-longue-et-ale
 
 func main() {
 	auth.SetStore(store)
-	if err = godotenv.Load("env/.env"); err == nil {
-		log.Println("✅ Variables d'environnement chargées depuis env/.env")
+
+	// ✅ Sur Render, les variables sont déjà dans l'environnement
+	// On charge le .env seulement en local, sans fatal si absent
+	if err = godotenv.Load("env/.env"); err != nil {
+		log.Println("ℹ️ Pas de fichier .env, on utilise les variables d'environnement système")
 	} else {
-		log.Fatalf("Erreur chargement .env: %v", err)
+		log.Println("✅ Variables d'environnement chargées depuis env/.env")
 	}
 
 	if db, err = dbpkg.ConnectDB(); err != nil {
@@ -76,6 +80,11 @@ func main() {
 	mux.Handle("POST /comment/create", auth.RequireAuth(http.HandlerFunc(handlerspkg.AddCommentHandler)))
 	mux.Handle("POST /comment/delete", auth.RequireAuth(http.HandlerFunc(handlerspkg.DeleteCommentHandler)))
 
-	log.Println("🚀 Serveur démarré sur http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", mux))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	log.Println("🚀 Serveur démarré sur le port", port)
+	log.Fatal(http.ListenAndServe(":"+port, mux))
 }
