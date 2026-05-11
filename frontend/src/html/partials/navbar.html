@@ -40,8 +40,21 @@
 </div>
 <script>
     document.querySelectorAll('.subnav-categories-list li a').forEach(a => {
-        if (window.location.pathname.startsWith(a.getAttribute('href'))) {
+        const href = a.getAttribute('href');
+        const path = window.location.pathname;
+
+        if (path.startsWith(href)) {
             a.closest('li').classList.add('active');
+            return;
+        }
+
+        // Posts : /p/{category}/{subcategory}/{title}
+        if (path.startsWith('/p/')) {
+            const categorySlug = path.split('/')[2];
+            const hrefSlug = href.split('/').pop();
+            if (categorySlug === hrefSlug) {
+                a.closest('li').classList.add('active');
+            }
         }
     });
 </script>

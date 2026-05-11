@@ -217,16 +217,27 @@ main > aside {
     text-overflow: ellipsis;
 }
 
-.aside-user-stats {
+.aside-user-info > div {
     display: flex;
-    gap: 6px;
-    margin-top: 2px;
+    gap: 10px;
+    margin-top: 3px;
 }
 
-.aside-user-stats span {
+.aside-user-info > div > span {
+    display: flex;
+    align-items: center;
+    gap: 3px;
     font-size: 11px;
-    color: #999;
+    color: #aaa;
 }
+
+.aside-user-info > div > span i {
+    font-size: 10px;
+}
+
+.aside-user-info > div > span:nth-child(1) i { color: #e57373; }
+.aside-user-info > div > span:nth-child(2) i { color: #64b5f6; }
+.aside-user-info > div > span:nth-child(3) i { color: var(--main-brown); }
 
 .aside-badge span {
     font-size: 11px;
@@ -294,7 +305,7 @@ main > aside {
     font-size: 13px;
     font-weight: 600;
     color: #333;
-    margin-bottom: 2px;
+    margin: 0 0 2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
