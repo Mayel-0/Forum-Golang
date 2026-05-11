@@ -33,14 +33,15 @@
             <span>{{ .Post.LikesCount }}</span>
         </button>
     </div>
+
     {{ if eq .User.Role "admin" }}
-        <div class="post-delete-admin">
-            <form action="/post/supprimer" method="POST">
-                <input type="hidden" name="postID" value="{{ .Post.ID }}"/>
-                <input type="hidden" name="slug" value="/p/{{ .Post.Slug }}"/>
-                <button type="submit">Supprimer</button>
-            </form>
-        </div>
+    <div class="post-delete-admin">
+        <form action="/post/supprimer" method="POST">
+            <input type="hidden" name="postID" value="{{ .Post.ID }}"/>
+            <input type="hidden" name="slug" value="/p/{{ .Post.Slug }}"/>
+            <button type="submit">Supprimer</button>
+        </form>
+    </div>
     {{ end }}
 
 </article>
@@ -89,12 +90,11 @@
                             <span>{{ .LikesCount }}</span>
                         </button>
 
-                        {{/* Bouton toggle répondre */}}
                         <button class="btn-toggle-reply" data-target="reply-form-{{ $parentIDStr }}">
                             Répondre
                         </button>
 
-                        {{/* Bouton supprimer uniquement si c'est notre commentaire */}}
+                        {{/* Supprimer — auteur du commentaire */}}
                         {{ if eq .AuthorID $.User.ID }}
                         <form method="POST" action="/comment/delete" style="display:inline;">
                             <input type="hidden" name="comment_id" value="{{ .ID }}"/>
@@ -103,7 +103,16 @@
                         </form>
                         {{ end }}
 
-                        {{/* Bouton toggle réponses s'il y en a */}}
+                        {{/* Supprimer — admin */}}
+                        {{ if eq $.User.Role "admin" }}
+                        <form method="POST" action="/comment/delete" style="display:inline;">
+                            <input type="hidden" name="comment_id" value="{{ .ID }}"/>
+                            <input type="hidden" name="slug" value="/p/{{ $.Post.Slug }}"/>
+                            <button type="submit" class="btn-delete btn-delete-admin">Supprimer (admin)</button>
+                        </form>
+                        {{ end }}
+
+                        {{/* Bouton voir les réponses */}}
                         {{ $hasReplies := false }}
                         {{ range $.Comments }}
                             {{ if .ParentID }}
@@ -120,7 +129,7 @@
                         {{ end }}
                     </div>
 
-                    {{/* Formulaire de réponse — caché par défaut */}}
+                    {{/* Formulaire de réponse */}}
                     <div id="reply-form-{{ $parentIDStr }}" style="display:none;">
                         <form method="POST" action="/comment/create" class="reply-form">
                             <input name="post_id" type="hidden" value="{{ $.Post.ID }}"/>
@@ -131,7 +140,7 @@
                         </form>
                     </div>
 
-                    {{/* Réponses imbriquées — cachées par défaut */}}
+                    {{/* Réponses imbriquées */}}
                     <div class="comment-replies" id="replies-{{ $parentIDStr }}" style="display:none;">
                         {{ range $.Comments }}
                             {{ if .ParentID }}
@@ -151,13 +160,25 @@
                                         </div>
                                         <p class="comment-body">{{ .Body }}</p>
 
-                                        {{ if eq .AuthorID $.User.ID }}
-                                        <form method="POST" action="/comment/delete">
-                                            <input type="hidden" name="comment_id" value="{{ .ID }}"/>
-                                            <input type="hidden" name="slug" value="/p/{{ $.Post.Slug }}"/>
-                                            <button type="submit" class="btn-delete">Supprimer</button>
-                                        </form>
-                                        {{ end }}
+                                        <div class="comment-actions">
+                                            {{/* Supprimer — auteur de la réponse */}}
+                                            {{ if eq .AuthorID $.User.ID }}
+                                            <form method="POST" action="/comment/delete" style="display:inline;">
+                                                <input type="hidden" name="comment_id" value="{{ .ID }}"/>
+                                                <input type="hidden" name="slug" value="/p/{{ $.Post.Slug }}"/>
+                                                <button type="submit" class="btn-delete">Supprimer</button>
+                                            </form>
+                                            {{ end }}
+
+                                            {{/* Supprimer — admin */}}
+                                            {{ if eq $.User.Role "admin" }}
+                                            <form method="POST" action="/comment/delete" style="display:inline;">
+                                                <input type="hidden" name="comment_id" value="{{ .ID }}"/>
+                                                <input type="hidden" name="slug" value="/p/{{ $.Post.Slug }}"/>
+                                                <button type="submit" class="btn-delete btn-delete-admin">Supprimer (admin)</button>
+                                            </form>
+                                            {{ end }}
+                                        </div>
                                     </div>
                                 </div>
                                 {{ end }}
