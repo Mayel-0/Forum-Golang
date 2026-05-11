@@ -29,7 +29,7 @@
         {{ end }}
     </div>
     {{ if gt .TotalArtistes 5 }}
-    <a href="{{ .Category.Slug }}/artistes" class="voir-plus-btn">Voir plus</a>
+    <a href="/category/{{ .Category.Slug }}/artistes" class="voir-plus-btn">Voir plus</a>
     {{ end }}
 
     <h2>{{ .Category.Name }} - Concerts | <span>{{ .TotalConcerts }} topics</span></h2>
@@ -59,7 +59,7 @@
         {{ end }}
     </div>
     {{ if gt .TotalConcerts 5 }}
-    <a href="{{ .Category.Slug }}/concerts" class="voir-plus-btn">Voir plus</a>
+    <a href="/category/{{ .Category.Slug }}/concerts" class="voir-plus-btn">Voir plus</a>
     {{ end }}
 
     <h2>{{ .Category.Name }} - Nouveautés | <span>{{ .TotalNouveautes }} topics</span></h2>
@@ -89,7 +89,7 @@
         {{ end }}
     </div>
     {{ if gt .TotalNouveautes 5 }}
-    <a href="{{ .Category.Slug }}/nouveautes" class="voir-plus-btn">Voir plus</a>
+    <a href="/category/{{ .Category.Slug }}/nouveautes" class="voir-plus-btn">Voir plus</a>
     {{ end }}
 </div>
 {{ end }}
