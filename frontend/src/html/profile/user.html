@@ -1,0 +1,45 @@
+{{ define "pageTitle" }}{{ .ProfileUser.Username }}{{ end }}
+
+{{ define "pageContent" }}
+<section id="profile-section">
+
+    <div class="profile-header">
+        <div class="profile-banner"></div>
+        <div class="profile-header-body">
+            <div class="profile-avatar">
+                {{ if .ProfileUser.AvatarURL }}
+                    <img src="{{ .ProfileUser.AvatarURL }}" alt="{{ .ProfileUser.Username }}">
+                {{ else }}
+                    <img src="/assets/img/user.png" alt="{{ .ProfileUser.Username }}">
+                {{ end }}
+            </div>
+            <div class="profile-identity">
+                <h1>{{ .ProfileUser.Username }}</h1>
+                <span class="profile-role">{{ .ProfileUser.Role }}</span>
+                {{ if .ProfileUser.Bio }}<p>{{ .ProfileUser.Bio }}</p>{{ end }}
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-card">
+        <h2>Informations</h2>
+        <div class="profile-info-row">
+            <span>Membre depuis</span>
+            <span>{{ .ProfileUser.CreatedAt.Format "02/01/2006" }}</span>
+        </div>
+        <div class="profile-info-row">
+            <span>Topics</span>
+            <span>{{ .ProfileUser.PostsCount }}</span>
+        </div>
+        <div class="profile-info-row">
+            <span>Commentaires</span>
+            <span>{{ .ProfileUser.CommentsCount }}</span>
+        </div>
+        <div class="profile-info-row">
+            <span>Likes reçus</span>
+            <span>{{ .ProfileUser.LikesCount }}</span>
+        </div>
+    </div>
+
+</section>
+{{ end }}

@@ -83,6 +83,7 @@ func ParseTemplates() (map[string]*template.Template, error) {
 		"login.html":       {base + "auth/login.html", partials},
 		"register.html":    {base + "auth/register.html", partials},
 		"profile.html":     {base + "profile/profile.html", partials},
+		"user.html":        {base + "profile/user.html", partials},
 	}
 
 	templates := make(map[string]*template.Template)

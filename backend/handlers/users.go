@@ -44,6 +44,20 @@ func ForumIndexHandle(w http.ResponseWriter, r *http.Request) {
 	//render(w, "index.html", data)
 }
 
+func PublicProfileHandle(w http.ResponseWriter, r *http.Request) {
+	username := r.PathValue("username")
+	profileUser, err := repositoriespkg.GetUserByUsername(username)
+	if err != nil {
+		http.Error(w, "Utilisateur introuvable", http.StatusNotFound)
+		return
+	}
+	data := models.Data{ProfileUser: profileUser}
+	if current, ok := auth.GetCurrentUser(r); ok {
+		data.User = current
+	}
+	render(w, "user.html", data)
+}
+
 func ProfileHandle(w http.ResponseWriter, r *http.Request) {
 	UserID, ok := auth.GetUserID(r)
 	if !ok {

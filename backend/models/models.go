@@ -15,9 +15,10 @@ const (
 )
 
 type Data struct {
-	User     User
-	Post     Post
-	Category Category
+	User        User
+	ProfileUser User
+	Post        Post
+	Category    Category
 
 	Categories []Category
 	TopUsers   []User
@@ -28,7 +29,7 @@ type Data struct {
 	PostsConcerts   []Post
 	PostsNouveautes []Post
 
-	TotalArtistes    int64
+	TotalArtistdes   int64
 	TotalConcerts    int64
 	TotalNouveautes  int64
 	SubCategoryLabel string

@@ -4,15 +4,21 @@
 <article class="post-article">
 
     <div class="post-meta">
-        {{ if .Post.Author.AvatarURL }}
-            <img src="{{ .Post.Author.AvatarURL }}" alt="{{ .Post.Author.Username }}" class="post-author-avatar">
-        {{ else }}
-            <img src="/assets/img/user.png" alt="{{ .Post.Author.Username }}" class="post-author-avatar">
-        {{ end }}
-        <div>
-            <span class="post-author-name">{{ .Post.Author.Username }}</span>
-            <span class="post-date">{{ .Post.CreatedAt.Format "02/01/2006 à 15:04" }}</span>
-        </div>
+        <span class="user-card-trigger"
+              data-username="{{ .Post.Author.Username }}"
+              data-avatar="{{ .Post.Author.AvatarURL }}"
+              data-role="{{ .Post.Author.Role }}"
+              data-bio="{{ .Post.Author.Bio }}">
+            {{ if .Post.Author.AvatarURL }}
+                <img src="{{ .Post.Author.AvatarURL }}" alt="{{ .Post.Author.Username }}" class="post-author-avatar">
+            {{ else }}
+                <img src="/assets/img/user.png" alt="{{ .Post.Author.Username }}" class="post-author-avatar">
+            {{ end }}
+            <div>
+                <span class="post-author-name">{{ .Post.Author.Username }}</span>
+                <span class="post-date">{{ .Post.CreatedAt.Format "02/01/2006 à 15:04" }}</span>
+            </div>
+        </span>
     </div>
 
     <h1 class="post-title">{{ .Post.Title }}</h1>
@@ -42,16 +48,24 @@
             {{ $parentIDStr := printf "%s" .ID }}
 
             <div class="comment-item" data-id="{{ .ID }}">
-                <div class="comment-avatar">
+                <span class="comment-avatar user-card-trigger"
+                      data-username="{{ .Author.Username }}"
+                      data-avatar="{{ .Author.AvatarURL }}"
+                      data-role="{{ .Author.Role }}"
+                      data-bio="{{ .Author.Bio }}">
                     {{ if .Author.AvatarURL }}
                         <img src="{{ .Author.AvatarURL }}" alt="{{ .Author.Username }}">
                     {{ else }}
                         <img src="/assets/img/user.png" alt="{{ .Author.Username }}">
                     {{ end }}
-                </div>
+                </span>
                 <div class="comment-content">
                     <div class="comment-header">
-                        <span class="comment-author">{{ .Author.Username }}</span>
+                        <span class="comment-author user-card-trigger"
+                              data-username="{{ .Author.Username }}"
+                              data-avatar="{{ .Author.AvatarURL }}"
+                              data-role="{{ .Author.Role }}"
+                              data-bio="{{ .Author.Bio }}">{{ .Author.Username }}</span>
                         <span class="comment-date">{{ .CreatedAt.Format "02/01/2006 à 15:04" }}</span>
                     </div>
                     <p class="comment-body">{{ .Body }}</p>

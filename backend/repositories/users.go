@@ -116,6 +116,21 @@ func GetTopUsers(limit int) ([]models.User, error) {
 	return GetUsersWithStats(query)
 }
 
+func GetUserByUsername(username string) (models.User, error) {
+	if dbpkg.Db == nil {
+		return models.User{}, errors.New("db not initialized")
+	}
+	query := dbpkg.Db.Model(&models.User{}).Where("users.username = ?", username)
+	users, err := GetUsersWithStats(query)
+	if err != nil {
+		return models.User{}, err
+	}
+	if len(users) == 0 {
+		return models.User{}, ErrUserNotFound
+	}
+	return users[0], nil
+}
+
 func GetUserByID(userID uuid.UUID) (models.User, error) {
 	if dbpkg.Db == nil {
 		return models.User{}, errors.New("db not initialized")

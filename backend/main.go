@@ -55,6 +55,7 @@ func main() {
 	mux.HandleFunc("GET /auth/register", handlerspkg.RegisterHandle)
 	mux.HandleFunc("POST /auth/register", handlerspkg.RegisterHandle)
 	mux.HandleFunc("GET /auth/logout", handlerspkg.LogoutHandle)
+	mux.HandleFunc("GET /user/{username}", handlerspkg.PublicProfileHandle)
 
 	// Route dynamique par slug
 	mux.HandleFunc("GET /p/{slug...}", handlerspkg.PostShowHandle)

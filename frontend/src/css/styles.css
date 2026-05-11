@@ -253,3 +253,85 @@ span {
 a {
 	text-decoration: none;
 }
+
+/* ── User card trigger ── */
+.user-card-trigger {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ── User tooltip ── */
+#user-tooltip {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    width: 220px;
+    background: white;
+    border: 1px solid #EAE0D6;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    overflow: hidden;
+    pointer-events: auto;
+}
+
+#user-tooltip-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    text-decoration: none;
+    transition: background-color 0.15s;
+}
+
+#user-tooltip-link:hover {
+    background-color: #FAFAF8;
+}
+
+#user-tooltip-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #EAE0D6;
+    flex-shrink: 0;
+}
+
+.user-tooltip-info {
+    flex: 1;
+    min-width: 0;
+}
+
+#user-tooltip-name {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: #222;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#user-tooltip-role {
+    display: block;
+    font-size: 11px;
+    color: var(--main-brown);
+    background: rgba(123,79,46,0.1);
+    padding: 1px 8px;
+    border-radius: 10px;
+    margin-top: 3px;
+    width: fit-content;
+    font-weight: 600;
+}
+
+#user-tooltip-bio {
+    font-size: 12px;
+    color: #888;
+    margin: 6px 0 0;
+    line-height: 1.4;
+    display: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

@@ -177,11 +177,20 @@ main > aside {
     gap: 10px;
     padding: 8px 0;
     border-bottom: 1px solid #EAE0D6;
+    text-decoration: none;
+    transition: background-color 0.15s;
+    margin: 0 -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+    border-radius: 0;
+}
+
+.aside-member:hover {
+    background-color: #FAFAF8;
 }
 
 .aside-member:last-child {
     border-bottom: none;
-    padding-bottom: 0;
 }
 
 .aside-rank span {

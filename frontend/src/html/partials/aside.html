@@ -10,7 +10,7 @@
     </div>
     <div class="aside-member-list">
         {{ range $i, $u := .TopUsers }}
-        <div class="aside-member">
+        <a class="aside-member" href="/user/{{ $u.Username }}">
             <div class="aside-rank"><span>{{ add $i 1 }}</span></div>
             <div class="aside-user">
                 <div class="aside-avatar">
@@ -32,7 +32,7 @@
             <div class="aside-badge">
                 <span>{{ $u.Role }}</span>
             </div>
-        </div>
+        </a>
         {{ end }}
     </div>
 </div>

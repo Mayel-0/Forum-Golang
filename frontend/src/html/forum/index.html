@@ -14,7 +14,11 @@
                 <div class="topic-info">
                     <span class="topic-pinned">Épinglé</span>
                     <h3>{{ .Title }}</h3>
-                    <span class="topic-author">par {{ .Author.Username }}</span>
+                    <span class="topic-author">par <span class="user-card-trigger"
+                          data-username="{{ .Author.Username }}"
+                          data-avatar="{{ .Author.AvatarURL }}"
+                          data-role="{{ .Author.Role }}"
+                          data-bio="{{ .Author.Bio }}">{{ .Author.Username }}</span></span>
                 </div>
                 <div class="topic-stats">
                     <span> {{ .CommentsCount }} Com</span>
@@ -40,7 +44,11 @@
                 <div class="topic-info">
                     <span class="topic-pinned">Épinglé</span>
                     <h3>{{ .Title }}</h3>
-                    <span class="topic-author">par {{ .Author.Username }}</span>
+                    <span class="topic-author">par <span class="user-card-trigger"
+                          data-username="{{ .Author.Username }}"
+                          data-avatar="{{ .Author.AvatarURL }}"
+                          data-role="{{ .Author.Role }}"
+                          data-bio="{{ .Author.Bio }}">{{ .Author.Username }}</span></span>
                 </div>
                 <div class="topic-stats">
                     <span> {{ .CommentsCount }} Com</span>
@@ -66,7 +74,11 @@
                 <div class="topic-info">
                     <span class="topic-pinned">Épinglé</span>
                     <h3>{{ .Title }}</h3>
-                    <span class="topic-author">par {{ .Author.Username }}</span>
+                    <span class="topic-author">par <span class="user-card-trigger"
+                          data-username="{{ .Author.Username }}"
+                          data-avatar="{{ .Author.AvatarURL }}"
+                          data-role="{{ .Author.Role }}"
+                          data-bio="{{ .Author.Bio }}">{{ .Author.Username }}</span></span>
                 </div>
                 <div class="topic-stats">
                     <span> {{ .CommentsCount }} Com</span>

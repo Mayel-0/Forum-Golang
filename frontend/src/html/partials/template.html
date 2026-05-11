@@ -20,6 +20,71 @@
     <main>
         {{ template "pageContent" . }}
     </main>
+
+<div id="user-tooltip" role="tooltip">
+    <a id="user-tooltip-link" href="#">
+        <img id="user-tooltip-avatar" src="" alt="">
+        <div class="user-tooltip-info">
+            <span id="user-tooltip-name"></span>
+            <span id="user-tooltip-role"></span>
+            <p id="user-tooltip-bio"></p>
+        </div>
+    </a>
+</div>
+
+<script>
+(function () {
+    const tip   = document.getElementById('user-tooltip');
+    const link  = document.getElementById('user-tooltip-link');
+    const av    = document.getElementById('user-tooltip-avatar');
+    const name  = document.getElementById('user-tooltip-name');
+    const role  = document.getElementById('user-tooltip-role');
+    const bio   = document.getElementById('user-tooltip-bio');
+    let hideTimer;
+
+    function show(el) {
+        const u  = el.dataset.username || '';
+        const a  = el.dataset.avatar   || '';
+        const r  = el.dataset.role     || '';
+        const b  = el.dataset.bio      || '';
+        if (!u) return;
+
+        link.href        = '/user/' + encodeURIComponent(u);
+        av.src           = (a && a !== '<nil>') ? a : '/assets/img/user.png';
+        av.alt           = u;
+        name.textContent = u;
+        role.textContent = r;
+        bio.textContent  = b;
+        bio.style.display = b ? 'block' : 'none';
+
+        const rect = el.getBoundingClientRect();
+        tip.style.display = 'block';
+
+        const tw = tip.offsetWidth;
+        let left = rect.left + window.scrollX;
+        if (left + tw > window.innerWidth - 12) left = window.innerWidth - tw - 12;
+        tip.style.left = left + 'px';
+        tip.style.top  = (rect.bottom + window.scrollY + 8) + 'px';
+    }
+
+    function hide() {
+        hideTimer = setTimeout(() => tip.style.display = 'none', 150);
+    }
+
+    document.addEventListener('mouseover', function (e) {
+        const trigger = e.target.closest('.user-card-trigger');
+        if (trigger) { clearTimeout(hideTimer); show(trigger); }
+    });
+
+    document.addEventListener('mouseout', function (e) {
+        const trigger = e.target.closest('.user-card-trigger');
+        if (trigger && !trigger.contains(e.relatedTarget)) hide();
+    });
+
+    tip.addEventListener('mouseenter', () => clearTimeout(hideTimer));
+    tip.addEventListener('mouseleave', hide);
+})();
+</script>
 </body>
 <footer>
     {{ template "footer" . }}
