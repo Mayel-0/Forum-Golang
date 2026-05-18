@@ -668,6 +668,33 @@ footer {
     border-top: 1px solid #EAE0D6;
 }
 
+/* ── Bouton supprimer le post (admin) ── */
+.post-delete-admin {
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-delete-post {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: none;
+    border: 1px solid #e57373;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #e57373;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.btn-delete-post:hover {
+    background: #e57373;
+    color: #fff;
+}
+
 /* ── Actions sous un commentaire ── */
 .comment-actions {
     display: flex;

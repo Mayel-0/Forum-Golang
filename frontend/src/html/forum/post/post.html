@@ -39,7 +39,10 @@
         <form action="/post/supprimer" method="POST">
             <input type="hidden" name="postID" value="{{ .Post.ID }}"/>
             <input type="hidden" name="slug" value="/p/{{ .Post.Slug }}"/>
-            <button type="submit">Supprimer</button>
+            <button type="submit" class="btn-delete-post">
+                <i class="fa-regular fa-trash-can"></i>
+                Supprimer
+            </button>
         </form>
     </div>
     {{ end }}
