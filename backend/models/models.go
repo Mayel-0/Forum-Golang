@@ -99,6 +99,7 @@ type User struct {
 	PasswordHash    string     `gorm:"type:text;not null"`
 	DisplayName     *string    `gorm:"type:varchar(100)"`
 	AvatarURL       *string    `gorm:"type:text"`
+	BaniereURL      *string    `gorm:"column:baniere_url;type:text"`
 	Bio             *string    `gorm:"type:text"`
 	Role            UserRole   `gorm:"type:user_role;not null;default:'member'"`
 	IsBanned        bool       `gorm:"type:boolean;not null;default:false"`

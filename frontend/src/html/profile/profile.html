@@ -4,7 +4,14 @@
 <section id="profile-section">
 
     <div class="profile-header {{ if isAdmin .User.Role }}admin{{ end }}">
-        <div class="profile-banner"></div>
+        <div class="profile-banner {{ if .User.BaniereURL }}has-banner{{ end }}" {{ if .User.BaniereURL }}style="background-image: url('{{ deref .User.BaniereURL }}'); background-size: cover; background-position: center;"{{ end }}>
+            <form action="/profile/banniere" method="POST" enctype="multipart/form-data" class="banner-upload-form">
+                <label class="banner-upload-btn" title="Changer la bannière">
+                    <i class="fa-solid fa-camera"></i>
+                    <input type="file" name="banniere" accept=".jpg,.jpeg,.png,.webp" onchange="this.form.submit()">
+                </label>
+            </form>
+        </div>
         <div class="profile-header-body">
             <div class="profile-avatar">
                 {{ if .User.AvatarURL }}

@@ -17,6 +17,40 @@
 .profile-banner {
     height: 110px;
     background: linear-gradient(135deg, #C9B8A8 0%, #A8927E 40%, #8B6F57 100%);
+    position: relative;
+}
+
+.banner-upload-form {
+    position: absolute;
+    bottom: 10px;
+    right: 12px;
+}
+
+.banner-upload-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.45);
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.2s, background 0.2s;
+}
+
+.banner-upload-btn:hover {
+    background: rgba(0, 0, 0, 0.65);
+}
+
+.profile-banner:hover .banner-upload-btn {
+    opacity: 1;
+}
+
+.banner-upload-btn input[type="file"] {
+    display: none;
 }
 
 .profile-header.admin {
@@ -61,6 +95,8 @@
 .profile-avatar {
     margin-top: -40px;
     flex-shrink: 0;
+    position: relative;
+    z-index: 1;
 }
 
 .profile-avatar img {

@@ -157,7 +157,7 @@ func UploadBanniereHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	r.ParseMultipartForm(5 << 20) // 5MB max
-	file, header, err := r.FormFile("avatar")
+	file, header, err := r.FormFile("banniere")
 	if err != nil {
 		http.Error(w, "Fichier invalide", http.StatusBadRequest)
 		return
