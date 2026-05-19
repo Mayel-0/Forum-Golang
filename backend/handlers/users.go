@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"io"
-	"log"
 	"lyrics/auth"
 	dbpkg "lyrics/db"
 	"lyrics/models"
@@ -20,63 +19,71 @@ func SetTemplates(t map[string]*template.Template) {
 	templates = t
 }
 
-func render(w http.ResponseWriter, name string, data any) {
+func render(w http.ResponseWriter, r *http.Request, name string, data any) {
 	t, ok := templates[name]
 	if !ok {
-		http.Error(w, "template introuvable: "+name, http.StatusInternalServerError)
+		data := models.Data{
+			CodeError:     500,
+			MessagesError: "template introuvable: " + name,
+		}
+		Error(w, r, &data)
 		return
 	}
 	if err := t.ExecuteTemplate(w, "template.html", data); err != nil {
-		http.Error(w, "Erreur lors du rendu", http.StatusInternalServerError)
-		log.Printf("Erreur template %s: %v", name, err)
+		data := models.Data{
+			CodeError:     500,
+			MessagesError: "Erreur lors du rendu",
+		}
+		Error(w, r, &data)
+		return
 	}
 }
 
 func ForumIndexHandle(w http.ResponseWriter, r *http.Request) {
-
 	http.Redirect(w, r, "/category/rock", http.StatusSeeOther)
-	// topUsers, err := repositoriespkg.GetTopUsers(3)
-	//if err != nil {
-	//	http.Error(w, "Erreur récupération des utilisateurs", http.StatusInternalServerError)
-	//	return
-	//}
-	//data := models.Data{TopUsers: topUsers}
-	//if user, ok := auth.GetCurrentUser(r); ok {
-	//	data.User = user
-	//}
-	//render(w, "index.html", data)
 }
 
 func PublicProfileHandle(w http.ResponseWriter, r *http.Request) {
 	username := r.PathValue("username")
 	profileUser, err := repositoriespkg.GetUserByUsername(username)
 	if err != nil {
-		http.Error(w, "Utilisateur introuvable", http.StatusNotFound)
+		data := models.Data{
+			CodeError:     404,
+			MessagesError: "Utilisateur introuvable",
+		}
+		Error(w, r, &data)
 		return
 	}
 	data := models.Data{ProfileUser: profileUser}
 	if current, ok := auth.GetCurrentUser(r); ok {
 		data.User = current
 	}
-	render(w, "user.html", data)
+	render(w, r, "user.html", data)
 }
 
 func ProfileHandle(w http.ResponseWriter, r *http.Request) {
 	UserID, ok := auth.GetUserID(r)
 	if !ok {
-		http.Error(w, "Utilisateur non authentifié", http.StatusUnauthorized)
+		data := models.Data{
+			CodeError:     401,
+			MessagesError: "Utilisateur non authentifié",
+		}
+		Error(w, r, &data)
 		return
 	}
 	User, err := auth.GetUserByID(UserID)
 	if err != nil {
-		http.Error(w, "Erreur lors de la récupération de l'utilisateur", http.StatusInternalServerError)
-		log.Printf("Erreur récupération utilisateur: %v", err)
+		data := models.Data{
+			CodeError:     500,
+			MessagesError: "Erreur lors de la récupération de l'utilisateur",
+		}
+		Error(w, r, &data)
 		return
 	}
 
 	switch r.Method {
 	case http.MethodGet:
-		render(w, "profile.html", models.Data{User: User})
+		render(w, r, "profile.html", models.Data{User: User})
 	case http.MethodPost:
 		Bio := r.FormValue("bio")
 		Email := r.FormValue("email")
@@ -91,21 +98,31 @@ func ProfileHandle(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if err = repositoriespkg.ModifyUser(updatedUser); err != nil {
-			http.Error(w, "Erreur lors de la modification de l'utilisateur", http.StatusInternalServerError)
-			log.Printf("Erreur modification utilisateur: %v", err)
+			data := models.Data{
+				CodeError:     500,
+				MessagesError: "Erreur lors de la modification de l'utilisateur",
+			}
+			Error(w, r, &data)
 			return
 		}
-
 		http.Redirect(w, r, "/profile", http.StatusSeeOther)
 	default:
-		http.Error(w, "méthode non autorisée", http.StatusMethodNotAllowed)
+		data := models.Data{
+			CodeError:     401,
+			MessagesError: "Méthode non autorisée",
+		}
+		Error(w, r, &data)
 	}
 }
 
 func UploadAvatarHandler(w http.ResponseWriter, r *http.Request) {
 	UserID, ok := auth.GetUserID(r)
 	if !ok {
-		http.Error(w, "Utilisateur non authentifié", http.StatusUnauthorized)
+		data := models.Data{
+			CodeError:     401,
+			MessagesError: "Utilisateur non authentifié",
+		}
+		Error(w, r, &data)
 		return
 	}
 
@@ -113,7 +130,11 @@ func UploadAvatarHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(5 << 20) // 5MB max
 	file, header, err := r.FormFile("avatar")
 	if err != nil {
-		http.Error(w, "Fichier invalide", http.StatusBadRequest)
+		data := models.Data{
+			CodeError:     400,
+			MessagesError: "Fichier invalide",
+		}
+		Error(w, r, &data)
 		return
 	}
 	defer file.Close()
@@ -122,27 +143,43 @@ func UploadAvatarHandler(w http.ResponseWriter, r *http.Request) {
 	ext := filepath.Ext(header.Filename)
 	allowed := map[string]bool{".jpg": true, ".jpeg": true, ".png": true, ".webp": true}
 	if !allowed[ext] {
-		http.Error(w, "Format non supporté", http.StatusBadRequest)
+		data := models.Data{
+			CodeError:     400,
+			MessagesError: "Format non supporté",
+		}
+		Error(w, r, &data)
 		return
 	}
 
 	// Lire le contenu
 	fileBytes, err := io.ReadAll(file)
 	if err != nil {
-		http.Error(w, "Erreur lecture fichier", http.StatusInternalServerError)
+		data := models.Data{
+			CodeError:     500,
+			MessagesError: "Erreur lecture fichier",
+		}
+		Error(w, r, &data)
 		return
 	}
 
 	// Upload vers Supabase Storage
 	avatarURL, err := repositoriespkg.UploadAvatar(UserID, ext, fileBytes)
 	if err != nil {
-		http.Error(w, "Erreur upload", http.StatusInternalServerError)
+		data := models.Data{
+			CodeError:     500,
+			MessagesError: "Erreur upload",
+		}
+		Error(w, r, &data)
 		return
 	}
 
 	// Mettre à jour avatar_url en DB
 	if err := repositoriespkg.UpdateUserAvatar(UserID, avatarURL); err != nil {
-		http.Error(w, "Erreur mise à jour", http.StatusInternalServerError)
+		data := models.Data{
+			CodeError:     500,
+			MessagesError: "Erreur mise à jour",
+		}
+		Error(w, r, &data)
 		return
 	}
 
@@ -152,14 +189,22 @@ func UploadAvatarHandler(w http.ResponseWriter, r *http.Request) {
 func UploadBanniereHandler(w http.ResponseWriter, r *http.Request) {
 	UserID, ok := auth.GetUserID(r)
 	if !ok {
-		http.Error(w, "Utilisateur non authentifié", http.StatusUnauthorized)
+		data := models.Data{
+			CodeError:     401,
+			MessagesError: "Utilisateur non authentifié",
+		}
+		Error(w, r, &data)
 		return
 	}
 
 	r.ParseMultipartForm(5 << 20) // 5MB max
 	file, header, err := r.FormFile("banniere")
 	if err != nil {
-		http.Error(w, "Fichier invalide", http.StatusBadRequest)
+		data := models.Data{
+			CodeError:     400,
+			MessagesError: "Fichier invalide",
+		}
+		Error(w, r, &data)
 		return
 	}
 	defer file.Close()
@@ -168,27 +213,43 @@ func UploadBanniereHandler(w http.ResponseWriter, r *http.Request) {
 	ext := filepath.Ext(header.Filename)
 	allowed := map[string]bool{".jpg": true, ".jpeg": true, ".png": true, ".webp": true}
 	if !allowed[ext] {
-		http.Error(w, "Format non supporté", http.StatusBadRequest)
+		data := models.Data{
+			CodeError:     400,
+			MessagesError: "Format non supporté",
+		}
+		Error(w, r, &data)
 		return
 	}
 
 	// Lire le contenu
 	fileBytes, err := io.ReadAll(file)
 	if err != nil {
-		http.Error(w, "Erreur lecture fichier", http.StatusInternalServerError)
+		data := models.Data{
+			CodeError:     500,
+			MessagesError: "Erreur lecture fichier",
+		}
+		Error(w, r, &data)
 		return
 	}
 
 	// Upload vers Supabase Storage
 	avatarURL, err := repositoriespkg.UploadBanniere(UserID, ext, fileBytes)
 	if err != nil {
-		http.Error(w, "Erreur upload", http.StatusInternalServerError)
+		data := models.Data{
+			CodeError:     500,
+			MessagesError: "Erreur upload",
+		}
+		Error(w, r, &data)
 		return
 	}
 
 	// Mettre à jour avatar_url en DB
 	if err := repositoriespkg.UpdateUserBanniere(UserID, avatarURL); err != nil {
-		http.Error(w, "Erreur mise à jour", http.StatusInternalServerError)
+		data := models.Data{
+			CodeError:     500,
+			MessagesError: "Erreur mise à jour",
+		}
+		Error(w, r, &data)
 		return
 	}
 
@@ -220,7 +281,11 @@ func (h *SearchHandler) Search(w http.ResponseWriter, r *http.Request) {
 
 	posts, _, err := repositoriespkg.SearchPosts(dbpkg.Db, query, page, perPage)
 	if err != nil {
-		http.Error(w, "Erreur serveur", http.StatusInternalServerError)
+		data := models.Data{
+			CodeError:     500,
+			MessagesError: "Erreur serveur",
+		}
+		Error(w, r, &data)
 		return
 	}
 
@@ -231,7 +296,11 @@ func (h *SearchHandler) Search(w http.ResponseWriter, r *http.Request) {
 
 	tmpl, ok := h.Templates["search.html"]
 	if !ok {
-		http.Error(w, "Template introuvable", http.StatusInternalServerError)
+		data := models.Data{
+			CodeError:     500,
+			MessagesError: "Template introuvable",
+		}
+		Error(w, r, &data)
 		return
 	}
 

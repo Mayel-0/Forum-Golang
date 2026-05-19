@@ -5,6 +5,7 @@
     <div class="auth-card">
         <h1>Connexion</h1>
         <p class="auth-subtitle">Bon retour sur Lyrics.</p>
+        <p class="error" style="color: red;">{{.MessagesError}}</p>
 
         <form action="/auth/login" method="POST" autocomplete="on">
             <label>

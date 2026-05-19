@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"log"
 	auth "lyrics/auth"
 	"lyrics/db"
 	"lyrics/models"
@@ -51,15 +50,22 @@ func validSubCategory(value string) bool {
 func PosteCreateHandler(w http.ResponseWriter, r *http.Request) {
 	UserID, ok := auth.GetUserID(r)
 	if !ok {
-		http.Error(w, "Utilisateur non authentifié", http.StatusUnauthorized)
+		data := models.Data{
+			CodeError:     401,
+			MessagesError: "Utilisateur non authentifié",
+		}
+		Error(w, r, &data)
 		return
 	}
 	switch r.Method {
 	case http.MethodGet:
 		categories, err := repo.GetAllCategories()
 		if err != nil {
-			http.Error(w, "Erreur lors de la récupération des catégories", http.StatusInternalServerError)
-			log.Printf("Erreur récupération catégories: %v", err)
+			data := models.Data{
+				CodeError:     500,
+				MessagesError: "Erreur lors de la récupération des catégories",
+			}
+			Error(w, r, &data)
 			return
 		}
 
@@ -67,28 +73,44 @@ func PosteCreateHandler(w http.ResponseWriter, r *http.Request) {
 		if user, ok := auth.GetCurrentUser(r); ok {
 			data.User = user
 		}
-		render(w, "post-create.html", data)
+		render(w,r, "post-create.html", data)
 	case http.MethodPost:
 		userIDParsed, err := uuid.Parse(UserID)
 		if err != nil {
-			http.Error(w, "ID utilisateur invalide", http.StatusBadRequest)
+			data := models.Data{
+				CodeError:     401,
+				MessagesError: "ID utilisateur invalide",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		categorySlug := sanitizeSlugPart(r.FormValue("category"))
 		subcategoryRaw := sanitizeSlugPart(r.FormValue("subcategory"))
 		if categorySlug == "" || subcategoryRaw == "" {
-			http.Error(w, "Catégorie ou sous-catégorie invalide", http.StatusBadRequest)
+			data := models.Data{
+				CodeError:     401,
+				MessagesError: "Catégorie ou sous-catégorie invalide",
+			}
+			Error(w, r, &data)
 			return
 		}
 		if !validSubCategory(subcategoryRaw) {
-			http.Error(w, "Sous-catégorie invalide", http.StatusBadRequest)
+			data := models.Data{
+				CodeError:     401,
+				MessagesError: "Catégorie ou sous-catégorie invalide",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		categoryID, err := repo.GetCategoryIDBySlug(r.FormValue("category"))
 		if err != nil {
-			http.Error(w, "Catégorie invalide", http.StatusBadRequest)
+			data := models.Data{
+				CodeError:     401,
+				MessagesError: "Catégorie ou sous-catégorie invalide",
+			}
+			Error(w, r, &data)
 			return
 		}
 
@@ -102,8 +124,11 @@ func PosteCreateHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if err := db.Db.Create(&Post).Error; err != nil {
-			http.Error(w, "Erreur lors de la création du post", http.StatusInternalServerError)
-			log.Printf("Erreur création post: %v", err)
+			data := models.Data{
+				CodeError:     500,
+				MessagesError: "Erreur lors de la création du post",
+			}
+			Error(w, r, &data)
 			return
 		}
 
@@ -111,87 +136,136 @@ func PosteCreateHandler(w http.ResponseWriter, r *http.Request) {
 
 		http.Redirect(w, r, reelSlug, http.StatusSeeOther)
 	default:
-		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
+		data := models.Data{
+			CodeError:     401,
+			MessagesError: "Méthode non autorisée",
+		}
+		Error(w, r, &data)
 	}
 }
 
 func PosteDeleteHandler(w http.ResponseWriter, r *http.Request) {
 	UserID, ok := auth.GetUserID(r)
 	if !ok {
-		http.Error(w, "Utilisateur non authentifié", http.StatusUnauthorized)
+		data := models.Data{
+			CodeError:     401,
+			MessagesError: "Utilisateur non authentifié",
+		}
+		Error(w, r, &data)
 		return
 	}
 	switch r.Method {
 	case http.MethodPost:
 		userIDParsed, err := uuid.Parse(UserID)
 		if err != nil {
-			http.Error(w, "ID utilisateur invalide", http.StatusBadRequest)
+			data := models.Data{
+				CodeError:     401,
+				MessagesError: "ID utilisateur invalide",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		postID := r.FormValue("postID")
 		postIDParsed, err := uuid.Parse(postID)
 		if err != nil {
-			http.Error(w, "ID post invalide", http.StatusBadRequest)
+			data := models.Data{
+				CodeError:     401,
+				MessagesError: "ID post invalide",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		post, err := repo.GetPostByID(postIDParsed)
 		if err != nil {
-			http.Error(w, "Post introuvable", http.StatusNotFound)
-			log.Printf("Erreur récupération post: %v", err)
+			data := models.Data{
+				CodeError:     404,
+				MessagesError: "Post introuvable",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		if !auth.VerifyUserRequest(userIDParsed, post.AuthorID) {
-			http.Error(w, "Utilisateur non autorisé à modifier ce post", http.StatusForbidden)
+			data := models.Data{
+				CodeError:     401,
+				MessagesError: "Utilisateur non autorisé à modifier ce post",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		if err := repo.DeletePoste(&post); err != nil {
-			http.Error(w, "Erreur lors de la suppression du post", http.StatusInternalServerError)
-			log.Printf("Erreur suppression post: %v", err)
+			data := models.Data{
+				CodeError:     500,
+				MessagesError: "Erreur lors de la suppression du post",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		http.Redirect(w, r, "acceuil.html", http.StatusSeeOther)
 	default:
-		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
+		data := models.Data{
+			CodeError:     401,
+			MessagesError: "Méthode non autorisée",
+		}
+		Error(w, r, &data)
 	}
 }
 
 func PosteModifierHandle(w http.ResponseWriter, r *http.Request) {
 	UserID, ok := auth.GetUserID(r)
 	if !ok {
-		http.Error(w, "Utilisateur non authentifié", http.StatusUnauthorized)
+		data := models.Data{
+			CodeError:     401,
+			MessagesError: "Utilisateur non authentifié",
+		}
+		Error(w, r, &data)
 		return
 	}
 	switch r.Method {
 	case http.MethodGet:
-		render(w, "post-edit.html", nil)
+		render(w, r, "post-edit.html", nil)
 	case http.MethodPost:
 		userIDParsed, err := uuid.Parse(UserID)
 		if err != nil {
-			http.Error(w, "ID utilisateur invalide", http.StatusBadRequest)
+			data := models.Data{
+				CodeError:     401,
+				MessagesError: "ID utilisateur invalide",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		postID := r.FormValue("postID")
 		postIDParsed, err := uuid.Parse(postID)
 		if err != nil {
-			http.Error(w, "ID post invalide", http.StatusBadRequest)
+			data := models.Data{
+				CodeError:     401,
+				MessagesError: "ID post invalide",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		post, err := repo.GetPostByID(postIDParsed)
 		if err != nil {
-			http.Error(w, "Post introuvable", http.StatusNotFound)
-			log.Printf("Erreur récupération post: %v", err)
+			data := models.Data{
+				CodeError:     404,
+				MessagesError: "Post introuvable",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		if !auth.VerifyUserRequest(userIDParsed, post.AuthorID) {
-			http.Error(w, "Utilisateur non autorisé à modifier ce post", http.StatusForbidden)
+			data := models.Data{
+				CodeError:     401,
+				MessagesError: "Utilisateur non autorisé à modifier ce post",
+			}
+			Error(w, r, &data)
 			return
 		}
 
@@ -200,21 +274,31 @@ func PosteModifierHandle(w http.ResponseWriter, r *http.Request) {
 
 		newSlug, err := repo.UpdatePostSlugFromTitle(post.Slug, post.Title)
 		if err != nil {
-			http.Error(w, "Erreur lors de la modification", http.StatusInternalServerError)
-			log.Printf("Erreur: %v", err)
+			data := models.Data{
+				CodeError:     500,
+				MessagesError: "Erreur lors de la modification",
+			}
+			Error(w, r, &data)
 			return
 		}
 		post.Slug = newSlug
 
 		if err := repo.UpdatePoste(&post); err != nil {
-			http.Error(w, "Erreur lors de la modification du post", http.StatusInternalServerError)
-			log.Printf("Erreur modification post: %v", err)
+			data := models.Data{
+				CodeError:     500,
+				MessagesError: "Erreur lors de la modification du post",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		http.Redirect(w, r, post.Slug, http.StatusSeeOther)
 	default:
-		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
+		data := models.Data{
+			CodeError:     401,
+			MessagesError: "Méthode non autorisée",
+		}
+		Error(w, r, &data)
 	}
 }
 
@@ -235,13 +319,21 @@ func PostShowHandle(w http.ResponseWriter, r *http.Request) {
 
 	post, err := repo.GetPostBySlug(slug)
 	if err != nil {
-		http.Error(w, "Post non trouvé", http.StatusNotFound)
+		data := models.Data{
+			CodeError:     404,
+			MessagesError: "Post non trouvé",
+		}
+		Error(w, r, &data)
 		return
 	}
 
 	comments, err := repo.GetCommentsByPostID(post.ID)
 	if err != nil {
-		http.Error(w, "Erreur récupération commentaires", http.StatusInternalServerError)
+		data := models.Data{
+			CodeError:     404,
+			MessagesError: "Commentaire non trouvé",
+		}
+		Error(w, r, &data)
 		return
 	}
 
@@ -254,7 +346,7 @@ func PostShowHandle(w http.ResponseWriter, r *http.Request) {
 		data.UserLikedCommentIDs = repo.GetUserLikedCommentIDs(user.ID, post.ID)
 	}
 
-	render(w, "post.html", data)
+	render(w,r, "post.html", data)
 }
 
 func SubCategoryHandle(w http.ResponseWriter, r *http.Request) {
@@ -262,32 +354,52 @@ func SubCategoryHandle(w http.ResponseWriter, r *http.Request) {
 	subRaw := r.PathValue("subcategory")
 
 	if !validSubCategory(subRaw) {
-		http.Error(w, "Sous-catégorie invalide", http.StatusNotFound)
+		data := models.Data{
+			CodeError:     404,
+			MessagesError: "Sous categorie non trouvé",
+		}
+		Error(w, r, &data)
 		return
 	}
 	sub := models.PostSubCategory(subRaw)
 
 	categoryID, err := repo.GetCategoryIDBySlug(slug)
 	if err != nil {
-		http.Error(w, "Catégorie non trouvée", http.StatusNotFound)
+		data := models.Data{
+			CodeError:     404,
+			MessagesError: "Sous categorie non trouvé",
+		}
+		Error(w, r, &data)
 		return
 	}
 
 	posts, err := repo.GetAllPostsByCategoryAndSub(categoryID, sub)
 	if err != nil {
-		http.Error(w, "Erreur récupération des posts", http.StatusInternalServerError)
+		data := models.Data{
+			CodeError:     500,
+			MessagesError: "Erreur récupération des posts",
+		}
+		Error(w, r, &data)
 		return
 	}
 
 	category, err := repo.GetCategoryByID(categoryID)
 	if err != nil {
-		http.Error(w, "Erreur récupération de la catégorie", http.StatusInternalServerError)
+		data := models.Data{
+			CodeError:     500,
+			MessagesError: "Erreur récupération de la catégorie",
+		}
+		Error(w, r, &data)
 		return
 	}
 
 	topUsers, err := repositoriespkg.GetTopUsers(3)
 	if err != nil {
-		http.Error(w, "Erreur récupération des utilisateurs", http.StatusInternalServerError)
+		data := models.Data{
+			CodeError:     500,
+			MessagesError: "Erreur récupération des utilisateurs",
+		}
+		Error(w, r, &data)
 		return
 	}
 
@@ -308,7 +420,7 @@ func SubCategoryHandle(w http.ResponseWriter, r *http.Request) {
 		data.User = user
 	}
 
-	render(w, "subcategory.html", data)
+	render(w,r, "subcategory.html", data)
 }
 
 func CategoryHandle(w http.ResponseWriter, r *http.Request) {
@@ -316,37 +428,61 @@ func CategoryHandle(w http.ResponseWriter, r *http.Request) {
 
 	categoryID, err := repo.GetCategoryIDBySlug(slug)
 	if err != nil {
-		http.Error(w, "Catégorie non trouvée", http.StatusNotFound)
+		data := models.Data{
+			CodeError:     404,
+			MessagesError: "Catégorie non trouvée",
+		}
+		Error(w, r, &data)
 		return
 	}
 
 	postsA, err := repo.GetAllPostsByCategoryLimitArtistes(categoryID)
 	if err != nil {
-		http.Error(w, "Erreur récupération des posts", http.StatusInternalServerError)
+		data := models.Data{
+			CodeError:     500,
+			MessagesError: "Erreur récupération des posts",
+		}
+		Error(w, r, &data)
 		return
 	}
 
 	postsC, err := repo.GetAllPostsByCategoryLimitConcerts(categoryID)
 	if err != nil {
-		http.Error(w, "Erreur récupération des posts", http.StatusInternalServerError)
+		data := models.Data{
+			CodeError:     500,
+			MessagesError: "Erreur récupération des posts",
+		}
+		Error(w, r, &data)
 		return
 	}
 
 	postsN, err := repo.GetAllPostsByCategoryLimitNouveautes(categoryID)
 	if err != nil {
-		http.Error(w, "Erreur récupération des posts", http.StatusInternalServerError)
+		data := models.Data{
+			CodeError:     500,
+			MessagesError: "Erreur récupération des posts",
+		}
+		Error(w, r, &data)
 		return
 	}
 
 	topUsers, err := repositoriespkg.GetTopUsers(3)
 	if err != nil {
-		http.Error(w, "Erreur récupération des utilisateurs", http.StatusInternalServerError)
+		data := models.Data{
+			CodeError:     500,
+			MessagesError: "Erreur récupération des utilisateurs",
+		}
+		Error(w, r, &data)
 		return
 	}
 
 	category, err := repo.GetCategoryByID(categoryID)
 	if err != nil {
-		http.Error(w, "Erreur récupération de la catégorie", http.StatusInternalServerError)
+		data := models.Data{
+			CodeError:     500,
+			MessagesError: "Erreur récupération de la catégorie",
+		}
+		Error(w, r, &data)
 		return
 	}
 
@@ -369,5 +505,5 @@ func CategoryHandle(w http.ResponseWriter, r *http.Request) {
 		data.User = user
 	}
 
-	render(w, "index.html", data)
+	render(w,r, "index.html", data)
 }

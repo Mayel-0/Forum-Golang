@@ -36,6 +36,7 @@
 	--font-base: "Roboto", "DM Sans", sans-serif;
 	--main-brown: rgb(123, 79, 46);
 	--secondary-brown: rgb(154, 128, 96);
+	--error: red;
 }
 
 /** BUTTON **/
@@ -77,6 +78,10 @@ body {
 	cursor: pointer;
 	text-decoration: none;
 	border-radius: 18px;
+}
+
+.error p {
+	color: var(--error);
 }
 
 body {

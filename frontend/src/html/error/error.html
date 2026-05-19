@@ -1,10 +1,28 @@
 {{ define "pageTitle" }}Error Page{{ end }}
 
 {{ define "pageContent" }}
-<section>
-  <div>
-    <p>error</p>
-    <button href="/" class="button-brown">Accueil</button>
+<section class="error-page">
+  <div class="error-card">
+
+    <div class="error-code">{{.CodeError}}</div>
+
+    <div class="error-divider">
+      <span class="error-divider-icon">✦</span>
+    </div>
+
+    <h1 class="error-title">{{.MessagesError}}</h1>
+
+    <p class="error-message">
+      La page que vous cherchez est introuvable ou une erreur s'est produite.<br>
+      Elle a peut-être été déplacée, supprimée ou n'a jamais existé.
+    </p>
+
+    <div class="error-actions">
+      <button class="button-brown" href="/category/rock">Accueil</button>
+    </div>
+
+    <p class="error-ornament">— lyrics —</p>
+
   </div>
 </section>
 {{end}}

@@ -5,6 +5,7 @@
     <div class="auth-card">
         <h1>Inscription</h1>
         <p class="auth-subtitle">Rejoins la communauté Lyrics.</p>
+        <p class="error" style="color: red;">{{.MessagesError}}</p>
 
         <form action="/auth/register" method="POST" autocomplete="on">
             <label>

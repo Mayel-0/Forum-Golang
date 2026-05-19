@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"errors"
-	"log"
 	"net/http"
 
 	authpkg "lyrics/auth"
@@ -15,49 +14,68 @@ import (
 func LoginHandle(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		render(w, "login.html", nil)
+		render(w, r, "login.html", nil)
 	case http.MethodPost:
 		email := r.FormValue("email")
 		password := r.FormValue("password")
 
 		if email == "" || password == "" {
-			http.Error(w, "email et mot de passe requis", http.StatusBadRequest)
+			data := models.Data{
+				MessagesError: "email et mot de passe requis",
+			}
+			render(w, r, "login.html", data)
 			return
 		}
 
 		user, err := repositoriespkg.FindUserByEmail(email)
 		if err != nil {
 			if errors.Is(err, repositoriespkg.ErrUserNotFound) {
-				http.Error(w, "identifiants invalides", http.StatusUnauthorized)
+				data := models.Data{
+					MessagesError: "identifiants invalides",
+				}
+				render(w, r, "login.html", data)
 				return
 			}
-			http.Error(w, "erreur serveur", http.StatusInternalServerError)
-			log.Printf("find user by email error: %v", err)
+			data := models.Data{
+				CodeError:     500,
+				MessagesError: "erreur serveur",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password)); err != nil {
-			http.Error(w, "identifiants invalides", http.StatusUnauthorized)
+			data := models.Data{
+				MessagesError: "identifiants invalides",
+			}
+			render(w, r, "login.html", data)
 			return
 		}
 
 		if err := authpkg.SetSession(w, r, user.ID.String()); err != nil {
-			http.Error(w, "erreur serveur", http.StatusInternalServerError)
-			log.Printf("set session error: %v", err)
+			data := models.Data{
+				CodeError:     500,
+				MessagesError: "erreur serveur",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 
 	default:
-		http.Error(w, "méthode non autorisée", http.StatusMethodNotAllowed)
+		data := models.Data{
+			CodeError:     401,
+			MessagesError: "Méthode non autorisée",
+		}
+		Error(w, r, &data)
 	}
 }
 
 func RegisterHandle(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		render(w, "register.html", nil)
+		render(w, r, "register.html", nil)
 	case http.MethodPost:
 		s := ""
 		user := models.User{
@@ -70,19 +88,28 @@ func RegisterHandle(w http.ResponseWriter, r *http.Request) {
 		vPassword := r.FormValue("confirm_password")
 
 		if password == "" {
-			http.Error(w, "Mot de passe requis", http.StatusBadRequest)
+			data := models.Data{
+				MessagesError: "Mot de passe requis",
+			}
+			render(w, r, "register.html", data)
 			return
 		}
 
 		if password != vPassword {
-			http.Error(w, "Les mots de passe ne correspondent pas", http.StatusBadRequest)
+			data := models.Data{
+				MessagesError: "Les mots de passe ne correspondent pas",
+			}
+			render(w, r, "register.html", data)
 			return
 		}
 
 		hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 		if err != nil {
-			http.Error(w, "Erreur lors du chiffrement du mot de passe", http.StatusInternalServerError)
-			log.Printf("bcrypt error: %v", err)
+			data := models.Data{
+				CodeError:     500,
+				MessagesError: "Erreur lors du chiffrement du mot de passe",
+			}
+			Error(w, r, &data)
 			return
 		}
 
@@ -90,18 +117,28 @@ func RegisterHandle(w http.ResponseWriter, r *http.Request) {
 
 		if err := repositoriespkg.CreateUser(&user); err != nil {
 			if errors.Is(err, repositoriespkg.ErrEmailAlreadyExists) {
-				http.Error(w, "email déjà utilisé", http.StatusConflict)
+				data := models.Data{
+					MessagesError: "email déjà utilisé",
+				}
+				render(w, r, "register.html", data)
 				return
 			}
-			http.Error(w, "Erreur lors de la création du compte", http.StatusInternalServerError)
-			log.Printf("create user error: %v", err)
+			data := models.Data{
+				CodeError:     400,
+				MessagesError: "Erreur lors de la création du compte",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		http.Redirect(w, r, "/auth/login", http.StatusSeeOther)
 
 	default:
-		http.Error(w, "méthode non autorisée", http.StatusMethodNotAllowed)
+		data := models.Data{
+			CodeError:     401,
+			MessagesError: "Méthode non autorisée",
+		}
+		Error(w, r, &data)
 	}
 }
 
@@ -110,6 +147,6 @@ func LogoutHandle(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
-func ErrorHandle(w http.ResponseWriter, r *http.Request) {
-	render(w, "error.html", nil)
+func Error(w http.ResponseWriter, r *http.Request, data *models.Data) {
+	render(w, r, "error.html", data)
 }

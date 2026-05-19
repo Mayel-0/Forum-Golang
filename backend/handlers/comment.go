@@ -16,18 +16,30 @@ func AddCommentHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		UserId, ok := auth.GetUserID(r)
 		if !ok {
-			http.Error(w, "Utilisateur non authentifié", http.StatusUnauthorized)
+			data := models.Data{
+				CodeError:     401,
+				MessagesError: "Utilisateur non authentifié",
+			}
+			Error(w, r, &data)
 			return
 		}
 		UserIdParsed, err := uuid.Parse(UserId)
 		if err != nil {
-			http.Error(w, "ID utilisateur invalide", http.StatusBadRequest)
+			data := models.Data{
+				CodeError:     401,
+				MessagesError: "ID utilisateur invalide",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		postID, err := uuid.Parse(r.FormValue("post_id"))
 		if err != nil {
-			http.Error(w, "ID post invalide", http.StatusBadRequest)
+			data := models.Data{
+				CodeError:     401,
+				MessagesError: "ID post invalide",
+			}
+			Error(w, r, &data)
 			return
 		}
 
@@ -45,7 +57,11 @@ func AddCommentHandler(w http.ResponseWriter, r *http.Request) {
 			ParentID: parentID,
 		}
 		if err := repo.AddComment(&comment); err != nil {
-			http.Error(w, "Erreur lors de la création du commentaire", http.StatusInternalServerError)
+			data := models.Data{
+				CodeError:     500,
+				MessagesError: "Erreur lors de la création du commentaire",
+			}
+			Error(w, r, &data)
 			return
 		}
 
@@ -64,7 +80,11 @@ func AddCommentHandler(w http.ResponseWriter, r *http.Request) {
 
 		http.Redirect(w, r, r.FormValue("slug"), http.StatusSeeOther)
 	default:
-		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
+		data := models.Data{
+			CodeError:     401,
+			MessagesError: "Méthode non autorisée",
+		}
+		Error(w, r, &data)
 	}
 }
 
@@ -73,41 +93,69 @@ func DeleteCommentHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		UserId, ok := auth.GetUserID(r)
 		if !ok {
-			http.Error(w, "Utilisateur non authentifié", http.StatusUnauthorized)
+			data := models.Data{
+				CodeError:     401,
+				MessagesError: "Utilisateur non authentifié",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		UserIdParsed, err := uuid.Parse(UserId)
 		if err != nil {
-			http.Error(w, "ID utilisateur invalide", http.StatusBadRequest)
+			data := models.Data{
+				CodeError:     401,
+				MessagesError: "ID utilisateur invalide",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		CommentId, err := uuid.Parse(r.FormValue("comment_id"))
 		if err != nil {
-			http.Error(w, "ID commentaire invalide", http.StatusBadRequest)
+			data := models.Data{
+				CodeError:     401,
+				MessagesError: "ID commentaire invalide",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		comment, err := repo.GetCommentByID(CommentId)
 		if err != nil {
-			http.Error(w, "Commentaire non trouvé", http.StatusNotFound)
+			data := models.Data{
+				CodeError:     404,
+				MessagesError: "Commentaire non trouvé",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		if !auth.VerifyUserRequest(UserIdParsed, comment.AuthorID) {
-			http.Error(w, "Utilisateur non autorisé à modifier ce commentaire", http.StatusForbidden)
+			data := models.Data{
+				CodeError:     403,
+				MessagesError: "Utilisateur non autorisé à modifier ce commentaire",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		if err := repo.DeleteComment(CommentId); err != nil {
-			http.Error(w, "Erreur lors de la suppression du commentaire", http.StatusInternalServerError)
+			data := models.Data{
+				CodeError:     500,
+				MessagesError: "Erreur lors de la suppression du commentaire",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		http.Redirect(w, r, r.FormValue("slug"), http.StatusSeeOther)
 
 	default:
-		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
+		data := models.Data{
+			CodeError:     401,
+			MessagesError: "Méthode non autorisée",
+		}
+		Error(w, r, &data)
 	}
 }

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"log"
 	"lyrics/auth"
 	"lyrics/db"
 	"lyrics/models"
@@ -19,7 +18,11 @@ func SetTemplates(t *template.Template) {
 func LikeHandlerAdd(w http.ResponseWriter, r *http.Request) {
 	UserID, ok := auth.GetUserID(r)
 	if !ok {
-		http.Error(w, "Utilisateur non authentifié", http.StatusUnauthorized)
+		data := models.Data{
+			CodeError:     401,
+			MessagesError: "Utilisateur non authentifié",
+		}
+		Error(w, r, &data)
 		return
 	}
 
@@ -30,8 +33,11 @@ func LikeHandlerAdd(w http.ResponseWriter, r *http.Request) {
 
 		userUUID, err := uuid.Parse(UserID)
 		if err != nil {
-			http.Error(w, "ID utilisateur invalide", http.StatusBadRequest)
-			log.Printf("Erreur parse user UUID: %v", err)
+			data := models.Data{
+				CodeError:     401,
+				MessagesError: "ID utilisateur invalide",
+			}
+			Error(w, r, &data)
 			return
 		}
 
@@ -42,8 +48,11 @@ func LikeHandlerAdd(w http.ResponseWriter, r *http.Request) {
 		if PostIDStr != "" {
 			PostUUID, err := uuid.Parse(PostIDStr)
 			if err != nil {
-				http.Error(w, "ID post invalide", http.StatusBadRequest)
-				log.Printf("Erreur parse post UUID: %v", err)
+				data := models.Data{
+					CodeError:     401,
+					MessagesError: "ID utilisateur invalide",
+				}
+				Error(w, r, &data)
 				return
 			}
 			like.PostID = &PostUUID
@@ -52,30 +61,44 @@ func LikeHandlerAdd(w http.ResponseWriter, r *http.Request) {
 		if CommentIDStr != "" {
 			CommentUUID, err := uuid.Parse(CommentIDStr)
 			if err != nil {
-				http.Error(w, "ID commentaire invalide", http.StatusBadRequest)
-				log.Printf("Erreur parse comment UUID: %v", err)
+				data := models.Data{
+					CodeError:     401,
+					MessagesError: "ID commentaire invalide",
+				}
+				Error(w, r, &data)
 				return
 			}
 			like.CommentID = &CommentUUID
 		}
 
 		if err := db.Db.Create(&like).Error; err != nil {
-			http.Error(w, "Erreur lors de la création du like", http.StatusInternalServerError)
-			log.Printf("Erreur création like: %v", err)
+			data := models.Data{
+				CodeError:     500,
+				MessagesError: "Erreur lors de la création du like",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		w.WriteHeader(http.StatusCreated)
 
 	default:
-		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
+		data := models.Data{
+			CodeError:     401,
+			MessagesError: "Méthode non autorisée",
+		}
+		Error(w, r, &data)
 	}
 }
 
 func LikeHandlerRm(w http.ResponseWriter, r *http.Request) {
 	UserID, ok := auth.GetUserID(r)
 	if !ok {
-		http.Error(w, "Utilisateur non authentifié", http.StatusUnauthorized)
+		data := models.Data{
+			CodeError:     401,
+			MessagesError: "Utilisateur non authentifié",
+		}
+		Error(w, r, &data)
 		return
 	}
 
@@ -86,8 +109,11 @@ func LikeHandlerRm(w http.ResponseWriter, r *http.Request) {
 
 		userUUID, err := uuid.Parse(UserID)
 		if err != nil {
-			http.Error(w, "ID utilisateur invalide", http.StatusBadRequest)
-			log.Printf("Erreur parse user UUID: %v", err)
+			data := models.Data{
+				CodeError:     401,
+				MessagesError: "ID utilisateur invalide",
+			}
+			Error(w, r, &data)
 			return
 		}
 
@@ -96,8 +122,11 @@ func LikeHandlerRm(w http.ResponseWriter, r *http.Request) {
 		if PostIDStr != "" {
 			PostUUID, err := uuid.Parse(PostIDStr)
 			if err != nil {
-				http.Error(w, "ID post invalide", http.StatusBadRequest)
-				log.Printf("Erreur parse post UUID: %v", err)
+				data := models.Data{
+					CodeError:     401,
+					MessagesError: "ID utilisateur invalide",
+				}
+				Error(w, r, &data)
 				return
 			}
 			query = query.Where("post_id = ?", PostUUID)
@@ -105,22 +134,32 @@ func LikeHandlerRm(w http.ResponseWriter, r *http.Request) {
 		if CommentIDStr != "" {
 			CommentUUID, err := uuid.Parse(CommentIDStr)
 			if err != nil {
-				http.Error(w, "ID commentaire invalide", http.StatusBadRequest)
-				log.Printf("Erreur parse comment UUID: %v", err)
+				data := models.Data{
+					CodeError:     401,
+					MessagesError: "ID commentaire invalide",
+				}
+				Error(w, r, &data)
 				return
 			}
 			query = query.Where("comment_id = ?", CommentUUID)
 		}
 
 		if err := query.Delete(&models.Likes{}).Error; err != nil {
-			http.Error(w, "Erreur lors de la suppression du like", http.StatusInternalServerError)
-			log.Printf("Erreur suppression like: %v", err)
+			data := models.Data{
+				CodeError:     500,
+				MessagesError: "Erreur lors de la suppression du like",
+			}
+			Error(w, r, &data)
 			return
 		}
 
 		w.WriteHeader(http.StatusNoContent)
 
 	default:
-		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
+		data := models.Data{
+			CodeError:     401,
+			MessagesError: "Méthode non autorisée",
+		}
+		Error(w, r, &data)
 	}
 }

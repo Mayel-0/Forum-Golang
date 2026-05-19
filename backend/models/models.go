@@ -42,7 +42,9 @@ type Data struct {
 	UserLikedPost       bool
 	UserLikedCommentIDs []string
 
-	messagesError   string
+	CodeError     int
+	MessagesError string
+
 	messagesSuccess string
 }
 
