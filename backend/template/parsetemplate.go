@@ -91,6 +91,7 @@ func ParseTemplates() (map[string]*template.Template, error) {
 		"profile.html":     {base + "profile/profile.html", partials},
 		"user.html":        {base + "profile/user.html", partials},
 		"search.html":      {base + "forum/post/search.html", partials},
+		"error.html":       {base + "error/error.html", partials},
 	}
 
 	templates := make(map[string]*template.Template)

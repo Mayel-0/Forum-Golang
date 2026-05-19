@@ -64,6 +64,7 @@ func main() {
 	mux.HandleFunc("GET /user/{username}", handlerspkg.PublicProfileHandle)
 	searchHandler := &handlers.SearchHandler{Templates: tpl}
 	mux.HandleFunc("/search", searchHandler.Search)
+	mux.HandleFunc("/error", handlerspkg.ErrorHandle)
 
 	// Route dynamique par slug
 	mux.HandleFunc("GET /p/{slug...}", handlerspkg.PostShowHandle)

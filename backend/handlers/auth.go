@@ -59,9 +59,11 @@ func RegisterHandle(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		render(w, "register.html", nil)
 	case http.MethodPost:
+		s := ""
 		user := models.User{
 			Username: r.FormValue("username"),
 			Email:    r.FormValue("email"),
+			Bio:      &s,
 		}
 
 		password := r.FormValue("password")
@@ -106,4 +108,8 @@ func RegisterHandle(w http.ResponseWriter, r *http.Request) {
 func LogoutHandle(w http.ResponseWriter, r *http.Request) {
 	authpkg.DropSession(w, r)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func ErrorHandle(w http.ResponseWriter, r *http.Request) {
+	render(w, "error.html", nil)
 }
