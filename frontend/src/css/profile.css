@@ -318,9 +318,15 @@
 }
 
 @media (max-width: 768px) {
+    #profile-section {
+        margin: 20px auto;
+        padding: 0 12px;
+    }
+
     .profile-header-body {
         flex-direction: column;
         align-items: flex-start;
+        padding: 0 16px 16px;
     }
 
     .profile-banner {
@@ -328,6 +334,24 @@
     }
 
     .profile-avatar {
-        margin-top: -40px;
+        margin-top: -36px;
+    }
+
+    .profile-card {
+        padding: 16px;
+    }
+
+    .avatar-upload {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    #profile-section {
+        margin: 12px auto;
+        padding: 0 10px;
+        gap: 10px;
     }
 }

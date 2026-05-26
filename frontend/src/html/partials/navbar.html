@@ -5,7 +5,7 @@
             <h1><a href="/">Lyrics</a></h1>
             <div class="search-bar">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <form classe="searchForm" action="/search" method="GET" style="width: 100%;">
+                <form action="/search" method="GET" style="width: 100%;">
                     <input type="text" name="q" id="q" placeholder="Rechercher un sujet, un artiste, un concert...">
                 </form>
             </div>
@@ -21,6 +21,35 @@
                 {{ end }}
             </ul>
         </div>
+        <div class="nav-mobile-controls">
+            <button class="nav-icon-btn nav-search-toggle" aria-label="Rechercher">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+            <button class="nav-icon-btn nav-hamburger" aria-label="Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </div>
+    <div class="nav-mobile-search">
+        <form action="/search" method="GET">
+            <div class="nav-mobile-search-inner">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" name="q" placeholder="Rechercher un sujet, un artiste...">
+            </div>
+        </form>
+    </div>
+    <div class="nav-mobile-menu">
+        <ul>
+            {{ if .User.Username }}
+                <li><a href="/profile"><i class="fa-regular fa-user"></i> {{ .User.Username }}</a></li>
+                <li><a href="/"><i class="fa-solid fa-house"></i> Accueil</a></li>
+            {{ else }}
+                <li><a href="/auth/login"><i class="fa-solid fa-arrow-right-to-bracket"></i> Connexion</a></li>
+                <li><a href="/auth/register"><i class="fa-solid fa-user-plus"></i> Créer un compte</a></li>
+            {{ end }}
+            <li class="nav-mobile-menu-divider"></li>
+            <li><a href="/post/create"><i class="fa-solid fa-pen-to-square"></i> Lancer un sujet</a></li>
+        </ul>
     </div>
 </nav>
 <div class="subnav">
@@ -37,7 +66,7 @@
             <li><a href="/category/metal">Métal</a></li>
             <li><a href="/category/reggaeton">Reggaeton</a></li>
         </ul>
-        <a href="/post/create" class="button-brown">Lancer un sujet</a>
+        <a href="/post/create" class="button-brown subnav-create-btn">Lancer un sujet</a>
     </div>
 </div>
 <script>
@@ -50,7 +79,6 @@
             return;
         }
 
-        // Posts : /p/{category}/{subcategory}/{title}
         if (path.startsWith('/p/')) {
             const categorySlug = path.split('/')[2];
             const hrefSlug = href.split('/').pop();
@@ -59,5 +87,28 @@
             }
         }
     });
+
+    (function () {
+        const hamburger = document.querySelector('.nav-hamburger');
+        const searchToggle = document.querySelector('.nav-search-toggle');
+        const mobileMenu = document.querySelector('.nav-mobile-menu');
+        const mobileSearch = document.querySelector('.nav-mobile-search');
+        const hamburgerIcon = hamburger.querySelector('i');
+
+        hamburger.addEventListener('click', function () {
+            const isOpen = mobileMenu.classList.toggle('open');
+            hamburgerIcon.className = isOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
+            if (isOpen) mobileSearch.classList.remove('open');
+        });
+
+        searchToggle.addEventListener('click', function () {
+            const isOpen = mobileSearch.classList.toggle('open');
+            if (isOpen) {
+                mobileMenu.classList.remove('open');
+                hamburgerIcon.className = 'fa-solid fa-bars';
+                mobileSearch.querySelector('input').focus();
+            }
+        });
+    })();
 </script>
 {{ end }}

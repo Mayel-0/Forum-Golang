@@ -5,6 +5,7 @@
     justify-content: center;
     background-color: #FAFAF8;
     padding: 32px 16px;
+    min-height: calc(100vh - 128px);
 }
 
 .auth-card {
@@ -13,7 +14,16 @@
     border-radius: 12px;
     padding: 36px 32px;
     width: 100%;
-    max-width: 720px;
+    max-width: 480px;
+}
+
+@media (max-width: 480px) {
+    #login-section,
+    #register-section {
+        padding: 16px 10px;
+        align-items: flex-start;
+        min-height: unset;
+    }
 }
 
 .auth-card h1 {

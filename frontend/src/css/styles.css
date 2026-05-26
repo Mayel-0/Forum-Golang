@@ -84,11 +84,21 @@ body {
 	color: var(--error);
 }
 
-body {
+*,
+*::before,
+*::after {
 	box-sizing: border-box;
+}
+
+html {
+	overflow-x: hidden;
+}
+
+body {
 	margin: 0;
 	padding: 0;
 	background-color: #fafaf8;
+	overflow-x: hidden;
 }
 
 .font-script {
@@ -241,6 +251,116 @@ span {
 	color: black;
 }
 
+.nav-mobile-controls {
+	display: none;
+	align-items: center;
+	gap: 2px;
+	flex-shrink: 0;
+}
+
+.nav-icon-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 38px;
+	height: 38px;
+	border: none;
+	background: none;
+	cursor: pointer;
+	border-radius: 50%;
+	transition: background-color 0.15s;
+}
+
+.nav-icon-btn:hover {
+	background-color: #f0ebe5;
+}
+
+.nav-icon-btn i {
+	font-size: 16px;
+	color: #555;
+}
+
+.nav-mobile-search {
+	display: none;
+	padding: 8px 12px;
+	border-top: 1px solid #eae0d6;
+	background: white;
+}
+
+.nav-mobile-search.open {
+	display: block;
+}
+
+.nav-mobile-search-inner {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	border: 1px solid #eae0d6;
+	padding: 8px 14px;
+	border-radius: 20px;
+	background-color: #fafaf8;
+}
+
+.nav-mobile-search-inner i {
+	color: #999;
+	font-size: 14px;
+	flex-shrink: 0;
+}
+
+.nav-mobile-search-inner input {
+	border: none;
+	outline: none;
+	background: transparent;
+	width: 100%;
+	font-size: 14px;
+}
+
+.nav-mobile-menu {
+	display: none;
+	border-top: 1px solid #eae0d6;
+	background: white;
+	padding: 8px 0;
+}
+
+.nav-mobile-menu.open {
+	display: block;
+}
+
+.nav-mobile-menu ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.nav-mobile-menu ul li a {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 13px 16px;
+	font-size: 14px;
+	font-weight: 500;
+	color: #333;
+	text-decoration: none;
+	transition: background-color 0.12s;
+}
+
+.nav-mobile-menu ul li a:hover {
+	background-color: #fafaf8;
+}
+
+.nav-mobile-menu ul li a i {
+	font-size: 15px;
+	width: 18px;
+	text-align: center;
+	color: var(--main-brown);
+}
+
+.nav-mobile-menu-divider {
+	height: 1px;
+	background-color: #eae0d6;
+	margin: 6px 0;
+}
+
 @media (max-width: 768px) {
 	.search-bar {
 		display: none;
@@ -252,6 +372,22 @@ span {
 
 	.subnav-inner {
 		padding: 0 12px;
+	}
+
+	.nav-right {
+		display: none;
+	}
+
+	.nav-mobile-controls {
+		display: flex;
+	}
+
+	.subnav-create-btn {
+		display: none;
+	}
+
+	.nav-left h1 {
+		font-size: 2.4em;
 	}
 }
 
