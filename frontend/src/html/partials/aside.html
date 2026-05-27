@@ -3,11 +3,6 @@
     <div class="aside-title">
         <h3>🏆 Top membres</h3>
     </div>
-    <div class="aside-tabs">
-        <button class="aside-tab-btn active">Likes</button>
-        <button class="aside-tab-btn">Réponses</button>
-        <button class="aside-tab-btn">Topics</button>
-    </div>
     <div class="aside-member-list">
         {{ range $i, $u := .TopUsers }}
         <a class="aside-member" href="/user/{{ $u.Username }}">
