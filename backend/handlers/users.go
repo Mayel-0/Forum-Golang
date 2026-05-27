@@ -22,19 +22,11 @@ func SetTemplates(t map[string]*template.Template) {
 func render(w http.ResponseWriter, r *http.Request, name string, data any) {
 	t, ok := templates[name]
 	if !ok {
-		data := models.Data{
-			CodeError:     500,
-			MessagesError: "template introuvable: " + name,
-		}
-		Error(w, r, &data)
+		http.Error(w, "Template introuvable: "+name, http.StatusInternalServerError)
 		return
 	}
 	if err := t.ExecuteTemplate(w, "template.html", data); err != nil {
-		data := models.Data{
-			CodeError:     500,
-			MessagesError: "Erreur lors du rendu",
-		}
-		Error(w, r, &data)
+		http.Error(w, "Erreur lors du rendu du template", http.StatusInternalServerError)
 		return
 	}
 }
